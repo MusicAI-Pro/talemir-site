@@ -58,10 +58,10 @@ document.getElementById('f').onsubmit=async e=>{e.preventDefault();const go=docu
 async function poll(t){const res=document.getElementById('res');res.classList.remove('hide');res.scrollIntoView({behavior:'smooth'});
  const s=document.getElementById('state'),i=document.getElementById('info'),fl=document.getElementById('files');let start=Date.now();
  const tick=async()=>{try{const j=await (await fetch(API+'/api/test-orders/'+t,{cache:'no-store'})).json();
-  if(j.state==='в работе'){s.textContent='⏳ В работе — делаем и проверяем качество… '+Math.round((Date.now()-start)/60000)+' мин';i.textContent='Книга 28 стр. — до 20–30 мин, песня — 2–6 мин.';setTimeout(tick,10000);return}
+  if(j.state==='в работе'||j.state==='дорабатываем'){s.textContent=(j.state==='в работе'?'⏳ Делаем и проверяем качество… ':'🎨 Художник дорабатывает отдельные страницы/кадры… ')+Math.round((Date.now()-start)/60000)+' мин';i.textContent='Книга 28 стр. — до 20–30 мин, песня — 2–6 мин.';setTimeout(tick,10000);return}
   const g=document.getElementById('go');g.disabled=false;g.textContent='Новый заказ';
   if(j.state==='готово'){s.innerHTML='<span class="ok">✅ Готово и проверено</span>';i.textContent='Себестоимость: $'+j.cost+' · время: '+j.minutes+' мин';
    fl.innerHTML=j.files.map(n=>'<a class="dl" href="'+API+'/api/test-orders/'+t+'/file/'+encodeURIComponent(n)+'">⬇️ '+n+'</a>').join('')}
-  else{s.innerHTML='<span class="bad">⚠️ '+j.state+'</span>';i.textContent=(j.qa?'Проверка: '+j.qa+'. ':'')+(j.cost!=null?'Себестоимость попыток: $'+j.cost+'. ':'')+'Файл не выдан — передан Айрис на разбор.'}
+  else{s.innerHTML='🎨 Почти готово — наш художник лично доводит результат до идеала';i.textContent='Пришлём, как только он пройдёт финальную проверку. (Для владельца: '+(j.qa||j.state)+(j.cost!=null?', себестоимость $'+j.cost:'')+')'}
  }catch(e){setTimeout(tick,15000)}};tick()}
 </script></body></html>
