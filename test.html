@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Talemir — тестовые заказы</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F7F4FB;--card:#fff;--ink:#23173A;--muted:#62577A;--line:#E2DAEE;--cloth:#2E1F4F;--gold:#E2A23A;--pome:#C3404C;--ok:#2E7D4F}
+@media (prefers-color-scheme:dark){:root{--paper:#14101D;--card:#1D1729;--ink:#F1ECFA;--muted:#B4A9C9;--line:#352B48}}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Montserrat,system-ui,sans-serif}
+header{background:var(--cloth);color:#F5EFFF;padding:18px 16px}header b{font-size:20px}header span{display:block;opacity:.8;font-size:13px}
+main{max-width:640px;margin:0 auto;padding:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--paper);color:var(--ink)}
+textarea{min-height:80px}.prods{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.prods button{padding:12px 8px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:600 14px Montserrat;cursor:pointer}
+.prods button.on{border-color:var(--gold);background:#FFF6E5;color:#3A2606}
+.go{width:100%;margin-top:18px;padding:15px;border:0;border-radius:12px;background:var(--gold);color:#3A2606;font:700 16px Montserrat;cursor:pointer}
+.go:disabled{opacity:.5}.hide{display:none}.muted{color:var(--muted);font-size:13px}.st{font-weight:700}.ok{color:var(--ok)}.bad{color:var(--pome)}
+a.dl{display:block;margin:8px 0;padding:12px;border-radius:10px;background:var(--paper);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:600}
+</style></head><body>
+<header><b>Talemir · тестовые заказы</b><span>Только для владельца. Каждый результат проходит проверку качества — брак не выдаётся.</span></header>
+<main>
+<div class="card"><label for="code">Тестовый код</label><input id="code" autocomplete="off" placeholder="T-XXXXXXXX">
+<p class="muted">Код запоминается на этом устройстве.</p></div>
+<form id="f" class="card">
+<label>Что делаем?</label><div class="prods" id="prods"></div>
+<div data-p="book"><label for="pages">Страниц</label><select id="pages" name="pages"><option value="8">8 (обложка + 7)</option><option value="12">12 (обложка + 11)</option><option value="28">28 (обложка + 27)</option></select>
+<label for="style">Стиль рисунков</label><select id="style" name="style"><option value="st_water">Акварель</option><option value="st_3d">3D мультфильм</option><option value="st_pencil">Цветной карандаш</option><option value="st_khokh">Хохлома</option><option value="st_gzhel">Гжель</option></select>
+<label for="theme">Тема сказки</label><input id="theme" name="theme" placeholder="например, волшебный лес"></div>
+<label for="name">Имя героя</label><input id="name" name="name" required maxlength="40">
+<div data-p="book ny_greeting"><label for="gender">Пол</label><select id="gender" name="gender"><option value="f">Девочка</option><option value="m">Мальчик</option></select></div>
+<div data-p="book"><label for="age">Возраст</label><input id="age" name="age" type="number" min="0" max="99" value="5"></div>
+<div data-p="song clip_photos clip_live"><label for="occasion">Повод</label><input id="occasion" name="occasion" placeholder="день рождения, свадьба…">
+<label for="genre">Жанр</label><select id="genre" name="genre"><option value="kids">Детская</option><option value="pop">Поп</option><option value="lullaby">Колыбельная</option><option value="rock">Рок</option><option value="chanson">Эстрада</option></select>
+<label for="voice">Голос</label><select id="voice" name="voice"><option value="female">Женский</option><option value="male">Мужской</option><option value="kids">Детский хор</option></select></div>
+<div data-p="book song clip_photos clip_live"><label for="facts">Детали: родные, увлечения, любимые мультфильмы, возраст словами не нужен — цифрой</label><textarea id="facts" name="facts" maxlength="600"></textarea></div>
+<div data-p="book clip_photos clip_live"><label for="photos">Фото <span id="phn" class="muted"></span></label><input id="photos" name="photos" type="file" accept="image/*" multiple></div>
+<button class="go" id="go" type="submit">Запустить</button>
+</form>
+<div id="res" class="card hide"><div class="st" id="state"></div><div class="muted" id="info"></div><div id="files"></div></div>
+</main>
+<script>
+const API='https://api.talemir.com';const P={book:'📖 Книга',song:'🎵 Песня',clip_photos:'🎬 Клип из фото',clip_live:'✨ Живые фото',ny_greeting:'🎅 Дед Мороз'};
+const MIN={book:'1–3 фото, лицо хорошо видно',clip_photos:'3–10 фото',clip_live:'3 фото (до 6)'};let cur='book';
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const code=document.getElementById('code');code.value=store.get('tcode')||'';code.onchange=()=>store.set('tcode',code.value.trim());
+const pr=document.getElementById('prods');
+for(const k in P){const b=document.createElement('button');b.type='button';b.textContent=P[k];b.onclick=()=>sel(k);b.dataset.k=k;pr.appendChild(b)}
+function sel(k){cur=k;pr.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k==k));
+ document.querySelectorAll('[data-p]').forEach(d=>d.classList.toggle('hide',!d.dataset.p.split(' ').includes(k)));document.getElementById('phn').textContent=MIN[k]?'('+MIN[k]+')':''}
+sel('book');
+document.getElementById('f').onsubmit=async e=>{e.preventDefault();const go=document.getElementById('go');
+ if(!code.value.trim()){alert('Введите тестовый код');return}store.set('tcode',code.value.trim());
+ const fd=new FormData();fd.append('code',code.value.trim());fd.append('product',cur);
+ for(const id of ['pages','style','theme','name','gender','age','occasion','genre','voice','facts']){const el=document.getElementById(id);if(!el.closest('.hide'))fd.append(id,el.value)}
+ if(!document.getElementById('photos').closest('.hide'))for(const f of document.getElementById('photos').files)fd.append('photos',f);
+ go.disabled=true;go.textContent='Отправляю…';
+ try{const r=await fetch(API+'/api/test-orders',{method:'POST',body:fd});const j=await r.json();if(!r.ok)throw new Error(j.detail||r.status);poll(j.token)}
+ catch(err){alert('Ошибка: '+err.message);go.disabled=false;go.textContent='Запустить'}};
+async function poll(t){const res=document.getElementById('res');res.classList.remove('hide');res.scrollIntoView({behavior:'smooth'});
+ const s=document.getElementById('state'),i=document.getElementById('info'),fl=document.getElementById('files');let start=Date.now();
+ const tick=async()=>{try{const j=await (await fetch(API+'/api/test-orders/'+t,{cache:'no-store'})).json();
+  if(j.state==='в работе'){s.textContent='⏳ В работе — делаем и проверяем качество… '+Math.round((Date.now()-start)/60000)+' мин';i.textContent='Книга 28 стр. — до 20–30 мин, песня — 2–6 мин.';setTimeout(tick,10000);return}
+  const g=document.getElementById('go');g.disabled=false;g.textContent='Новый заказ';
+  if(j.state==='готово'){s.innerHTML='<span class="ok">✅ Готово и проверено</span>';i.textContent='Себестоимость: $'+j.cost+' · время: '+j.minutes+' мин';
+   fl.innerHTML=j.files.map(n=>'<a class="dl" href="'+API+'/api/test-orders/'+t+'/file/'+encodeURIComponent(n)+'">⬇️ '+n+'</a>').join('')}
+  else{s.innerHTML='<span class="bad">⚠️ '+j.state+'</span>';i.textContent=(j.qa?'Проверка: '+j.qa+'. ':'')+(j.cost!=null?'Себестоимость попыток: $'+j.cost+'. ':'')+'Файл не выдан — передан Айрис на разбор.'}
+ }catch(e){setTimeout(tick,15000)}};tick()}
+</script></body></html>
