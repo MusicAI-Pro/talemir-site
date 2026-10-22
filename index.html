@@ -222,7 +222,7 @@ nav.links{gap:16px}
 .price-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
 .cur{display:flex;gap:8px;align-items:center;font-weight:700}
 .cur select{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:.4em .6em}
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.tiers{display:grid;grid-template-columns:minmax(0,440px);justify-content:center;gap:20px;align-items:stretch}
 .tier{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;gap:12px}
 .tier.main{border:2px solid var(--gold);box-shadow:var(--shadow)}
 .tier h3{font-size:1.25rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -371,8 +371,6 @@ footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;
     </div>
     <div class="tiers">
       <div class="tier main"><h3 data-i="t_pdf"></h3><div class="amount" data-p="pdf"></div><p data-i="t_pdf_d"></p><button class="btn btn-gold" data-open="book" data-i="t_btn"></button></div>
-      <div class="tier soon"><h3><span data-i="t_print"></span><span class="badge soonb" data-i="p_soon"></span></h3><div class="amount" data-p="print"></div><p data-i="t_print_d"></p><button class="btn btn-ghost" disabled data-i="p_soon"></button></div>
-      <div class="tier soon"><h3><span data-i="t_gift"></span><span class="badge soonb" data-i="p_soon"></span></h3><div class="amount" data-p="gift"></div><p data-i="t_gift_d"></p><button class="btn btn-ghost" disabled data-i="p_soon"></button></div>
     </div>
     <div class="pguide"><h3 data-i="pg_h"></h3><p data-i="pg_p"></p><ul><li data-i="pg1"></li><li data-i="pg2"></li><li data-i="pg3"></li><li data-i="pg4"></li></ul><p class="hint" data-i="pg5"></p></div>
   </div></section>
