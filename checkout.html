@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Оформление заказа — Talemir</title>
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&amp;family=Montserrat:wght@600;700;800&amp;family=Nunito:wght@400;600;700&amp;display=swap">
+<style>
+:root{--paper:#F7F4FB;--card:#FFFFFF;--ink:#23173A;--muted:#62577A;--line:#E2DAEE;--cloth:#2E1F4F;--gold:#E2A23A;--link:#5B3FA0}
+@media (prefers-color-scheme:dark){:root{--paper:#14101D;--card:#1D1729;--ink:#F1ECF8;--muted:#B0A6C4;--line:#33294A;--link:#C9B5F2}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.6}
+[hidden]{display:none!important}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header.site{border-bottom:1px solid var(--line);background:var(--card)}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px}
+.brand{font-family:"Marck Script",cursive;font-size:2rem;line-height:1;color:var(--ink);text-decoration:none}
+main{padding:24px 0 40px}
+h1{font-family:"Montserrat",system-ui,sans-serif;font-size:1.6rem;margin:0 0 16px;font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 16px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:6px 0}
+.total{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;font-size:1.2rem;font-weight:700}
+.muted{color:var(--muted);font-size:.95rem}
+a{color:var(--link)}
+label.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0 16px;cursor:pointer}
+label.chk input{width:20px;height:20px;margin-top:3px;flex:0 0 auto}
+.pay{display:block;width:100%;min-height:52px;border:0;border-radius:999px;background:var(--gold);color:#23173A;font:800 1.1rem "Montserrat",system-ui,sans-serif;cursor:pointer}
+.pay[disabled]{opacity:.5;cursor:not-allowed}
+.methods{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.methods span{border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:.9rem}
+.status{text-align:center;padding:22px 18px}
+.spin{width:36px;height:36px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 12px;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+footer.site{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-size:.9rem}
+footer.site nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap"><a class="brand" href="/">Talemir</a><a href="/">← На главную</a></div></header>
+<main><div class="wrap">
+<h1>Оформление заказа</h1>
+<section class="card" aria-labelledby="h-order">
+  <h2 id="h-order" style="margin:0 0 8px;font-family:Montserrat,system-ui,sans-serif;font-size:1.1rem">Ваш заказ</h2>
+  <div class="row"><span>Подарок</span><strong id="pName">—</strong></div>
+  <div class="row"><span class="muted" id="pDesc"></span></div>
+  <div class="row"><span>Цена</span><span id="pPrice">—</span></div>
+  <div class="row"><span>Количество</span><span>1</span></div>
+  <div class="row total"><span>Итого к оплате</span><span id="pTotal">—</span></div>
+</section>
+<section class="card" id="payBox">
+  <strong>Способ оплаты</strong>
+  <p class="muted" style="margin:6px 0 0">Оплата проходит на защищённой странице платёжного сервиса ЮKassa. Данные карты вводятся только там — Talemir их не видит и не хранит.</p>
+  <div class="methods" aria-label="Способы оплаты"><span>Банковская карта</span><span>СБП</span></div>
+  <label class="chk"><input type="checkbox" id="agree"><span>Я принимаю условия <a href="/offer.html" target="_blank" rel="noopener">публичной оферты</a> и ознакомлен(а) с <a href="/privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span></label>
+  <button type="button" class="pay" id="payBtn" disabled>Оплатить</button>
+  <p class="muted" style="margin:12px 0 0">После оплаты чек придёт на ваш e-mail (54-ФЗ). Условия возврата — в разделе 8 <a href="/offer.html#refund" target="_blank" rel="noopener">оферты</a>.</p>
+</section>
+<section class="card status" id="redirBox" hidden aria-live="polite">
+  <div class="spin" aria-hidden="true"></div>
+  <strong id="redirH">Перенаправление на безопасную страницу оплаты…</strong>
+  <p class="muted" id="redirP" style="margin:8px 0 0"></p>
+</section>
+<p class="muted">Продавец: ИП Селезнева Светлана Тюговна, ИНН 231703925221, ОГРНИП 324470400009340 · <a href="/contacts.html">Контакты и реквизиты</a> · info@talemir.com</p>
+</div></main>
+<footer class="site"><div class="wrap">
+<nav aria-label="Документы"><a href="/contacts.html">Контакты и реквизиты</a><a href="/offer.html">Публичная оферта</a><a href="/privacy.html">Политика конфиденциальности</a></nav>
+<p style="margin:0">© 2026 Talemir. Индивидуальный предприниматель Селезнева Светлана Тюговна, ИНН 231703925221</p>
+</div></footer>
+<script>
+const P = {
+  book:{n:'Книга-сказка (электронная, PDF)',d:'Персональная книга по фото ребёнка, 28 страниц',p:990},
+  song:{n:'Песня с именем',d:'Персональная песня, файл MP3',p:490},
+  clip:{n:'Клип из фото',d:'Видеоклип из ваших фото под песню, файл MP4',p:790},
+  live:{n:'Живые фото',d:'Оживление фотографий, файл MP4',p:1990},
+  ny:{n:'Поздравление от Деда Мороза',d:'Видеопоздравление с именем ребёнка. Новогодняя акция Talemir, действует до 25 декабря',p:49}
+};
+const key = new URLSearchParams(location.search).get('p');
+const it = P[key] || P.book;
+const rub = n => n.toLocaleString('ru-RU') + ' ₽';
+document.getElementById('pName').textContent = it.n;
+document.getElementById('pDesc').textContent = it.d;
+document.getElementById('pPrice').textContent = rub(it.p);
+document.getElementById('pTotal').textContent = rub(it.p);
+const btn = document.getElementById('payBtn');
+btn.textContent = 'Оплатить ' + rub(it.p);
+document.getElementById('agree').addEventListener('change', e => { btn.disabled = !e.target.checked; });
+btn.addEventListener('click', () => {
+  if (btn.disabled) return;
+  document.getElementById('payBox').hidden = true;
+  document.getElementById('redirBox').hidden = false;
+  // Платёжный шлюз ЮKassa подключается: после выдачи ключей здесь будет переход на страницу оплаты (confirmation_url).
+  setTimeout(() => {
+    document.getElementById('redirH').textContent = 'Платёжный шлюз подключается';
+    document.getElementById('redirP').textContent = 'Приём оплаты на сайте откроется после завершения подключения ЮKassa. Если хотите оформить заказ сейчас — напишите нам: info@talemir.com.';
+    document.querySelector('.spin').hidden = true;
+  }, 2500);
+});
+</script>
+</body>
+</html>
