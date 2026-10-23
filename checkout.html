@@ -78,8 +78,9 @@ const P = {
   live:{n:'Живые фото',d:'Оживление фотографий, файл MP4',p:1990},
   ny:{n:'Поздравление от Деда Мороза',d:'Персональное видеопоздравление с именем ребёнка. Заказы до 25 декабря',p:49}
 };
-const key = new URLSearchParams(location.search).get('p');
-const it = P[key] || P.book;
+const keys = String(new URLSearchParams(location.search).get('p') || 'book').split(',').filter(k => P[k]).filter((k, i, a) => a.indexOf(k) === i);
+if (!keys.length) keys.push('book');
+const it = keys.length === 1 ? P[keys[0]] : { n: keys.map(k => P[k].n).join(' + '), d: keys.map(k => P[k].n + ' — ' + P[k].p.toLocaleString('ru-RU') + ' ₽').join('; '), p: keys.reduce((a, k) => a + P[k].p, 0) };
 const rub = n => n.toLocaleString('ru-RU') + ' ₽';
 document.getElementById('pName').textContent = it.n;
 document.getElementById('pDesc').textContent = it.d;
