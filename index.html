@@ -240,14 +240,14 @@ nav.links{gap:16px}
 @media (max-width:860px){ .tiers{grid-template-columns:1fr} }
 
 /* occasions + loyalty + privacy */
-.three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.three.two-col{grid-template-columns:repeat(2,1fr)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:12px}
 .panel h3{font-size:1.2rem}
 .panel ul{margin:0;padding-inline-start:1.1em;display:grid;gap:8px}
 .panel li::marker{color:var(--gold)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips span{background:color-mix(in srgb,var(--pome) 12%,var(--card));border:1px solid color-mix(in srgb,var(--pome) 30%,transparent);border-radius:999px;padding:.35em .9em;font-weight:700;font-size:.95rem}
-@media (max-width:900px){ .three{grid-template-columns:1fr} }
+@media (max-width:900px){ .three,.three.two-col{grid-template-columns:1fr} }
 
 /* faq */
 .faq{display:grid;gap:12px;max-width:52rem}
@@ -349,7 +349,6 @@ footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;
       <h2 data-i="fam_h"></h2>
       <p class="lead" data-i="fam_p"></p>
       <ul><li data-i="fam_l1"></li><li data-i="fam_l2"></li><li data-i="fam_l3"></li><li data-i="fam_l4"></li></ul>
-      <p class="next" data-i="fam_next"></p>
     </div>
   </div></section>
 
@@ -377,9 +376,8 @@ footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;
     <div class="pguide"><h3 data-i="pg_h"></h3><p data-i="pg_p"></p><ul><li data-i="pg1"></li><li data-i="pg2"></li><li data-i="pg3"></li><li data-i="pg4"></li></ul><p class="hint" data-i="pg5"></p></div>
   </div></section>
 
-  <section style="padding-top:0"><div class="wrap three">
+  <section style="padding-top:0"><div class="wrap three two-col">
     <div class="panel"><h3 data-i="oc_h"></h3><div class="chips" id="occ"></div></div>
-    <div class="panel"><h3 data-i="ly_h"></h3><p class="hint" data-i="ly_p"></p><ul><li data-i="ly1"></li><li data-i="ly2"></li><li data-i="ly3"></li><li data-i="ly4"></li></ul></div>
     <div class="panel"><h3 data-i="pv_h"></h3><ul><li data-i="pv1"></li><li data-i="pv2"></li><li data-i="pv3"></li><li data-i="pv4"></li></ul></div>
   </div></section>
 
