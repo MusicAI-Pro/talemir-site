@@ -76,11 +76,14 @@ const P = {
   song:{n:'Песня с именем',d:'Персональная песня, файл MP3',p:490},
   clip:{n:'Клип из фото',d:'Видеоклип из ваших фото под песню, файл MP4',p:790},
   live:{n:'Живые фото',d:'Оживление фотографий, файл MP4',p:1990},
-  ny:{n:'Поздравление от Деда Мороза',d:'Персональное видеопоздравление с именем ребёнка. Заказы до 25 декабря',p:49}
+  ny:{n:'Поздравление от Деда Мороза',d:'Персональное видеопоздравление с именем ребёнка. Новогодняя цена — до 25 декабря',p:290}
 };
 const keys = String(new URLSearchParams(location.search).get('p') || 'book').split(',').filter(k => P[k]).filter((k, i, a) => a.indexOf(k) === i);
 if (!keys.length) keys.push('book');
-const it = keys.length === 1 ? P[keys[0]] : { n: keys.map(k => P[k].n).join(' + '), d: keys.map(k => P[k].n + ' — ' + P[k].p.toLocaleString('ru-RU') + ' ₽').join('; '), p: keys.reduce((a, k) => a + P[k].p, 0) };
+const nyFree = keys.includes('ny') && keys.length > 1 && Date.now() <= Date.parse('2026-12-25T23:59:59+03:00');
+const paid = keys.filter(k => !(k === 'ny' && nyFree)); const disc = paid.length >= 4 ? 20 : paid.length === 3 ? 15 : paid.length === 2 ? 10 : 0;
+const sub = paid.reduce((a, k) => a + P[k].p, 0); const total = disc ? Math.floor(sub * (1 - disc / 100) / 10) * 10 : sub;
+const it = keys.length === 1 ? P[keys[0]] : { n: keys.map(k => P[k].n).join(' + '), d: keys.map(k => P[k].n + ' — ' + ((k === 'ny' && nyFree) ? 'в подарок' : P[k].p.toLocaleString('ru-RU') + ' ₽')).join('; ') + (disc ? '. Скидка за комплект ' + disc + '%' : ''), p: total };
 const rub = n => n.toLocaleString('ru-RU') + ' ₽';
 document.getElementById('pName').textContent = it.n;
 document.getElementById('pDesc').textContent = it.d;
