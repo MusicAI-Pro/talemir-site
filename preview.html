@@ -61,24 +61,32 @@ h1{font-family:Montserrat;font-size:clamp(20px,3vw,30px);margin:10px 0 2px;width
 @keyframes tapPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @media (prefers-reduced-motion:reduce){.tap{animation:none}}
 @media (prefers-reduced-motion:reduce){.leaf,.book{transition:none}.leaf.turning .face::after{animation:none}}
+.stys{max-width:1100px;margin:14px auto 0;padding:0 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin}
+.stys button{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;padding:4px;border:2px solid transparent;border-radius:12px;background:rgba(255,255,255,.06);color:#e9e2f7;font:600 12px/1.15 Nunito,system-ui,sans-serif;cursor:pointer}
+.stys button img{width:64px;height:64px;border-radius:8px;object-fit:cover;display:block}
+.stys button[aria-checked=true]{border-color:var(--gold);background:rgba(226,162,58,.18);color:#fff}
+.stys button:focus-visible{outline:3px solid #f0b84e}
+@media (min-width:900px){.stys{flex-wrap:wrap;justify-content:center;overflow:visible;max-width:720px}}
+.stycap{max-width:1100px;margin:8px auto 0;padding:0 16px;color:#cfc6e6;font-size:14px}
 </style></head><body>
 <div class="top"><a href="/" style="display:inline-block"><img src="img/logo.svg" alt="Talemir" height="40"></a>
 <h1>Так выглядит предпросмотр вашей книги</h1><p class="sub">Пример: книга Вероники (героиня вымышленная). Перед оплатой вы увидите обложку и первые страницы своей книги — остальные откроются после оплаты.</p></div>
+<div class="stys" id="stys" role="radiogroup" aria-label="Стиль рисунка"></div>
 <div class="stage">
  <div class="book closed" id="book"></div>
  <div class="ctl"><button id="prev" disabled>← Назад</button><button id="next">Открыть книгу →</button></div>
  <p class="hint" id="hint">Нажмите на страницу или используйте стрелки ← →.</p>
 </div>
-<p class="hint"><a href="/?order=book" style="color:#EDB250;font-weight:800">Создать книгу для своего ребёнка →</a></p>
+<p class="hint"><a data-order href="/?order=book" style="color:#EDB250;font-weight:800">Создать книгу для своего ребёнка →</a></p>
 <script>
 const LEAVES=[
- {front:`<div class="face front cover"><img src="img/preview/snow.jpg" alt=""><div class="t">Вероника и волшебная зима<small>Персональная сказка Talemir</small></div></div>`,
+ {front:`<div class="face front cover"><img src="img/styles/st_3d/cover_w.jpg" data-k="cover_w" alt=""><div class="t">Вероника и волшебная зима<small>Персональная сказка Talemir</small></div></div>`,
   back:`<div class="face back"><div class="ded">Веронике —<br>с любовью от бабушки</div></div>`},
- {front:`<div class="face front"><div class="pg"><img src="img/preview/sea.jpg" alt=""><p>Летом Вероника нашла на берегу ракушку, которая тихо звенела, как колокольчик. «Сохрани меня до зимы», — прошептала ракушка.</p><span class="n">1</span></div></div>`,
-  back:`<div class="face back"><div class="pg"><img src="img/preview/cat.jpg" alt=""><p>Кот Персик выслушал всю историю и мурлыкнул: «Когда выпадет первый снег, ракушка покажет дорогу. Я пойду с тобой».</p><span class="n">2</span></div></div>`},
- {front:`<div class="face front"><div class="pg"><img src="img/preview/draw_blur.jpg" alt=""><div class="bars"><i style="width:92%"></i><i style="width:84%"></i><i style="width:60%"></i></div><span class="n">3</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`,
-  back:`<div class="face back"><div class="pg"><img src="img/preview/snow_blur.jpg" alt=""><div class="bars"><i style="width:88%"></i><i style="width:90%"></i><i style="width:52%"></i></div><span class="n">4</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`},
- {front:`<div class="face front"><div class="pay"><h3>Что будет дальше с Вероникой?</h3><p>Вся книга — 28 страниц в одном стиле, с вашими фото и пожеланиями. PDF, можно напечатать в типографии.</p><a class="btn" href="/?order=book" style="text-decoration:none">Создать такую книгу — от 990 ₽</a><div class="ok">Оплата — после предпросмотра</div></div></div>`,
+ {front:`<div class="face front"><div class="pg"><img src="img/styles/st_3d/p1_w.jpg" data-k="p1_w" alt=""><p>Летом Вероника нашла на берегу ракушку, которая тихо звенела, как колокольчик. «Сохрани меня до зимы», — прошептала ракушка.</p><span class="n">1</span></div></div>`,
+  back:`<div class="face back"><div class="pg"><img src="img/styles/st_3d/p2_w.jpg" data-k="p2_w" alt=""><p>Кот Персик выслушал всю историю и мурлыкнул: «Когда выпадет первый снег, ракушка покажет дорогу. Я пойду с тобой».</p><span class="n">2</span></div></div>`},
+ {front:`<div class="face front"><div class="pg"><img src="img/styles/st_3d/p3b.jpg" data-k="p3b" alt=""><div class="bars"><i style="width:92%"></i><i style="width:84%"></i><i style="width:60%"></i></div><span class="n">3</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`,
+  back:`<div class="face back"><div class="pg"><img src="img/styles/st_3d/p4b.jpg" data-k="p4b" alt=""><div class="bars"><i style="width:88%"></i><i style="width:90%"></i><i style="width:52%"></i></div><span class="n">4</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`},
+ {front:`<div class="face front"><div class="pay"><h3>Что будет дальше с Вероникой?</h3><p>Вся книга — 28 страниц в одном стиле, с вашими фото и пожеланиями. PDF, можно напечатать в типографии.</p><a class="btn" data-order href="/?order=book" style="text-decoration:none">Создать такую книгу — от 990 ₽</a><div class="ok">Оплата — после предпросмотра</div></div></div>`,
   back:`<div class="face back"><div class="ded">Конец первой главы</div></div>`}
 ];
 const book=document.getElementById('book'); let cur=0;
@@ -104,4 +112,21 @@ book.addEventListener('mouseleave',()=>leaves.forEach(l=>l.classList.remove('pee
 const tap=document.createElement('div');tap.className='tap';tap.textContent=SINGLE?'👆 Нажмите — книга откроется':'👆 Нажмите на книгу — она откроется';book.appendChild(tap);
 let tapUsed=false;function hintUsed(){if(tapUsed)return;tapUsed=true;tap.classList.add('gone');}
 z();ui();
-</script></body></html>
+</script><script>
+/* 24.10.2026: пример книги в каждом стиле — переключатель над книгой */
+(function(){
+const ST=[["st_3d","Объёмная анимация"],["st_water","Акварель"],["st_pencil","Цветные карандаши"],["st_paper","Бумажная аппликация"],["st_clay","Пластилин"],["st_khokh","Хохлома"],["st_gzhel","Гжель"],["st_palekh","Палехская миниатюра"],["st_lubok","Лубок"],["st_film","Ретро-диафильм"],["st_kaz","Казахское войлочное искусство"],["st_minia","Армянская миниатюра"],["st_arab","Восточный орнамент"]];
+const box=document.getElementById('stys'); let q=new URLSearchParams(location.search).get('style'); if(!ST.some(x=>x[0]===q)) q='st_3d';
+box.innerHTML=ST.map(([k,n])=>`<button type="button" role="radio" data-st="${k}" aria-checked="false"><img src="img/styles/${k}/th.jpg" alt="" width="64" height="64" loading="lazy">${n}</button>`).join('');
+function set(st){
+  document.querySelectorAll('#book img[data-k]').forEach(i=>{i.src=`img/styles/${st}/${i.dataset.k}.jpg`;});
+  document.querySelectorAll('[data-order]').forEach(a=>{a.href='/?order=book&style='+st;});
+  box.querySelectorAll('button').forEach(b=>b.setAttribute('aria-checked',b.dataset.st===st));
+  ST.forEach(([k])=>{ if(k!==st) return; ['cover_w','p1_w','p2_w'].forEach(f=>{ /* прогрев соседних */ }); });
+  try{history.replaceState(null,'',location.pathname+'?style='+st);}catch(e){}
+}
+box.addEventListener('click',e=>{const b=e.target.closest('[data-st]'); if(b) set(b.dataset.st);});
+set(q); const sel=box.querySelector('[aria-checked=true]'); if(sel&&box.scrollWidth>box.clientWidth) box.scrollLeft=sel.offsetLeft-box.clientWidth/2+sel.offsetWidth/2;
+})();
+</script>
+</body></html>
