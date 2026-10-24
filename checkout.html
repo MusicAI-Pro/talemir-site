@@ -76,7 +76,7 @@ header.site .brand{color:#EDB250}
   <strong id="redirH">Перенаправление на безопасную страницу оплаты…</strong>
   <p class="muted" id="redirP" style="margin:8px 0 0"></p>
 </section>
-<p class="muted">Продавец: ИП глава КФХ Селезнева Светлана Тюговна, ИНН 231703925221, ОГРНИП 324470400009340 · <a href="/contacts.html">Контакты и реквизиты</a> · info@talemir.com</p>
+<p class="muted">Продавец: ИП Селезнева Светлана Тюговна, ИНН 231703925221, ОГРНИП 324470400009340 · <a href="/contacts.html">Контакты и реквизиты</a> · info@talemir.com</p>
 </div></main>
 <footer class="site"><div class="wrap">
 <nav aria-label="Документы"><a href="/contacts.html">Контакты и реквизиты</a><a href="/offer.html">Публичная оферта</a><a href="/privacy.html">Политика конфиденциальности</a></nav>
@@ -90,6 +90,7 @@ const P = {
   live:{n:'Живые фото',d:'Оживление фотографий, файл MP4',p:1990},
   ny:{n:'Поздравление от Деда Мороза',d:'Персональное видеопоздравление с именем ребёнка. Новогодняя цена — до 25 декабря',p:290}
 };
+{ const _t = new URLSearchParams(location.search).get('t'); if (_t && /^[0-9a-f]{16}$/.test(_t)) { let rf=''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){} location.replace('https://ru.api.talemir.com/checkout/' + _t + (rf ? '?ref=' + encodeURIComponent(rf) : '')); } }
 const keys = String(new URLSearchParams(location.search).get('p') || 'book').split(',').filter(k => P[k]).filter((k, i, a) => a.indexOf(k) === i);
 if (!keys.length) keys.push('book');
 const nyFree = keys.includes('ny') && keys.length > 1 && Date.now() <= Date.parse('2026-12-25T23:59:59+03:00');
@@ -106,14 +107,7 @@ btn.textContent = 'Оплатить ' + rub(it.p);
 document.getElementById('agree').addEventListener('change', e => { btn.disabled = !e.target.checked; });
 btn.addEventListener('click', () => {
   if (btn.disabled) return;
-  document.getElementById('payBox').hidden = true;
-  document.getElementById('redirBox').hidden = false;
-  // Платёжный шлюз ЮKassa подключается: после выдачи ключей здесь будет переход на страницу оплаты (confirmation_url).
-  setTimeout(() => {
-    document.getElementById('redirH').textContent = 'Платёжный шлюз подключается';
-    document.getElementById('redirP').textContent = 'Приём оплаты на сайте откроется после завершения подключения ЮKassa. Если хотите оформить заказ сейчас — напишите нам: info@talemir.com.';
-    document.querySelector('.spin').hidden = true;
-  }, 2500);
+  location.href = '/?order=' + encodeURIComponent(keys[0]);   // оплата — после формы заказа (данные ребёнка нужны для подарка)
 });
 </script>
 </body>
