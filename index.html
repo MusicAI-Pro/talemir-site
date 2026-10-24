@@ -381,6 +381,7 @@ body.has-kbar{padding-bottom:96px}
 .life figcaption button{align-self:flex-start;border:0;background:none;padding:0;color:var(--pome);font:700 var(--fs-2)/1.3 var(--f-body);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .life-note{margin-top:12px;color:var(--muted);font-size:var(--fs-1)}
 @media (max-width:700px){.life{grid-auto-columns:82%}}
+.sty.big .stylink{display:block;flex-basis:100%;margin-top:8px;color:#fff;font-weight:700;font-size:var(--fs-2);text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -611,7 +612,7 @@ let styleSel = 'st_3d';
 function renderStyles(){
   const order = [STYLES.find(x=>x[0]===styleSel), ...STYLES.filter(x=>x[0]!==styleSel)];
   document.getElementById('stylesGrid').innerHTML = order.map(([img,k],i) => i===0
-    ? `<div class="sty big" role="group" aria-label="${t(k)}"><img src="${IMG[img]}" alt="${t(k)}" width="600" height="600"><span>${t(k)}<button type="button" class="btn btn-gold" data-open="book" data-style="${k}">${t('st_pick')}</button></span></div>`
+    ? `<div class="sty big" role="group" aria-label="${t(k)}"><img src="${IMG[img]}" alt="${t(k)}" width="600" height="600"><span>${t(k)}<button type="button" class="btn btn-gold" data-open="book" data-style="${k}">${t('st_pick')}</button><a class="stylink" href="/preview.html?style=${k}">${t('stpv_link')}</a></span></div>`
     : `<button type="button" class="sty" data-sty="${img}" aria-label="${t(k)}"><img src="${IMG[img]}" alt="" loading="lazy" width="600" height="600"><span>${t(k)}</span></button>`).join('');
 }
 document.getElementById('stylesGrid').addEventListener('click', e => {
