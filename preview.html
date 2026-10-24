@@ -52,6 +52,10 @@ h1{font-family:Montserrat;font-size:clamp(20px,3vw,30px);margin:10px 0 2px;width
  .book.single .pay h3{font-size:22px}.book.single .pay p{font-size:15px}.book.single .pay .btn{font-size:16px}
  .book.single .lock span{font-size:14px}.book.single .ded{font-size:30px}
 }
+.tap{position:absolute;right:4%;top:5%;z-index:2000;background:rgba(46,31,79,.88);color:#fff;border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;pointer-events:none;animation:tapPulse 1.8s ease-in-out infinite;transition:opacity .4s}
+.tap.gone{opacity:0}
+@keyframes tapPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@media (prefers-reduced-motion:reduce){.tap{animation:none}}
 @media (prefers-reduced-motion:reduce){.leaf,.book{transition:none}.leaf.turning .face::after{animation:none}}
 </style></head><body>
 <div class="top"><a href="/" style="display:inline-block"><img src="img/logo.svg" alt="Talemir" height="40"></a>
@@ -79,18 +83,21 @@ const UNITS=SINGLE?LEAVES.flatMap((L,i)=>i<LEAVES.length-1?[L.front,L.back.repla
 UNITS.forEach((html,i)=>{const d=document.createElement('div');d.className='leaf';d.style.zIndex=UNITS.length-i;d.innerHTML=html;d.addEventListener('click',()=>{if(d.classList.contains('flipped'))go(-1);else go(1);});book.appendChild(d);});
 const leaves=[...book.children];
 const maxFlip=UNITS.length-1;   // последний лист (оплата) не перелистывается
-function z(){leaves.forEach((l,i)=>{l.style.zIndex=l.classList.contains('flipped')?i+1:UNITS.length-i;});}
+function z(){leaves.forEach((l,i)=>{if(l.classList.contains('turning'))return;l.style.zIndex=l.classList.contains('flipped')?i+1:UNITS.length-i;});}
 function go(d){
-  if(d>0&&cur<maxFlip){const l=leaves[cur];l.classList.add('turning');l.classList.add('flipped');setTimeout(()=>l.classList.remove('turning'),900);cur++;}
-  else if(d<0&&cur>0){cur--;const l=leaves[cur];l.classList.add('turning');l.classList.remove('flipped');setTimeout(()=>l.classList.remove('turning'),900);}
-  book.classList.toggle('closed',cur===0&&!SINGLE);z();ui();
+  hintUsed();
+  if(d>0&&cur<maxFlip){const l=leaves[cur];l.style.zIndex=1000+cur;l.classList.add('turning','flipped');setTimeout(()=>{l.classList.remove('turning');z();},920);cur++;}
+  else if(d<0&&cur>0){cur--;const l=leaves[cur];l.style.zIndex=1000+cur;l.classList.add('turning');l.classList.remove('flipped');setTimeout(()=>{l.classList.remove('turning');z();},920);}
+  else return;
+  book.classList.toggle('closed',cur===0&&!SINGLE);ui();
 }
-function ui(){document.getElementById('prev').disabled=cur===0;const n=document.getElementById('next');n.disabled=cur>=maxFlip;n.textContent=cur===0?'Открыть книгу →':'Листать →';}
+function ui(){const h=document.getElementById('hint');if(h)h.textContent=cur===0?(SINGLE?'Нажмите на книгу или проведите пальцем влево — она откроется.':'Нажмите на книгу — она откроется.'):cur>=maxFlip?'Это всё, что видно до оплаты. Остальные страницы откроются после оплаты.':(SINGLE?'Чтобы перелистнуть — нажмите на страницу или проведите пальцем влево.':'Чтобы перелистнуть — нажмите на правую страницу. Назад — на левую.');document.getElementById('prev').disabled=cur===0;const n=document.getElementById('next');n.disabled=cur>=maxFlip;n.textContent=cur===0?'Открыть книгу →':'Листать →';}
 document.getElementById('next').onclick=()=>go(1);document.getElementById('prev').onclick=()=>go(-1);
 addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
 let sx=null;book.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});book.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)go(dx<0?1:-1);sx=null;});
 book.addEventListener('mousemove',e=>{const r=book.getBoundingClientRect();const l=leaves[cur];if(!l||cur>=maxFlip)return;l.classList.toggle('peek',e.clientX>r.right-r.width*0.12);});
 book.addEventListener('mouseleave',()=>leaves.forEach(l=>l.classList.remove('peek')));
-if(SINGLE)document.getElementById('hint').textContent='Листайте пальцем влево или нажмите на страницу.';
+const tap=document.createElement('div');tap.className='tap';tap.textContent=SINGLE?'👆 Нажмите — книга откроется':'👆 Нажмите на книгу — она откроется';book.appendChild(tap);
+let tapUsed=false;function hintUsed(){if(tapUsed)return;tapUsed=true;tap.classList.add('gone');}
 z();ui();
 </script></body></html>
