@@ -806,5 +806,11 @@ applyBundle();
 (function(){ function ph(){ document.querySelectorAll("[data-ph]").forEach(function(el){ el.placeholder = t(el.dataset.ph); }); }
   var _rH = render; render = function(){ _rH(); ph(); }; ph(); })();
 </script>
+<script>
+/* Прямой переход к оформлению: /?order=book (кнопки на странице предпросмотра и др.) */
+(function(){ try { var o = new URLSearchParams(location.search).get('order');
+  if (o && PRODS.some(function(x){ return x[0] === o; })) { setTimeout(function(){ var c = document.getElementById('p-' + o); if (c) c.scrollIntoView({block:'center'}); openModal(o); try { history.replaceState(null, '', location.pathname + '#p-' + o); } catch(e){} }, 300); }
+} catch(e){} })();
+</script>
 </body>
 </html>

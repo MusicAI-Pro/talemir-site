@@ -65,7 +65,7 @@ h1{font-family:Montserrat;font-size:clamp(20px,3vw,30px);margin:10px 0 2px;width
  <div class="ctl"><button id="prev" disabled>← Назад</button><button id="next">Открыть книгу →</button></div>
  <p class="hint" id="hint">Нажмите на страницу или используйте стрелки ← →.</p>
 </div>
-<p class="hint"><a href="/#p-book" style="color:#EDB250;font-weight:800">Создать книгу для своего ребёнка →</a></p>
+<p class="hint"><a href="/?order=book" style="color:#EDB250;font-weight:800">Создать книгу для своего ребёнка →</a></p>
 <script>
 const LEAVES=[
  {front:`<div class="face front cover"><img src="img/preview/snow.jpg" alt=""><div class="t">Вероника и волшебная зима<small>Персональная сказка Talemir</small></div></div>`,
@@ -74,7 +74,7 @@ const LEAVES=[
   back:`<div class="face back"><div class="pg"><img src="img/preview/cat.jpg" alt=""><p>Кот Персик выслушал всю историю и мурлыкнул: «Когда выпадет первый снег, ракушка покажет дорогу. Я пойду с тобой».</p><span class="n">2</span></div></div>`},
  {front:`<div class="face front"><div class="pg"><img src="img/preview/draw_blur.jpg" alt=""><div class="bars"><i style="width:92%"></i><i style="width:84%"></i><i style="width:60%"></i></div><span class="n">3</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`,
   back:`<div class="face back"><div class="pg"><img src="img/preview/snow_blur.jpg" alt=""><div class="bars"><i style="width:88%"></i><i style="width:90%"></i><i style="width:52%"></i></div><span class="n">4</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`},
- {front:`<div class="face front"><div class="pay"><h3>Что будет дальше с Вероникой?</h3><p>Вся книга — 28 страниц в одном стиле, с вашими фото и пожеланиями. PDF, можно напечатать в типографии.</p><a class="btn" href="/#p-book" style="text-decoration:none">Создать такую книгу — от 990 ₽</a><div class="ok">Оплата — после предпросмотра</div></div></div>`,
+ {front:`<div class="face front"><div class="pay"><h3>Что будет дальше с Вероникой?</h3><p>Вся книга — 28 страниц в одном стиле, с вашими фото и пожеланиями. PDF, можно напечатать в типографии.</p><a class="btn" href="/?order=book" style="text-decoration:none">Создать такую книгу — от 990 ₽</a><div class="ok">Оплата — после предпросмотра</div></div></div>`,
   back:`<div class="face back"><div class="ded">Конец первой главы</div></div>`}
 ];
 const book=document.getElementById('book'); let cur=0;
