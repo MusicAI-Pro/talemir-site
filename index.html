@@ -612,7 +612,7 @@ function media(k){
   return `<div class="media pm"><video playsinline preload="none" poster="img/ex/${v[1]}" src="img/ex/${v[0]}" ${k==='live'?'loop':''}></video><button type="button" class="play" data-play aria-label="${t('p_'+k+'_t')}">${PM_IC.play}</button><span class="pm-dur">${PM_IC.play}${PM_D[k]}</span>${pmBar(true)}</div>`;
 }
 const PM_IC = {play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>', pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>', fs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>', note:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17V5l11-2v12a3 3 0 1 1-2-2.8V6.3L11 7.6V17a3 3 0 1 1-2-2.8z"/></svg>'};
-const PM_D = {song:'1:13', clip:'0:38', live:'0:08', ny:'2:00'};
+const PM_D = {song:'0:38', clip:'0:38', live:'0:08', ny:'2:00'};
 function pmBar(video){ return `<div class="pm-bar"><button type="button" class="pm-pp" aria-label="${t('pm_pause')}">${PM_IC.pause}</button><div class="pm-track" aria-hidden="true"><i></i></div><span class="pm-time">0:00</span>${video ? `<button type="button" class="pm-fs" aria-label="${t('pm_full')}">${PM_IC.fs}</button>` : ''}</div>`; }
 const pmFmt = x => { x = Math.floor(x || 0); return Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0'); };
 
