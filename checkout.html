@@ -43,9 +43,16 @@ label.chk input{width:20px;height:20px;margin-top:3px;flex:0 0 auto}
 footer.site{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-size:.9rem}
 footer.site nav{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:8px}
 </style>
+<style id="hdr-plum">/* 24.10.2026: шапка как на главной — фиолетовая, логотип не теряется */
+header.site{background:#2E1F4F!important;border-bottom:0!important;color:#F5EFFF}
+header.site a{color:#F5EFFF}
+header.site a:hover{color:#EDB250}
+header.site .brand{color:#EDB250}
+@media print{header.site{background:#fff!important}}
+</style>
 </head>
 <body>
-<header class="site"><div class="wrap"><a class="brand" href="/">Talemir</a><a href="/">← На главную</a></div></header>
+<header class="site"><div class="wrap"><a href="/" aria-label="Talemir — на главную"><img src="/img/logo.svg" height="40" alt="Talemir" style="display:block;height:40px;width:auto"></a><a href="/">← На главную</a></div></header>
 <main><div class="wrap">
 <h1>Оформление заказа</h1>
 <section class="card" aria-labelledby="h-order">
