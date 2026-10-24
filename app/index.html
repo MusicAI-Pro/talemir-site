@@ -159,7 +159,7 @@ body.web.detail .webbtn{display:block}
   </section>
 </div>
 
-<div class="webbtn"><button id="webMain" type="button">Создать подарок</button></div>
+<div class="webbtn"><button id="webMain" type="button">✨ Создать подарок</button></div>
 
 <script>
 (function(){
@@ -193,9 +193,14 @@ body.web.detail .webbtn{display:block}
             short:"Фото оживают под вашу песню",
             get:"Фото оживают: улыбка, взгляд, движение — под вашу песню. MP4",
             need:"1–6 фото",
-            media:{type:"video", src:EX+"ex_live.mp4", poster:EX+"ex_live.jpg", alt:"Пример живого фото"} }
+            media:{type:"video", src:EX+"ex_live.mp4", poster:EX+"ex_live.jpg", alt:"Пример живого фото"} },
+    sing: { emoji:"🎤", title:"Поющее фото", price:"1 490 ₽",
+            short:"Человек на фото поёт песню с именем",
+            get:"Ваше фото поёт песню с именем: губы и мимика — в такт словам. Видео MP4 до 30 секунд + полная песня MP3 в подарок. В углу видео — пометка «ИИ-анимация, голос синтезирован»",
+            need:"1 фото (лицо крупно) и имя",
+            media:{type:"video", src:EX+"ex_sing.mp4", poster:EX+"ex_sing.jpg", alt:"Пример: Амелия, 5 лет, поёт «Мне сегодня ровно пять»"} }
   };
-  var ORDER = ["book","song","clip","live"];
+  var ORDER = ["book","song","clip","live","sing"];
   var STYLES = [
     ["st_3d","3D-анимация"],["st_water","Акварель"],["st_pencil","Цветные карандаши"],["st_paper","Аппликация"],
     ["st_clay","Пластилин"],["st_khokh","Хохлома"],["st_gzhel","Гжель"],["st_palekh","Палех"],["st_lubok","Лубок"],
@@ -335,7 +340,7 @@ body.web.detail .webbtn{display:block}
     if (push) { try { history.pushState({p:id}, "", "#"+id); } catch(e){} }
     if (inTG) {
       try { tg.BackButton.show(); } catch(e){}
-      try { tg.MainButton.setText("Создать подарок"); tg.MainButton.show(); } catch(e){}
+      try { tg.MainButton.setText("✨ Создать подарок"); tg.MainButton.show(); } catch(e){}
     }
     var h = document.getElementById("dTitle"); h.setAttribute("tabindex","-1"); h.focus({preventScroll:true});
   }
