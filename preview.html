@@ -1,0 +1,96 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Пример предпросмотра книги — Talemir</title><meta name="description" content="Как выглядит предпросмотр персональной книги-сказки Talemir: обложка и первые страницы до оплаты."><link rel="icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Nunito:wght@400;600;700;800&family=Marck+Script&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F7F4FB;--ink:#23173A;--muted:#62577A;--gold:#E2A23A;--gold-ink:#2A1A02;--cloth:#2E1F4F;--page:#FFFDF8}
+*{box-sizing:border-box}html,body{margin:0}body{background:radial-gradient(circle at 50% 30%,#3a2a62,#1f1536 70%);color:#fff;font-family:Nunito,system-ui,sans-serif;min-height:100vh}
+.top{max-width:1100px;margin:0 auto;padding:18px 16px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mock{background:#FFE8E8;color:#8A1C1C;border-radius:10px;padding:6px 12px;font-size:13px;font-weight:700}
+h1{font-family:Montserrat;font-size:clamp(20px,3vw,30px);margin:10px 0 2px;width:100%}.sub{color:#cfc6e6;margin:0;width:100%}
+.stage{max-width:1100px;margin:18px auto 0;padding:0 16px}
+.book{position:relative;width:min(100%,960px);aspect-ratio:2/1.08;margin:0 auto;perspective:2600px;transition:transform .7s ease}
+.book.closed{transform:translateX(-25%)}
+.leaf{position:absolute;top:0;left:50%;width:50%;height:100%;transform-origin:left center;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.45,.05,.25,1);cursor:pointer}
+.leaf.flipped{transform:rotateY(-180deg)}
+.leaf.peek:not(.flipped){transform:rotateY(-14deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--page);color:var(--ink);overflow:hidden}
+.face.front{border-radius:2px 12px 12px 2px;box-shadow:inset 18px 0 30px -18px rgba(0,0,0,.35)}
+.face.back{transform:rotateY(180deg);border-radius:12px 2px 2px 12px;box-shadow:inset -18px 0 30px -18px rgba(0,0,0,.35)}
+/* «бумага»: движущаяся тень на сгибе во время перелистывания */
+.face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.18),transparent 12%,transparent 88%,rgba(0,0,0,.06));opacity:.7}
+.leaf.turning .face::after{animation:shade .9s ease}
+@keyframes shade{0%{opacity:.7}50%{opacity:1;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(0,0,0,.08) 40%,transparent 70%)}100%{opacity:.7}}
+.cover{background:var(--cloth);color:#fff;display:flex;flex-direction:column}
+.cover img{width:100%;height:72%;object-fit:cover}
+.cover .t{padding:4% 7%;font-family:Montserrat;font-weight:800;font-size:clamp(14px,2.4vw,26px);line-height:1.15}
+.cover .t small{display:block;font-family:Nunito;font-weight:600;font-size:.55em;color:#EDB250;margin-top:4px}
+.pg{display:flex;flex-direction:column;height:100%}
+.pg img{width:100%;height:68%;object-fit:cover}
+.pg p{margin:0;padding:5% 7%;font-size:clamp(11px,1.6vw,17px);line-height:1.45}
+.pg .n{position:absolute;bottom:3%;width:100%;text-align:center;font-size:12px;color:var(--muted)}
+.lock{position:absolute;inset:auto 0 26% 0;text-align:center}
+.lock span{display:inline-block;background:rgba(46,31,79,.88);color:#fff;border-radius:999px;padding:6px 14px;font-size:clamp(11px,1.5vw,14px);font-weight:700}
+.bars{padding:5% 7%}.bars i{display:block;height:10px;border-radius:5px;background:#e9e2f2;margin:8px 0}
+.ded{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;font-family:'Marck Script',cursive;font-size:clamp(16px,2.8vw,30px);color:#7a1f28;padding:10%}
+.pay{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:8%;background:linear-gradient(160deg,#FFF8EA,#F3ECFA)}
+.pay h3{font-family:Montserrat;margin:0 0 8px;font-size:clamp(15px,2.4vw,24px)}
+.pay p{margin:0 0 14px;color:var(--muted);font-size:clamp(11px,1.5vw,15px)}
+.pay .btn{background:var(--gold);color:var(--gold-ink);font-weight:800;border-radius:14px;padding:12px 18px;font-size:clamp(12px,1.6vw,16px);box-shadow:0 4px 0 #8a5a12;border:0;cursor:pointer}
+.pay .ok{margin-top:10px;font-size:12px;color:var(--muted)}
+.ctl{display:flex;justify-content:center;align-items:center;gap:14px;margin:18px 0 6px}
+.ctl button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:10px 18px;font-weight:700;font-size:15px;cursor:pointer}
+.ctl button:disabled{opacity:.35;cursor:default}
+.hint{text-align:center;color:#cfc6e6;font-size:14px;margin:0 0 24px}
+.note{max-width:960px;margin:0 auto 30px;padding:14px 16px;background:rgba(255,255,255,.06);border-radius:14px;color:#ddd5ef;font-size:14px;line-height:1.5}
+@media (max-width:640px){
+ .book.single{aspect-ratio:1/1.32;width:min(100%,420px);perspective:1800px}
+ .book.single.closed{transform:none}
+ .book.single .leaf{left:0;width:100%}
+ .book.single .face{border-radius:4px 14px 14px 4px;box-shadow:inset 14px 0 24px -16px rgba(0,0,0,.35),0 10px 30px rgba(0,0,0,.35)}
+ .book.single .leaf.flipped{transform:rotateY(-110deg);opacity:0;transition:transform .8s cubic-bezier(.45,.05,.25,1),opacity .8s ease}
+ .book.single .pg p{font-size:15px}.book.single .cover .t{font-size:24px}
+ .book.single .pay h3{font-size:22px}.book.single .pay p{font-size:15px}.book.single .pay .btn{font-size:16px}
+ .book.single .lock span{font-size:14px}.book.single .ded{font-size:30px}
+}
+@media (prefers-reduced-motion:reduce){.leaf,.book{transition:none}.leaf.turning .face::after{animation:none}}
+</style></head><body>
+<div class="top"><a href="/" style="display:inline-block"><img src="img/logo.svg" alt="Talemir" height="40"></a>
+<h1>Так выглядит предпросмотр вашей книги</h1><p class="sub">Пример: книга Вероники (героиня вымышленная). Перед оплатой вы увидите обложку и первые страницы своей книги — остальные откроются после оплаты.</p></div>
+<div class="stage">
+ <div class="book closed" id="book"></div>
+ <div class="ctl"><button id="prev" disabled>← Назад</button><button id="next">Открыть книгу →</button></div>
+ <p class="hint" id="hint">Нажмите на страницу или используйте стрелки ← →.</p>
+</div>
+<p class="hint"><a href="/#p-book" style="color:#EDB250;font-weight:800">Создать книгу для своего ребёнка →</a></p>
+<script>
+const LEAVES=[
+ {front:`<div class="face front cover"><img src="img/preview/snow.jpg" alt=""><div class="t">Вероника и волшебная зима<small>Персональная сказка Talemir</small></div></div>`,
+  back:`<div class="face back"><div class="ded">Веронике —<br>с любовью от бабушки</div></div>`},
+ {front:`<div class="face front"><div class="pg"><img src="img/preview/sea.jpg" alt=""><p>Летом Вероника нашла на берегу ракушку, которая тихо звенела, как колокольчик. «Сохрани меня до зимы», — прошептала ракушка.</p><span class="n">1</span></div></div>`,
+  back:`<div class="face back"><div class="pg"><img src="img/preview/cat.jpg" alt=""><p>Кот Персик выслушал всю историю и мурлыкнул: «Когда выпадет первый снег, ракушка покажет дорогу. Я пойду с тобой».</p><span class="n">2</span></div></div>`},
+ {front:`<div class="face front"><div class="pg"><img src="img/preview/draw_blur.jpg" alt=""><div class="bars"><i style="width:92%"></i><i style="width:84%"></i><i style="width:60%"></i></div><span class="n">3</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`,
+  back:`<div class="face back"><div class="pg"><img src="img/preview/snow_blur.jpg" alt=""><div class="bars"><i style="width:88%"></i><i style="width:90%"></i><i style="width:52%"></i></div><span class="n">4</span></div><div class="lock"><span>🔒 Откроется после оплаты</span></div></div>`},
+ {front:`<div class="face front"><div class="pay"><h3>Что будет дальше с Вероникой?</h3><p>Вся книга — 28 страниц в одном стиле, с вашими фото и пожеланиями. PDF, можно напечатать в типографии.</p><a class="btn" href="/#p-book" style="text-decoration:none">Создать такую книгу — от 990 ₽</a><div class="ok">Оплата — после предпросмотра</div></div></div>`,
+  back:`<div class="face back"><div class="ded">Конец первой главы</div></div>`}
+];
+const book=document.getElementById('book'); let cur=0;
+const SINGLE=matchMedia('(max-width:640px)').matches; if(SINGLE)book.classList.add('single');
+const UNITS=SINGLE?LEAVES.flatMap((L,i)=>i<LEAVES.length-1?[L.front,L.back.replace('face back','face front')]:[L.front]):LEAVES.map(L=>L.front+L.back);
+UNITS.forEach((html,i)=>{const d=document.createElement('div');d.className='leaf';d.style.zIndex=UNITS.length-i;d.innerHTML=html;d.addEventListener('click',()=>{if(d.classList.contains('flipped'))go(-1);else go(1);});book.appendChild(d);});
+const leaves=[...book.children];
+const maxFlip=UNITS.length-1;   // последний лист (оплата) не перелистывается
+function z(){leaves.forEach((l,i)=>{l.style.zIndex=l.classList.contains('flipped')?i+1:UNITS.length-i;});}
+function go(d){
+  if(d>0&&cur<maxFlip){const l=leaves[cur];l.classList.add('turning');l.classList.add('flipped');setTimeout(()=>l.classList.remove('turning'),900);cur++;}
+  else if(d<0&&cur>0){cur--;const l=leaves[cur];l.classList.add('turning');l.classList.remove('flipped');setTimeout(()=>l.classList.remove('turning'),900);}
+  book.classList.toggle('closed',cur===0&&!SINGLE);z();ui();
+}
+function ui(){document.getElementById('prev').disabled=cur===0;const n=document.getElementById('next');n.disabled=cur>=maxFlip;n.textContent=cur===0?'Открыть книгу →':'Листать →';}
+document.getElementById('next').onclick=()=>go(1);document.getElementById('prev').onclick=()=>go(-1);
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+let sx=null;book.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});book.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)go(dx<0?1:-1);sx=null;});
+book.addEventListener('mousemove',e=>{const r=book.getBoundingClientRect();const l=leaves[cur];if(!l||cur>=maxFlip)return;l.classList.toggle('peek',e.clientX>r.right-r.width*0.12);});
+book.addEventListener('mouseleave',()=>leaves.forEach(l=>l.classList.remove('peek')));
+if(SINGLE)document.getElementById('hint').textContent='Листайте пальцем влево или нажмите на страницу.';
+z();ui();
+</script></body></html>
