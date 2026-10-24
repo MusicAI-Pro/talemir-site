@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Talemir — подарки</title>
+<meta name="description" content="Персональные подарки для ребёнка: сказка, песня, клип, живые фото и поздравление Деда Мороза.">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#F7F4FB; --text:#23173A; --muted:#62577A; --accent:#C3404C; --gold:#E2A23A;
+  --card:#FFFFFF; --line:#E2DAEE; --on-accent:#FFFFFF;
+  --shadow:0 6px 20px rgba(35,23,58,.08), 0 1px 3px rgba(35,23,58,.06);
+  --ph1:#EFE6F7; --ph2:#F9E9DF;
+  --r:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14101D; --text:#F1ECF8; --muted:#B4A9C8; --accent:#E5707A; --gold:#EDB250;
+    --card:#1D1729; --line:#2E2540; --on-accent:#1A0F14;
+    --shadow:0 6px 20px rgba(0,0,0,.35); --ph1:#2A2140; --ph2:#33222A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14101D; --text:#F1ECF8; --muted:#B4A9C8; --accent:#E5707A; --gold:#EDB250;
+  --card:#1D1729; --line:#2E2540; --on-accent:#1A0F14;
+  --shadow:0 6px 20px rgba(0,0,0,.35); --ph1:#2A2140; --ph2:#33222A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px;line-height:1.45;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;min-height:100vh;
+}
+img,video{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+.wrap{max-width:480px;margin:0 auto;padding:16px 16px 32px}
+.screen[hidden]{display:none}
+body.web .wrap{padding-bottom:110px}
+
+/* Header */
+.head{padding:8px 4px 18px}
+.logo{font-size:30px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--gold);display:inline-block;box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 25%,transparent)}
+.slogan{color:var(--muted);font-size:18px;margin-top:2px}
+
+/* Media frame with placeholder */
+.media{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--ph1),var(--ph2));}
+.media .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;opacity:.55}
+.media img,.media video{position:relative;width:100%;height:100%;object-fit:cover}
+.media img.broken,.media video.broken{opacity:0}
+
+/* Seasonal banner */
+.banner{display:block;width:100%;background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:22px;border:1px solid var(--line)}
+.banner .media{aspect-ratio:16/10}
+.banner .badge{position:absolute;left:12px;top:12px;background:var(--gold);color:#23173A;font-weight:700;font-size:14px;padding:5px 11px;border-radius:999px}
+.banner .play{position:absolute;right:12px;bottom:12px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.banner .play svg{margin-left:3px}
+.banner .body{padding:14px 16px 16px}
+.banner h2{font-size:21px;line-height:1.25;font-weight:750}
+.banner .meta{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.price{font-weight:800;color:var(--accent);font-size:20px;white-space:nowrap}
+.until{color:var(--muted);font-size:15px}
+
+.sec-title{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 4px 10px}
+
+/* Product cards */
+.list{display:flex;flex-direction:column;gap:12px}
+.pcard{display:flex;gap:14px;align-items:center;width:100%;background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:12px;border:1px solid var(--line);transition:transform .12s}
+.pcard:active,.banner:active{transform:scale(.985)}
+.pcard .media{flex:0 0 96px;height:96px;border-radius:12px}
+.pcard .media .ph{font-size:32px}
+.pcard .txt{flex:1;min-width:0}
+.pcard h3{font-size:18px;line-height:1.25;font-weight:700}
+.pcard p{color:var(--muted);font-size:15px;line-height:1.35;margin-top:3px}
+.pcard .price{font-size:17px;margin-top:6px;display:block}
+.chev{flex:0 0 auto;color:var(--muted);opacity:.7}
+
+.foot{color:var(--muted);font-size:14px;text-align:center;margin-top:22px}
+
+/* Detail */
+.back-web{display:none;align-items:center;gap:6px;color:var(--accent);font-weight:600;padding:6px 2px 12px;font-size:17px}
+body.web .back-web{display:inline-flex}
+.hero{border-radius:var(--r);box-shadow:var(--shadow);aspect-ratio:4/3}
+.hero.natural{aspect-ratio:auto;min-height:200px}
+.hero.natural img{height:auto}
+.hero .ph{font-size:64px}
+.audio-box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-top:12px;box-shadow:var(--shadow)}
+.audio-box audio{width:100%}
+.audio-box .lbl{font-size:15px;color:var(--muted);margin-bottom:8px}
+.d-title{font-size:26px;line-height:1.2;font-weight:800;margin:18px 2px 4px;letter-spacing:-.3px}
+.d-price{margin:0 2px 16px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.d-price .price{font-size:22px}
+.facts{background:var(--card);border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.fact{padding:14px 16px;display:flex;gap:12px}
+.fact+.fact{border-top:1px solid var(--line)}
+.fact .ic{flex:0 0 32px;height:32px;border-radius:10px;background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold);display:flex;align-items:center;justify-content:center}
+.fact b{display:block;font-size:15px;color:var(--muted);font-weight:600}
+.fact span{display:block;font-size:17px}
+.note{margin-top:12px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--text);font-size:16px;display:flex;gap:10px;align-items:flex-start}
+.note svg{flex:0 0 auto;margin-top:2px;color:var(--accent)}
+.styles{margin-top:22px}
+.styles .sec-title{margin-bottom:8px}
+.strip{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:16px;padding:2px 16px 10px;margin:0 -16px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.st{flex:0 0 132px;scroll-snap-align:start}
+.st .media{height:168px;border-radius:12px;box-shadow:var(--shadow)}
+.st .media .ph{font-size:28px}
+.st figcaption{font-size:14px;line-height:1.3;margin-top:6px;color:var(--text);text-align:center}
+
+/* Fallback main button for browsers */
+.webbtn{display:none;position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:10}
+.webbtn button{display:block;width:100%;max-width:448px;margin:0 auto;height:56px;border-radius:14px;background:var(--accent);color:var(--on-accent);font-size:18px;font-weight:700;text-align:center;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent)}
+body.web.detail .webbtn{display:block}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ЭКРАН 1: ВИТРИНА -->
+  <main id="home" class="screen" aria-label="Витрина подарков">
+    <header class="head">
+      <div class="logo"><i aria-hidden="true"></i>Talemir</div>
+      <p class="slogan">Ваш ребёнок — главный герой ✨</p>
+    </header>
+
+    <button class="banner" data-product="ny" aria-label="Поздравление Деда Мороза по имени, 290 рублей, до 25 декабря. Открыть подробности">
+      <div class="media">
+        <div class="ph" aria-hidden="true">🎅</div>
+        <img src="https://talemir.com/img/ex/ex_ny_v6.jpg" alt="Кадр из видео: Дед Мороз поздравляет ребёнка" loading="eager">
+        <span class="badge">До 25 декабря</span>
+        <span class="play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="#C3404C"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+      </div>
+      <div class="body">
+        <h2>🎅 Поздравление Деда Мороза по имени</h2>
+        <div class="meta"><span class="price">290 ₽</span><span class="until">видео для вашего ребёнка</span></div>
+      </div>
+    </button>
+
+    <h2 class="sec-title">Подарки на любой день</h2>
+    <div class="list" id="list"></div>
+
+    <p class="foot">Сделано с любовью · Talemir</p>
+  </main>
+
+  <!-- ЭКРАН 2: КАРТОЧКА -->
+  <section id="detail" class="screen" hidden aria-live="polite">
+    <button class="back-web" id="backWeb" aria-label="Назад к витрине">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Все подарки
+    </button>
+    <div id="dMedia"></div>
+    <h1 class="d-title" id="dTitle"></h1>
+    <div class="d-price" id="dPrice"></div>
+    <div class="facts" id="dFacts"></div>
+    <div id="dExtra"></div>
+  </section>
+</div>
+
+<div class="webbtn"><button id="webMain" type="button">Создать подарок</button></div>
+
+<script>
+(function(){
+  "use strict";
+  var IMG = "https://talemir.com/img/";
+  var EX = IMG + "ex/";
+
+  var PRODUCTS = {
+    ny:   { emoji:"🎅", title:"Поздравление Деда Мороза", price:"290 ₽", priceNote:"до 25 декабря",
+            short:"Видео-поздравление по имени",
+            get:"Дед Мороз поздравит ребёнка по имени, полистает альбом с его фото и подарит песенку от Снегурочки",
+            need:"Имя ребёнка и 0–4 фото",
+            media:{type:"video", src:EX+"ex_ny_v6.mp4", poster:EX+"ex_ny_v6.jpg", alt:"Пример поздравления Деда Мороза"} },
+    book: { emoji:"📖", title:"Книга-сказка по фото", price:"от 990 ₽",
+            short:"Сказка, где ваш ребёнок — герой",
+            get:"Ваш ребёнок — герой настоящей сказки. 28 страниц, PDF — можно напечатать",
+            need:"2–8 фото ребёнка, имя и возраст",
+            media:{type:"image", src:EX+"ex_book.jpg", alt:"Пример разворота книги-сказки"},
+            preview:"Перед оплатой покажем обложку и 2\u00A0страницы" },
+    song: { emoji:"🎵", title:"Песня с именем", price:"490 ₽",
+            short:"Песня, где поют имя ребёнка",
+            get:"Песня, где поют имя ребёнка. MP3",
+            need:"Имя и пара фактов о ребёнке",
+            media:{type:"audio", src:EX+"ex_song.mp3", poster:EX+"ex_song.jpg", alt:"Обложка песни с именем"} },
+    clip: { emoji:"🎬", title:"Клип из фото", price:"от 790 ₽",
+            short:"Ваши фото под вашу песню",
+            get:"Ваши фото под песню, написанную для вас. MP4",
+            need:"5–15 фото",
+            media:{type:"video", src:EX+"ex_clip.mp4", poster:EX+"ex_clip.jpg", alt:"Пример клипа из фото"} },
+    live: { emoji:"✨", title:"Живые фото", price:"от 1 990 ₽",
+            short:"Фото оживают под вашу песню",
+            get:"Фото оживают: улыбка, взгляд, движение — под вашу песню. MP4",
+            need:"1–6 фото",
+            media:{type:"video", src:EX+"ex_live.mp4", poster:EX+"ex_live.jpg", alt:"Пример живого фото"} }
+  };
+  var ORDER = ["book","song","clip","live"];
+  var STYLES = [
+    ["st_3d","3D-анимация"],["st_water","Акварель"],["st_pencil","Цветные карандаши"],["st_paper","Аппликация"],
+    ["st_clay","Пластилин"],["st_khokh","Хохлома"],["st_gzhel","Гжель"],["st_palekh","Палех"],["st_lubok","Лубок"],
+    ["st_film","Ретро-диафильм"],["st_minia","Миниатюра"],["st_kaz","Казахский орнамент"],["st_arab","Арабская миниатюра"]
+  ];
+  var READY = "обычно 2 часа";
+
+  /* ---------- Telegram ---------- */
+  var tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+  var inTG = !!(tg && tg.initData && tg.initData.length);
+  function ver(v){ try { return tg && tg.isVersionAtLeast ? tg.isVersionAtLeast(v) : false; } catch(e){ return false; } }
+
+  function applyTheme(){
+    if (!inTG) return;
+    var p = tg.themeParams || {};
+    var root = document.documentElement;
+    root.setAttribute("data-theme", tg.colorScheme === "dark" ? "dark" : "light");
+    // Фирменная палитра — основа; от Telegram берём только фон, если он есть, чтобы не было «шва».
+    if (p.bg_color) { root.style.setProperty("--bg", tg.colorScheme === "dark" ? "#14101D" : "#F7F4FB"); }
+    try { if (tg.setHeaderColor && ver("6.1")) tg.setHeaderColor(getComputedStyle(root).getPropertyValue("--bg").trim()); } catch(e){}
+    try { if (tg.setBackgroundColor && ver("6.1")) tg.setBackgroundColor(getComputedStyle(root).getPropertyValue("--bg").trim()); } catch(e){}
+    try { if (tg.MainButton) tg.MainButton.setParams({ color: getComputedStyle(root).getPropertyValue("--accent").trim(), text_color: tg.colorScheme === "dark" ? "#1A0F14" : "#FFFFFF" }); } catch(e){}
+  }
+
+  function haptic(kind){
+    try {
+      if (!inTG || !tg.HapticFeedback || !ver("6.1")) return;
+      if (kind === "select") tg.HapticFeedback.selectionChanged();
+      else if (kind === "success") tg.HapticFeedback.notificationOccurred("success");
+      else tg.HapticFeedback.impactOccurred(kind || "light");
+    } catch(e){}
+  }
+
+  /* ---------- helpers ---------- */
+  function el(tag, attrs, html){
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) { if (attrs[k] !== undefined && attrs[k] !== null) n.setAttribute(k, attrs[k]); }
+    if (html !== undefined) n.innerHTML = html;
+    return n;
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function markBroken(node){ node.addEventListener("error", function(){ node.classList.add("broken"); }, {once:true}); }
+  function mediaBox(cls, emoji){ var m = el("div",{class:"media "+(cls||"")}); m.appendChild(el("div",{class:"ph","aria-hidden":"true"}, emoji)); return m; }
+  function img(src, alt, lazy){ var i = el("img",{src:src, alt:alt, loading: lazy===false ? "eager" : "lazy", decoding:"async"}); markBroken(i); return i; }
+
+  document.querySelectorAll(".banner img").forEach(markBroken);
+
+  /* ---------- Витрина ---------- */
+  var list = document.getElementById("list");
+  ORDER.forEach(function(id){
+    var p = PRODUCTS[id];
+    var b = el("button",{class:"pcard", "data-product":id, "aria-label": p.title+", "+p.price+". "+p.short});
+    var m = mediaBox("", p.emoji);
+    m.appendChild(img(p.media.poster || p.media.src, p.media.alt));
+    b.appendChild(m);
+    b.appendChild(el("div",{class:"txt"},
+      "<h3>"+p.emoji+" "+esc(p.title)+"</h3><p>"+esc(p.short)+"</p><span class=\"price\">"+esc(p.price)+"</span>"));
+    b.appendChild(el("span",{class:"chev","aria-hidden":"true"},'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'));
+    list.appendChild(b);
+  });
+
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-product]");
+    if (t) { haptic("light"); openProduct(t.getAttribute("data-product"), true); }
+  });
+
+  /* ---------- Карточка ---------- */
+  var home = document.getElementById("home"), detail = document.getElementById("detail");
+  var current = null;
+
+  var ICONS = {
+    get:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8S10 3 7.5 4 9 8 12 8zm0 0s2-5 4.5-4S15 8 12 8z"/></svg>',
+    need:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>',
+    time:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    eye:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+  };
+
+  function renderDetail(id){
+    var p = PRODUCTS[id];
+    var mBox = document.getElementById("dMedia"); mBox.innerHTML = "";
+    var hero = mediaBox("hero" + (p.media.type==="image" ? " natural" : ""), p.emoji);
+    if (p.media.type === "video") {
+      var v = el("video",{poster:p.media.poster, preload:"metadata", muted:"", playsinline:"", "webkit-playsinline":"", loop:"", controls:"", "aria-label":p.media.alt});
+      v.muted = true; v.playsInline = true;
+      v.appendChild(el("source",{src:p.media.src, type:"video/mp4"}));
+      markBroken(v);
+      v.addEventListener("loadeddata", function(){ v.classList.remove("broken"); });
+      hero.appendChild(v);
+      mBox.appendChild(hero);
+      var pr = v.play(); if (pr && pr.catch) pr.catch(function(){});
+    } else if (p.media.type === "audio") {
+      hero.appendChild(img(p.media.poster, p.media.alt, false));
+      mBox.appendChild(hero);
+      var box = el("div",{class:"audio-box"});
+      box.appendChild(el("div",{class:"lbl"},"Послушайте пример"));
+      var a = el("audio",{controls:"", preload:"metadata", src:p.media.src, "aria-label":"Пример песни с именем"});
+      box.appendChild(a);
+      mBox.appendChild(box);
+    } else {
+      hero.appendChild(img(p.media.src, p.media.alt, false));
+      mBox.appendChild(hero);
+    }
+
+    document.getElementById("dTitle").textContent = p.emoji + " " + p.title;
+    document.getElementById("dPrice").innerHTML = '<span class="price">'+esc(p.price)+'</span>' + (p.priceNote ? '<span class="until">'+esc(p.priceNote)+'</span>' : "");
+    document.getElementById("dFacts").innerHTML =
+      fact(ICONS.get,"Что получите",p.get) + fact(ICONS.need,"Что понадобится",p.need) + fact(ICONS.time,"Когда будет готово",READY);
+
+    var extra = document.getElementById("dExtra"); extra.innerHTML = "";
+    if (p.preview) extra.appendChild(el("div",{class:"note"}, ICONS.eye + "<span>"+esc(p.preview)+"</span>"));
+    if (id === "book") {
+      var sec = el("div",{class:"styles"});
+      sec.appendChild(el("h2",{class:"sec-title"},"13 стилей на выбор"));
+      var strip = el("div",{class:"strip", role:"list", "aria-label":"Стили иллюстраций, листайте вбок", tabindex:"0"});
+      STYLES.forEach(function(s){
+        var f = el("figure",{class:"st", role:"listitem"});
+        var m = mediaBox("", "🎨"); m.appendChild(img(IMG+s[0]+".jpg", "Стиль «"+s[1]+"»"));
+        f.appendChild(m); f.appendChild(el("figcaption",null,esc(s[1])));
+        strip.appendChild(f);
+      });
+      strip.addEventListener("scroll", throttle(function(){ haptic("select"); }, 350), {passive:true});
+      sec.appendChild(strip); extra.appendChild(sec);
+    }
+  }
+  function fact(ic, label, text){ return '<div class="fact"><div class="ic">'+ic+'</div><div><b>'+esc(label)+'</b><span>'+esc(text)+'</span></div></div>'; }
+  function throttle(fn, ms){ var t=0; return function(){ var n=Date.now(); if (n-t>ms){ t=n; fn(); } }; }
+
+  function stopMedia(){ detail.querySelectorAll("video,audio").forEach(function(m){ try{ m.pause(); }catch(e){} }); }
+
+  function openProduct(id, push){
+    if (!PRODUCTS[id]) return;
+    current = id;
+    renderDetail(id);
+    home.hidden = true; detail.hidden = false;
+    document.body.classList.add("detail");
+    window.scrollTo(0,0);
+    if (push) { try { history.pushState({p:id}, "", "#"+id); } catch(e){} }
+    if (inTG) {
+      try { tg.BackButton.show(); } catch(e){}
+      try { tg.MainButton.setText("Создать подарок"); tg.MainButton.show(); } catch(e){}
+    }
+    var h = document.getElementById("dTitle"); h.setAttribute("tabindex","-1"); h.focus({preventScroll:true});
+  }
+  function showHome(){
+    stopMedia();
+    current = null;
+    detail.hidden = true; home.hidden = false;
+    document.body.classList.remove("detail");
+    if (inTG) { try { tg.BackButton.hide(); tg.MainButton.hide(); } catch(e){} }
+  }
+  function goBack(){
+    haptic("light");
+    if (history.state && history.state.p) { try { history.back(); return; } catch(e){} }
+    try { history.replaceState(null, "", location.pathname + location.search); } catch(e){}
+    showHome();
+  }
+  window.addEventListener("popstate", function(){
+    var id = location.hash.slice(1);
+    if (PRODUCTS[id]) openProduct(id, false); else showHome();
+  });
+  document.getElementById("backWeb").addEventListener("click", goBack);
+
+  function create(){
+    if (!current) return;
+    var payload = JSON.stringify({action:"create", product:current});
+    var link = "https://t.me/Talemir_bot?start=p_" + current;   // меню-кнопка не поддерживает sendData — открываем бота со ссылкой на продукт
+    if (inTG) {
+      haptic("success");
+      try { tg.openTelegramLink(link); } catch(e){ location.href = link; }
+      try { setTimeout(function(){ tg.close(); }, 300); } catch(e){}
+    } else {
+      location.href = link;
+    }
+  }
+  document.getElementById("webMain").addEventListener("click", create);
+
+  /* ---------- init ---------- */
+  if (inTG) {
+    try { tg.ready(); } catch(e){}
+    try { tg.expand(); } catch(e){}
+    applyTheme();
+    try { tg.onEvent("themeChanged", applyTheme); } catch(e){}
+    try { tg.MainButton.onClick(create); } catch(e){}
+    try { tg.BackButton.onClick(goBack); } catch(e){}
+    // Если открыли ссылкой с параметром startapp=book и т.п.
+    var sp = tg.initDataUnsafe && tg.initDataUnsafe.start_param;
+    if (sp && PRODUCTS[sp]) openProduct(sp, true);
+  } else {
+    document.body.classList.add("web");
+    var h0 = location.hash.slice(1);
+    if (PRODUCTS[h0]) openProduct(h0, false);
+  }
+})();
+</script>
+</body>
+</html>
