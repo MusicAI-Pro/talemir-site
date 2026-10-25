@@ -841,7 +841,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   fd.append('family', v('fFamily')); fd.append('dedication', v('fDedic')); fd.append('title', v('fTitle'));
   fd.append('occasion', v('fOcc')); fd.append('genre', v('fGenre')); fd.append('voice', v('fVoice')); fd.append('mood', v('fMood'));
   fd.append('length', v('fLen')); fd.append('pet', v('fPet')); fd.append('from_whom', v('fFrom')); fd.append('wish', v('fWish')); fd.append('stress', typeof stressAt !== 'undefined' ? String(stressAt) : ''); fd.append('stress_auto', stressAuto ? '1' : '0'); { const gf = document.querySelector('#fGift input:checked'); fd.append('gift', gf ? gf.value : 'g1'); }
-  fd.append('contact', contact); fd.append('consent', document.getElementById('fConsent').checked ? 'true' : 'false'); fd.append('consent_teen', document.getElementById('teenRow').hidden ? 'n/a' : (document.getElementById('fTeen').checked ? 'true' : 'false')); fd.append('consent_ver', '1.2/25.10.2026'); fd.append('site_lang', lang);
+  fd.append('contact', contact); fd.append('consent', document.getElementById('fConsent').checked ? 'true' : 'false'); fd.append('consent_teen', document.getElementById('teenRow').hidden ? 'n/a' : (document.getElementById('fTeen').checked ? 'true' : 'false')); fd.append('consent_ver', '1.3/25.10.2026'); fd.append('site_lang', lang);
   if (needPh || curProd === 'ny') [...fPhotos.files].slice(0, curProd === 'ny' ? 4 : curProd === 'sing' ? 1 : 8).forEach(f => fd.append('photos', f, f.name));
   const btn = e.submitter; if (btn) btn.disabled = true;
   showDone('f_done_h', 'f_sending');
