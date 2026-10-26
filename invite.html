@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="talemir-api" content="https://ru.api.talemir.com">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2E1F4F">
+<title>Приглашение на праздник — Talemir</title>
+<meta name="description" content="Персональное приглашение на день рождения: ваш ребёнок — герой иллюстрации. 3 варианта, PNG и PDF, QR-код на карту.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Montserrat:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+:root{
+  --paper:#F7F4FB; --card:#FFFFFF; --ink:#23173A; --muted:#62577A; --line:#E2DAEE;
+  --cloth:#2E1F4F; --cloth-ink:#F5EFFF; --gold:#E2A23A; --gold-ink:#3A2606; --pome:#C3404C;
+  --field:#FBF9FD; --shadow:0 18px 50px rgba(35,23,58,.16);
+  --f-brand:"Marck Script",cursive; --f-display:"Montserrat","Nunito",system-ui,sans-serif;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif; --r:18px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#14101D; --card:#1D1729; --ink:#F1ECF8; --muted:#B0A6C4; --line:#33294A;
+  --cloth:#231839; --cloth-ink:#F5EFFF; --gold:#EDB250; --gold-ink:#2A1A02; --pome:#E5707A;
+  --field:#171222; --shadow:0 18px 50px rgba(0,0,0,.45); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#14101D; --card:#1D1729; --ink:#F1ECF8; --muted:#B0A6C4; --line:#33294A;
+  --cloth:#231839; --cloth-ink:#F5EFFF; --gold:#EDB250; --gold-ink:#2A1A02; --pome:#E5707A;
+  --field:#171222; --shadow:0 18px 50px rgba(0,0,0,.45); color-scheme:dark }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;overflow-x:hidden}
+img{max-width:100%}[hidden]{display:none!important}
+a{color:inherit}button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+.wrap{max-width:1160px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* header — как на главной */
+header{position:sticky;top:0;z-index:9;background:var(--cloth);color:var(--cloth-ink)}
+.bar{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:inline-flex;align-items:center;text-decoration:none;color:var(--gold);font-family:var(--f-brand);font-size:2rem;line-height:1}
+.brand img{height:56px;width:auto;display:block;margin-block:-10px}
+.bar .back{margin-inline-start:auto;font-weight:700;font-size:.92rem;text-decoration:none;opacity:.85;white-space:nowrap}
+.bar .back:hover{opacity:1}
+/* intro */
+.intro{background:var(--cloth);color:var(--cloth-ink);padding-block:18px 34px}
+.kicker{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem;color:var(--gold)}
+.intro h1{font-size:clamp(1.55rem,4.6vw,2.6rem);margin-top:8px;max-width:22ch}
+.intro p{margin:12px 0 0;max-width:60ch;opacity:.9}
+.ticks{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0;list-style:none}
+.ticks li{font-size:.86rem;font-weight:700;border:1px solid color-mix(in srgb,var(--cloth-ink) 30%,transparent);border-radius:999px;padding:.3em .8em}
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;margin-block:22px 48px}
+.pv{min-width:0}
+@media (min-width:900px){
+  .grid{grid-template-columns:minmax(0,1fr) 380px;align-items:start;gap:36px;margin-top:-18px}
+  .pv{order:2;position:sticky;top:86px}
+}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 16px;box-shadow:0 2px 0 rgba(35,23,58,.03)}
+@media (min-width:600px){.panel{padding:24px 24px}}
+.pv .panel{padding:14px}
+form{display:flex;flex-direction:column;gap:18px;min-width:0}
+fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:14px}
+legend{font-family:var(--f-display);font-weight:800;font-size:1.12rem;padding:0;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+legend .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--pome);color:#fff;font-size:.85rem;flex:none}
+.row{display:flex;flex-direction:column;gap:6px;min-width:0}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.row3{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:520px){.row3{grid-template-columns:repeat(2,minmax(0,1fr))}.row3 .wide{grid-column:1 / -1}}
+label,.lbl{font-weight:700;font-size:.95rem}
+.opt{font-weight:600;color:var(--muted);font-size:.85rem}
+.hint{color:var(--muted);font-size:.85rem;line-height:1.4}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=date],input[type=time],input[type=number],select,textarea{
+  width:100%;min-width:0;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--field);font-size:16px;line-height:1.3;-webkit-appearance:none;appearance:none}
+input[type=date],input[type=time]{min-height:48px}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 12px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:34px}
+textarea{resize:vertical;min-height:86px}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none}
+.bad input,.bad select,.bad textarea,input.bad{border-color:var(--pome)!important}
+.err{color:var(--pome);font-size:.85rem;font-weight:700}
+/* тариф */
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:420px){.plans{grid-template-columns:minmax(0,1fr)}}
+.plan{position:relative;display:flex;flex-direction:column;gap:4px;border:2px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;background:var(--field)}
+.plan input{position:absolute;opacity:0;pointer-events:none}
+.plan b{font-family:var(--f-display);font-size:1.02rem}
+.plan .pr{font-family:var(--f-display);font-weight:800;font-size:1.45rem}
+.plan small{color:var(--muted);font-size:.84rem;line-height:1.35}
+.plan:has(input:checked){border-color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--card))}
+.plan:has(input:focus-visible){outline:3px solid var(--gold);outline-offset:2px}
+.plan .badge{position:absolute;top:-10px;right:12px;font-size:.72rem;font-weight:800;background:var(--gold);color:var(--gold-ink);border-radius:999px;padding:.15em .65em}
+/* чипсы тем */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--field);border-radius:999px;padding:.4em .85em;font-size:.88rem;font-weight:700;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,var(--card))}
+/* стили */
+.styles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.st{position:relative;cursor:pointer;border-radius:14px;overflow:hidden;border:2px solid var(--line);background:var(--field);display:flex;flex-direction:column}
+.st input{position:absolute;opacity:0;pointer-events:none}
+.st img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.st span{font-size:.78rem;font-weight:700;padding:6px 6px 8px;line-height:1.2;text-align:center}
+.st:has(input:checked){border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.st:has(input:focus-visible){outline:3px solid var(--gold);outline-offset:2px}
+/* палитры */
+.pals{display:flex;flex-wrap:wrap;gap:10px}
+.pal{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.78rem;font-weight:700}
+.pal input{position:absolute;opacity:0;pointer-events:none}
+.pal i{display:block;width:46px;height:46px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 2px var(--line)}
+.pal:has(input:checked) i{box-shadow:0 0 0 3px var(--gold)}
+.pal:has(input:focus-visible) i{outline:3px solid var(--gold);outline-offset:3px}
+/* фото */
+.photo{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.photo .pick{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed var(--muted);border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700;font-size:.92rem}
+.photo input{position:absolute;width:1px;height:1px;opacity:0}
+.photo .th{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.linkbtn{background:none;border:0;padding:0;color:var(--pome);font-weight:700;cursor:pointer;text-decoration:underline;font-size:.9rem}
+/* итог */
+.sum{border-top:1px dashed var(--line);padding-top:16px;display:flex;flex-direction:column;gap:12px}
+.total{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.total .t{font-weight:700}
+.total .amount{font-family:var(--f-display);font-weight:800;font-size:2rem;font-variant-numeric:tabular-nums}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;line-height:1.45;font-weight:400;cursor:pointer}
+.consent input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--pome)}
+.consent a{color:var(--pome)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;border:0;cursor:pointer;border-radius:999px;padding:1em 1.6em;font-weight:800;text-decoration:none;width:100%;font-size:1.05rem}
+.btn-gold{background:var(--gold);color:var(--gold-ink);box-shadow:0 6px 0 color-mix(in srgb,var(--gold) 55%,#000)}
+.btn-gold:disabled{opacity:.6;cursor:progress}
+.fine{color:var(--muted);font-size:.82rem;line-height:1.45}
+.fine a{color:inherit}
+#fErr{background:color-mix(in srgb,var(--pome) 12%,var(--card));border:1px solid var(--pome);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:.92rem}
+/* предпросмотр */
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tabs button{flex:1 1 0;min-width:0;border:1.5px solid var(--line);background:var(--field);border-radius:999px;padding:.4em .5em;font-size:.8rem;font-weight:800;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabs button[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,var(--card))}
+.cvbox{position:relative;width:100%;max-width:360px;margin-inline:auto;aspect-ratio:9/16;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:#2A1650}
+@media (max-width:899px){.cvbox{max-width:300px}}
+.pvnote{margin:10px 2px 0;color:var(--muted);font-size:.82rem;line-height:1.4;text-align:center}
+/* холст 1080×1920 — та же вёрстка, что app/invite.py */
+.cv{position:absolute;top:0;left:0;width:1080px;height:1920px;transform-origin:0 0;font-family:"Montserrat",sans-serif;overflow:hidden;
+  --bg:#2A1650;--ac:#8C63D6;--fr:#FFD66B;--tx:#FFFFFF;background:var(--bg);color:var(--tx);line-height:normal}
+.cv *{box-sizing:border-box;margin:0;padding:0}
+.cv .bg{position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 0%,var(--ac) 0%,var(--bg) 78%)}
+.cv .frame{position:absolute;inset:34px;border:3px solid var(--fr);border-radius:46px}
+.cv .top{position:absolute;top:100px;left:60px;right:60px;text-align:center}
+.cv .kick{font-weight:600;letter-spacing:.32em;font-size:30px;color:var(--fr);text-transform:uppercase}
+.cv .name{font-family:"Marck Script",cursive;font-size:168px;line-height:1.05;margin-top:18px;text-shadow:0 6px 28px rgba(0,0,0,.35);overflow-wrap:anywhere}
+.cv .sub{font-weight:800;font-size:48px;margin-top:6px}
+.cv .sub b{color:var(--fr);font-size:96px;vertical-align:-8px;margin:0 10px}
+.cv .pic{position:absolute;top:520px;left:50%;transform:translateX(-50%);width:640px;height:640px;border-radius:50%;overflow:hidden;border:10px solid var(--fr);box-shadow:0 30px 70px rgba(0,0,0,.45);background:var(--ac)}
+.cv .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.cv .info{position:absolute;top:1220px;left:80px;right:80px;text-align:center}
+.cv .lead{font-size:34px;font-weight:500;line-height:1.35;overflow-wrap:anywhere}
+.cv .when{display:flex;justify-content:center;gap:22px;margin-top:26px}
+.cv .pill{background:rgba(255,255,255,.12);border:2px solid var(--fr);border-radius:26px;padding:14px 32px}
+.cv .pill b{display:block;font-weight:800;font-size:50px;color:var(--fr)}
+.cv .pill span{font-size:24px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.cv .where{margin-top:24px;display:flex;align-items:center;justify-content:center;gap:24px;text-align:left;background:rgba(0,0,0,.2);border-radius:28px;padding:20px 26px}
+.cv .where svg{width:140px;height:140px;border-radius:12px;background:#fff;padding:8px;flex:none}
+.cv .where .p{font-size:28px;line-height:1.35;overflow-wrap:anywhere}
+.cv .where .p b{font-weight:800;font-size:34px;display:block}
+.cv .wait{position:absolute;bottom:64px;left:0;right:0;text-align:center;font-family:"Marck Script",cursive;font-size:76px;color:var(--fr)}
+/* footer — как на главной */
+footer{padding-block:28px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;align-items:center}
+footer .brand{font-size:1.4rem}
+.ftlinks{display:flex;flex-wrap:wrap;gap:6px 18px}.ftlinks a{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:3px}
+.done{text-align:center;padding:30px 10px}.done h2{font-size:1.4rem;margin-bottom:8px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="Talemir — на главную"><img src="img/logo.svg" alt="Talemir" width="133" height="45"></a>
+    <a class="back" href="/#products">← Все подарки</a>
+  </div>
+</header>
+
+<section class="intro">
+  <div class="wrap">
+    <div class="kicker">Новое · конструктор приглашений</div>
+    <h1>Приглашение на день рождения, где ваш ребёнок — герой</h1>
+    <p>Заполните поля — справа (на телефоне сверху) сразу видно, как будет выглядеть приглашение. Иллюстрацию нарисуем в выбранном стиле по фото ребёнка или без него.</p>
+    <ul class="ticks"><li>3 варианта на выбор</li><li>PNG для мессенджеров</li><li>PDF для печати</li><li>QR-код на карту</li><li>Обычно готово за 30 минут – 2 часа</li></ul>
+  </div>
+</section>
+
+<main class="wrap grid" id="top">
+  <aside class="pv" aria-label="Как будет выглядеть">
+    <div class="panel">
+      <div class="tabs" id="pvTabs" hidden>
+        <button type="button" data-k="invite" aria-pressed="true">Приглашение</button>
+        <button type="button" data-k="thanks" aria-pressed="false">Спасибо</button>
+        <button type="button" data-k="sign" aria-pressed="false">Табличка</button>
+      </div>
+      <div class="cvbox" id="cvbox"><div class="cv" id="cv" aria-hidden="true"></div></div>
+      <p class="pvnote">Это макет вёрстки. Картинку в круге нарисует художник в выбранном стиле — пришлём 3 варианта, выберете любимый.</p>
+    </div>
+  </aside>
+
+  <div class="panel" id="formWrap">
+  <form id="form" novalidate>
+    <fieldset>
+      <legend><span class="n">1</span>Что заказать</legend>
+      <div class="plans">
+        <label class="plan"><input type="radio" name="plan" value="inv" checked><b>Приглашение</b><span class="pr">290 ₽</span><small>Одно приглашение в 3 вариантах оформления. PNG + PDF.</small></label>
+        <label class="plan"><span class="badge">выгоднее</span><input type="radio" name="plan" value="invkit"><b>Набор праздника</b><span class="pr">590 ₽</span><small>Приглашение (3 варианта) + открытка «Спасибо, что пришли» + табличка «С днём рождения». PNG + PDF.</small></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="n">2</span>Именинник</legend>
+      <div class="row3">
+        <div class="row wide" id="rName"><label for="fName">Имя</label><input type="text" id="fName" maxlength="20" autocomplete="off" placeholder="Например: Амелия" required><span class="err" hidden>Напишите имя — буквами, до 20 символов</span></div>
+        <div class="row" id="rAge"><label for="fAge">Исполняется</label><select id="fAge"></select></div>
+        <div class="row"><label for="fGender">Кто</label><select id="fGender"><option value="f">Девочка</option><option value="m">Мальчик</option></select></div>
+      </div>
+      <span class="hint">Имя пишем так, как его нужно напечатать. Проверьте буквы — текст на приглашении не меняется после изготовления.</span>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="n">3</span>Когда и где</legend>
+      <div class="row2">
+        <div class="row" id="rDate"><label for="fDate">Дата</label><input type="date" id="fDate" required><span class="err" hidden>Выберите дату не раньше сегодняшней</span></div>
+        <div class="row" id="rTime"><label for="fTime">Начало</label><input type="time" id="fTime" value="15:00" required><span class="err" hidden>Время в формате ЧЧ:ММ</span></div>
+      </div>
+      <div class="row" id="rPlace"><label for="fPlace">Место</label><input type="text" id="fPlace" maxlength="80" placeholder="Например: Кафе «Облако» или «У нас дома»" required><span class="err" hidden>Укажите место праздника</span></div>
+      <div class="row"><label for="fAddr">Адрес <span class="opt">— по желанию</span></label><input type="text" id="fAddr" maxlength="150" placeholder="ул. Садовая, 5, 2 этаж"></div>
+      <div class="row" id="rUrl"><label for="fUrl">Ссылка на карту <span class="opt">— по желанию, сделаем QR-код</span></label><input type="url" id="fUrl" maxlength="300" inputmode="url" placeholder="https://yandex.ru/maps/…"><span class="err" hidden>Ссылка должна начинаться с https://</span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="n">4</span>Оформление</legend>
+      <div class="row">
+        <span class="lbl" id="themeL">Тема праздника</span>
+        <div class="chips" id="chips" role="group" aria-labelledby="themeL"></div>
+        <input type="text" id="fTheme" maxlength="120" placeholder="Или своя тема: например, «радуга и воздушные шары»" aria-label="Своя тема праздника">
+        <span class="hint" id="brandHint">Рисуем только оригинальных персонажей — героев мультфильмов, фильмов и брендов не рисуем.</span>
+      </div>
+      <div class="row">
+        <span class="lbl" id="stL">Стиль иллюстрации</span>
+        <div class="styles" id="styles" role="radiogroup" aria-labelledby="stL"></div>
+      </div>
+      <div class="row">
+        <span class="lbl" id="palL">Цвет приглашения</span>
+        <div class="pals" id="pals" role="radiogroup" aria-labelledby="palL"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="n">5</span>Текст и фото</legend>
+      <div class="row"><label for="fText">Текст приглашения <span class="opt">— по желанию</span></label><textarea id="fText" maxlength="300" rows="3" placeholder="Дорогие гости! Приглашаем вас разделить с нами радость и отпраздновать день рождения!"></textarea><span class="hint"><span id="txtN">0</span>/300. Пусто — поставим текст из подсказки.</span></div>
+      <div class="row" id="rPhoto">
+        <span class="lbl">Фото ребёнка <span class="opt">— по желанию</span></span>
+        <div class="photo"><label class="pick" for="fPhoto">📷 Выбрать фото</label><input type="file" id="fPhoto" accept="image/jpeg,image/png,image/heic,image/webp"><img class="th" id="phTh" alt="" hidden><button type="button" class="linkbtn" id="phDel" hidden>Убрать</button></div>
+        <span class="hint">С фото герой иллюстрации будет похож на вашего ребёнка. Без фото — нарисуем праздничную сцену без людей. Фото удаляем сразу после изготовления.</span>
+        <span class="err" hidden>Нужна одна фотография JPG, PNG или HEIC до 15 МБ</span>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="n">6</span>Контакт</legend>
+      <div class="row" id="rContact"><label for="fContact">E-mail или телефон</label><input type="text" id="fContact" maxlength="120" autocomplete="email" inputmode="email" placeholder="anna@mail.ru" required><span class="hint">На странице оплаты попросим e-mail для чека — туда же пришлём ссылку на готовые файлы.</span><span class="err" hidden>Укажите e-mail или номер телефона</span></div>
+    </fieldset>
+
+    <div class="sum">
+      <div class="total"><span class="t" id="sumName">Приглашение · 3 варианта</span><span class="amount" id="sumPrice">290 ₽</span></div>
+      <label class="consent" id="rConsent"><input type="checkbox" id="fConsent"><span>Я — родитель (законный представитель) ребёнка и даю согласие на обработку моих персональных данных и данных ребёнка — <a href="/consent.html#child" target="_blank" rel="noopener">текст согласия</a></span></label>
+      <label class="consent" id="teenRow" hidden><input type="checkbox" id="fTeen"><span>Ребёнку 14–17 лет: подтверждаю, что он(а) прочитал(а) согласие подростка и согласен(на) — <a href="/consent-teen.html" target="_blank" rel="noopener">согласие подростка</a></span></label>
+      <div id="fErr" role="alert" hidden></div>
+      <button class="btn btn-gold" type="submit" id="go">Перейти к оплате · 290 ₽</button>
+      <p class="fine">Оплачивая заказ, вы принимаете условия <a href="/offer.html" target="_blank" rel="noopener">публичной оферты</a> и <a href="/privacy.html" target="_blank" rel="noopener">политики конфиденциальности</a>. Оплата картой или через СБП в ЮKassa, чек придёт на почту. Готовые файлы — на странице заказа, на почте и в Telegram.</p>
+    </div>
+  </form>
+  <div class="done" id="sending" hidden><h2>Отправляем заказ…</h2><p class="hint">Через секунду откроется страница оплаты.</p></div>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <span><b class="brand">Talemir</b></span>
+  <nav class="ftlinks"><a href="/contacts.html">Контакты</a><a href="/offer.html">Оферта</a><a href="/privacy.html">Политика конфиденциальности</a><a href="/consent.html">Согласие на обработку данных</a></nav>
+  <span>© 2026 · ИП Селезнева Светлана Тюговна · ИНН 231703925221 · ОГРНИП 324470400009340</span>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const API = (document.querySelector('meta[name="talemir-api"]') || {}).content || '';
+const PRICE = {inv: 290, invkit: 590};              /* = chain.py PRICE (приглашение отдельно, без книги/песни) */
+const PLAN_NAME = {inv: 'Приглашение · 3 варианта', invkit: 'Набор праздника · 3 файла'};
+/* те же цвета, что THEMES в app/invite.py: фон, акцент, рамка, текст */
+const THEMES = {lavender: ['#2A1650','#8C63D6','#FFD66B','#FFFFFF','Лаванда'], mint: ['#0F3B36','#2FA58F','#FFE08A','#FFFFFF','Мята'],
+  sunny: ['#4A2300','#F29A2E','#FFF1B8','#FFFFFF','Солнце'], sky: ['#0E2A52','#3D7DD8','#FFE08A','#FFFFFF','Небо'], rose: ['#4A1030','#D9578C','#FFE2A8','#FFFFFF','Роза']};
+const STYLES = [['st_3d','Объёмная анимация'],['st_water','Акварель'],['st_paper','Бумажная аппликация'],['st_clay','Пластилин'],['st_pencil','Цветные карандаши']];
+const TOPICS = ['Космос','Единороги','Динозавры','Принцессы и замки','Пираты','Подводный мир','Лесные феи','Супергерои','Машинки','Цирк'];
+const WD = ['понедельник','вторник','среда','четверг','пятница','суббота','воскресенье'];
+const MON = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+/* как BRANDS в invite.py (в JS \w не ловит кириллицу — вместо него [а-яё]*) */
+const BRANDS = /дисне|disney|pixar|пиксар|marvel|марвел|холодн[а-яё]* сердц|frozen|эльз|elsa|бэль|белль|belle|рапунцел|золушк|спайдер|человек.паук|барби|barbie|фиксик|смешарик|маша и медвед|щенячий патруль|paw patrol|пеппа|peppa|минь|minion|покемон|pokemon|микки|mickey|соник|sonic/i;
+const CONTACT_RE = /^([^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}|\+?[0-9][0-9 ()-]{6,20})$/;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const years = n => (n % 10 === 1 && n % 100 !== 11) ? 'год' : ((n % 10 >= 2 && n % 10 <= 4 && !(n % 100 >= 12 && n % 100 <= 14)) ? 'года' : 'лет');
+const pad = n => String(n).padStart(2, '0');
+const todayISO = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+function fmtDate(iso){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); if (!m) return null;
+  const d = new Date(+m[1], +m[2] - 1, +m[3]); if (d.getMonth() !== +m[2] - 1) return null;
+  return {day: d.getDate() + ' ' + MON[d.getMonth()], wd: WD[(d.getDay() + 6) % 7]}; }
+
+/* --- поля --- */
+for (let a = 1; a <= 17; a++) $('fAge').insertAdjacentHTML('beforeend', `<option value="${a}"${a === 5 ? ' selected' : ''}>${a} ${years(a)}</option>`);
+$('fDate').min = todayISO();
+{ const d = new Date(); d.setDate(d.getDate() + 14); $('fDate').value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+{ const mx = new Date(); mx.setFullYear(mx.getFullYear() + 1); $('fDate').max = mx.getFullYear() + '-' + pad(mx.getMonth() + 1) + '-' + pad(mx.getDate()); }
+$('chips').innerHTML = TOPICS.map(t => `<button type="button" class="chip" aria-pressed="false">${esc(t)}</button>`).join('');
+$('styles').innerHTML = STYLES.map(([k, n], i) => `<label class="st"><input type="radio" name="style" value="${k}"${i === 1 ? ' checked' : ''}><img src="img/${k}.jpg" alt="" loading="lazy" width="200" height="200"><span>${esc(n)}</span></label>`).join('');
+$('pals').innerHTML = Object.entries(THEMES).map(([k, t], i) => `<label class="pal"><input type="radio" name="palette" value="${k}"${i === 0 ? ' checked' : ''}><i style="background:radial-gradient(circle at 50% 20%,${t[1]},${t[0]} 75%);outline-color:${t[2]}"></i>${esc(t[4])}</label>`).join('');
+const val = id => String($(id).value || '').trim();
+const radio = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value;
+let photo = null, photoURL = '', pvKind = 'invite';
+
+$('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return;
+  const on = b.getAttribute('aria-pressed') !== 'true'; $('chips').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', 'false'));
+  if (on) { b.setAttribute('aria-pressed', 'true'); $('fTheme').value = b.textContent; } else $('fTheme').value = ''; sync(); });
+$('fTheme').addEventListener('input', () => { $('chips').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x.textContent === val('fTheme')))); });
+$('fPhoto').addEventListener('change', () => { const f = $('fPhoto').files[0]; const r = $('rPhoto');
+  r.classList.remove('bad'); r.querySelector('.err').hidden = true;
+  if (!f) return;
+  if (f.size > 15e6 || !/^image\//.test(f.type || 'image/')) { r.classList.add('bad'); r.querySelector('.err').hidden = false; $('fPhoto').value = ''; return; }
+  photo = f; if (photoURL) URL.revokeObjectURL(photoURL); photoURL = URL.createObjectURL(f); $('phTh').src = photoURL; $('phTh').hidden = false; $('phDel').hidden = false; sync(); });
+$('phDel').addEventListener('click', () => { photo = null; $('fPhoto').value = ''; if (photoURL) URL.revokeObjectURL(photoURL); photoURL = ''; $('phTh').hidden = true; $('phDel').hidden = true; sync(); });
+$('pvTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; pvKind = b.dataset.k;
+  $('pvTabs').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); sync(); });
+
+/* --- живой макет (та же вёрстка, что _page() в invite.py) --- */
+const QR = (() => { let s = 7, c = ''; const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;   /* условный QR для макета; настоящий делает сервер */
+  const fin = (x, y) => x === 0 || x === 6 || y === 0 || y === 6 || (x >= 2 && x <= 4 && y >= 2 && y <= 4);
+  for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
+    const inF = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+    const on = inF ? ((x < 7 || x > 13) && (y < 7 || y > 13) && fin(x > 13 ? x - 14 : x, y > 13 ? y - 14 : y)) : rnd() > .55;
+    if (on) c += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }
+  return `<svg viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><g fill="#111">${c}</g></svg>`; })();
+function render(){
+  const cv = $('cv'); const th = THEMES[radio('palette')] || THEMES.lavender;
+  cv.style.setProperty('--bg', th[0]); cv.style.setProperty('--ac', th[1]); cv.style.setProperty('--fr', th[2]); cv.style.setProperty('--tx', th[3]);
+  const name = val('fName') || 'Имя'; const nsz = name.length <= 8 ? 168 : (name.length <= 12 ? 130 : 100);
+  const age = parseInt($('fAge').value, 10) || 5; const st = radio('style') || 'st_water';
+  const pic = `<div class="pic"><img src="${photoURL ? esc(photoURL) : 'img/' + st + '.jpg'}" alt=""></div>`;
+  const nm = `<div class="name" style="font-size:${nsz}px">${esc(name)}</div>`;
+  let body;
+  if (pvKind === 'thanks') body = `<div class="top"><div class="kick">Спасибо!</div>${nm}</div>${pic}<div class="info"><p class="lead">Спасибо, что пришли на мой праздник! Было очень весело!</p></div><div class="wait">С любовью 💛</div>`;
+  else if (pvKind === 'sign') body = `<div class="top" style="top:160px"><div class="kick">С днём рождения</div><div class="name" style="font-size:${nsz}px">${esc(name)}!</div></div>${pic}<div class="info" style="top:1300px"><div class="sub">мне <b>${age}</b> ${years(age)}</div></div>`;
+  else { const d = fmtDate(val('fDate')) || {day: '— —', wd: 'день'}; const tm = /^\d{1,2}:\d{2}$/.test(val('fTime')) ? val('fTime') : '--:--';
+    const qr = /^https?:\/\/\S{4,}/.test(val('fUrl')) ? QR : '';
+    body = `<div class="top"><div class="kick">Приглашение на праздник</div>${nm}<div class="sub">мне исполняется <b>${age}</b> ${years(age)}!</div></div>${pic}`
+      + `<div class="info"><p class="lead">${esc(val('fText') || 'Дорогие гости! Приглашаем вас разделить с нами радость и отпраздновать день рождения!')}</p>`
+      + `<div class="when"><div class="pill"><b>${esc(d.day)}</b><span>${esc(d.wd)}</span></div><div class="pill"><b>${esc(tm)}</b><span>начало</span></div></div>`
+      + `<div class="where">${qr}<div class="p"><b>${esc(val('fPlace') || 'Место праздника')}</b>${esc(val('fAddr'))}</div></div></div><div class="wait">Ждём вас! 💜</div>`; }
+  cv.innerHTML = `<div class="bg"></div><div class="frame"></div>${body}`;
+}
+function fit(){ const b = $('cvbox'); $('cv').style.transform = `scale(${b.clientWidth / 1080})`; }
+if ('ResizeObserver' in window) new ResizeObserver(fit).observe($('cvbox')); else addEventListener('resize', fit);
+
+function sync(){
+  const plan = radio('plan') || 'inv'; const p = PRICE[plan];
+  $('sumName').textContent = PLAN_NAME[plan]; $('sumPrice').textContent = p + ' ₽'; $('go').textContent = 'Перейти к оплате · ' + p + ' ₽';
+  $('pvTabs').hidden = plan !== 'invkit'; if (plan !== 'invkit' && pvKind !== 'invite') { pvKind = 'invite'; $('pvTabs').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === 'invite'))); }
+  const a = parseInt($('fAge').value, 10); const teen = a >= 14 && a <= 17; $('teenRow').hidden = !teen; if (!teen) $('fTeen').checked = false;
+  $('txtN').textContent = val('fText').length;
+  const br = BRANDS.test(val('fTheme')); $('brandHint').style.color = br ? 'var(--pome)' : ''; $('brandHint').style.fontWeight = br ? '700' : '';
+  $('brandHint').textContent = br ? 'Персонажей мультфильмов, фильмов и брендов мы не рисуем — сделаем оригинальную сказочную тему в этом настроении.' : 'Рисуем только оригинальных персонажей — героев мультфильмов, фильмов и брендов не рисуем.';
+  render(); fit();
+}
+$('form').addEventListener('input', sync); $('form').addEventListener('change', sync);
+
+/* --- проверка и отправка --- */
+function mark(id, bad){ const r = $(id); r.classList.toggle('bad', bad); const e = r.querySelector('.err'); if (e) e.hidden = !bad; return bad; }
+function check(){
+  const bad = [];
+  if (mark('rName', !/^[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі' -]{1,20}$/.test(val('fName')) || !/[A-Za-zА-Яа-яЁё]/.test(val('fName')))) bad.push('rName');
+  const dt = val('fDate'); if (mark('rDate', !fmtDate(dt) || dt < todayISO() || dt > $('fDate').max)) bad.push('rDate');
+  if (mark('rTime', !/^([01]?\d|2[0-3]):[0-5]\d$/.test(val('fTime')))) bad.push('rTime');
+  if (mark('rPlace', !val('fPlace'))) bad.push('rPlace');
+  if (mark('rUrl', !!val('fUrl') && !/^https?:\/\/\S{4,300}$/.test(val('fUrl')))) bad.push('rUrl');
+  if (mark('rContact', !CONTACT_RE.test(val('fContact')))) bad.push('rContact');
+  return bad;
+}
+const ERR = {bad_contact: 'Проверьте e-mail или телефон.', inv_date: 'Проверьте дату праздника — она не может быть в прошлом.', inv_time: 'Проверьте время начала (ЧЧ:ММ).',
+  inv_age: 'Проверьте возраст.', inv_place: 'Укажите место праздника.', inv_url: 'Ссылка на карту должна начинаться с https://', photo_count: 'Можно приложить только одно фото.',
+  photo_type: 'Фото должно быть в формате JPG, PNG или HEIC.', photo_too_large: 'Фото больше 15 МБ — выберите поменьше.', consent: 'Отметьте согласие на обработку персональных данных.',
+  consent_teen: 'Для ребёнка 14–17 лет нужно согласие самого подростка.', too_many: 'Слишком много заявок подряд — попробуйте через час или напишите нам: info@talemir.com'};
+function showErr(t){ const e = $('fErr'); e.textContent = t; e.hidden = !t; if (t) e.scrollIntoView({block: 'center', behavior: 'smooth'}); }
+$('form').addEventListener('submit', async e => {
+  e.preventDefault(); showErr('');
+  const bad = check();
+  if (bad.length) { const el = $(bad[0]).querySelector('input,select,textarea'); if (el) el.focus(); $(bad[0]).scrollIntoView({block: 'center', behavior: 'smooth'}); return; }
+  if (!$('fConsent').checked) { showErr('Отметьте согласие на обработку персональных данных.'); return; }
+  if (!$('teenRow').hidden && !$('fTeen').checked) { showErr('Для ребёнка 14–17 лет нужно согласие самого подростка.'); return; }
+  const plan = radio('plan') || 'inv'; const fd = new FormData();
+  fd.append('product', plan); fd.append('bundle', plan);
+  fd.append('child_name', val('fName')); fd.append('child_age', $('fAge').value); fd.append('gender', $('fGender').value);
+  fd.append('inv_date', val('fDate')); fd.append('inv_time', val('fTime').replace(/^(\d):/, '0$1:'));
+  fd.append('inv_place', val('fPlace')); fd.append('inv_address', val('fAddr')); fd.append('inv_place_url', val('fUrl'));
+  fd.append('inv_text', val('fText')); fd.append('inv_theme', val('fTheme')); fd.append('inv_palette', radio('palette') || 'lavender'); fd.append('style', radio('style') || 'st_water');
+  fd.append('contact', val('fContact')); fd.append('consent', 'true'); fd.append('consent_teen', $('teenRow').hidden ? 'n/a' : 'true');
+  fd.append('consent_ver', '1.5/26.10.2026'); fd.append('consent_kind', 'parent'); fd.append('site_lang', 'ru');
+  if (photo) fd.append('photos', photo, photo.name || 'photo.jpg');
+  const btn = $('go'); btn.disabled = true; btn.textContent = 'Отправляем…';
+  try {
+    const r = await fetch(API + '/api/orders', {method: 'POST', body: fd});
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 201 && j.token) {
+      $('form').hidden = true; $('sending').hidden = false;
+      try { localStorage.setItem('tm_order', j.token); } catch (_) {}
+      let rf = ''; try { rf = localStorage.getItem('tm_ref') || ''; } catch (_) {}
+      location.href = API + '/api/start/' + encodeURIComponent(j.token) + (rf ? '?ref=' + encodeURIComponent(rf) : ''); return;
+    }
+    showErr(ERR[String(j.detail || '')] || (r.status === 429 ? ERR.too_many : 'Не получилось отправить заказ. Проверьте поля и попробуйте ещё раз или напишите нам: info@talemir.com'));
+  } catch (_) { showErr('Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.'); }
+  btn.disabled = false; sync();
+});
+try { const r = new URLSearchParams(location.search).get('ref'); if (r && /^[A-Za-z]{1,5}-[A-Za-z0-9]{4}$/.test(r)) localStorage.setItem('tm_ref', r.toUpperCase()); } catch (_) {}
+try { if (new URLSearchParams(location.search).get('plan') === 'kit') document.querySelector('input[name="plan"][value="invkit"]').checked = true; } catch (_) {}
+sync();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+})();
+</script>
+</body>
+</html>
