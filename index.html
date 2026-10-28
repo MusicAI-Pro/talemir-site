@@ -31,6 +31,8 @@
 .carth-t .btn{display:inline-flex}
 @media (min-width:900px){.carth{grid-template-columns:1.35fr 1fr;gap:28px}}
 @media (prefers-reduced-motion:reduce){.carth-v video{display:none}}
+/* 29.10 HOME2: кнопка в шапке не переносится при подгрузке шрифта (сдвиг вёрстки CLS 0.23→0) */
+header .btn-gold{white-space:nowrap;flex-shrink:0}
 </style>
 <title>Talemir</title>
 <meta name="x-removed" content="cover">
