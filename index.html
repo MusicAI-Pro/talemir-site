@@ -33,6 +33,9 @@
 @media (prefers-reduced-motion:reduce){.carth-v video{display:none}}
 /* 29.10 HOME2: кнопка в шапке не переносится при подгрузке шрифта (сдвиг вёрстки CLS 0.23→0) */
 header .btn-gold{white-space:nowrap;flex-shrink:0}
+/* 29.10 HOME2: место под кнопки языков на мобильном до render() — без сдвига вёрстки */
+@media (max-width:900px){.bar .langs:empty{min-height:31px;flex-basis:70%}}
+@media (min-width:901px){.langs{flex-wrap:nowrap;flex-shrink:0}}
 </style>
 <title>Talemir</title>
 <meta name="x-removed" content="cover">
@@ -500,7 +503,7 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
     </nav>
     <div class="langs" id="langs" role="group" aria-label="Language"></div>
     <a class="cab" href="https://ru.api.talemir.com/cabinet" aria-label="Личный кабинет"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-i="nav_cab"></span></a>
-    <a class="btn btn-gold" href="#products" data-i="nav_cta"></a>
+    <a class="btn btn-gold" href="#products" data-i="nav_cta">Выбрать подарок</a>
   </div>
 </header>
 
@@ -519,7 +522,14 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
           <button type="button" class="btn btn-gold" data-open="cartoon">Создать свой мультфильм</button>
         </div>
       </div>
-      <span class="kicker" data-i="hv_kicker"></span>
+      <script>/* 29.10 HOME2: ранний показ блока мультфильма до render() (та же логика, что detectLang + cur), чтобы не было сдвига вёрстки; render() всё равно уточняет */
+(function(){try{var h=document.getElementById('cartHero');if(!h)return;var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+var RU=/^(Europe\/(Moscow|Samara|Kaliningrad)|Asia\/(Yekaterinburg|Novosibirsk))$/.test(tz),RUL=RU||/^Asia\/(Almaty|Qostanay|Aqtobe|Aqtau|Atyrau|Oral|Qyzylorda|Yerevan)$/.test(tz);
+var q=(new URLSearchParams(location.search).get('lang')||'').toLowerCase(),s=null,c=null;try{s=localStorage.getItem('tm_lang');c=localStorage.getItem('tm_cur')}catch(e){}
+var l=q?(q==='en'?'en':'ru'):s?(s==='en'?'en':'ru'):((navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'']).some(function(x){return (x||'').slice(0,2).toLowerCase()==='ru'})||RUL?'ru':'en');
+var cu=c||(RU?'RUB':'');h.hidden=!(l==='ru'&&cu==='RUB');}catch(e){}})();
+</script>
+<span class="kicker" data-i="hv_kicker"></span>
       <h1 data-i="hero_h1"></h1>
       <p class="lead" id="heroSub" data-i="hero_sub"></p>
       <div class="aud" id="aud" role="group"><button type="button" data-aud="kid" aria-pressed="true" data-i="tg_kid"></button><button type="button" data-aud="par" aria-pressed="false" data-i="tg_par"></button></div>
@@ -638,7 +648,7 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 
   <section style="padding-top:0"><div class="wrap final">
     <h2 data-i="fn_h"></h2>
-    <a class="btn btn-gold" href="#products" data-i="nav_cta"></a>
+    <a class="btn btn-gold" href="#products" data-i="nav_cta">Выбрать подарок</a>
   </div></section>
 <div class="kbar" id="kbar" hidden role="region" aria-live="polite"><div class="kinfo"><strong data-i="k_title"></strong><span id="kCount"></span></div><div class="ksum"><span data-i="k_total"></span> <strong id="kSum"></strong></div><button type="button" class="btn btn-gold" id="kGo" data-i="k_go"></button></div>
 </main>
