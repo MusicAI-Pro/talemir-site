@@ -88,6 +88,7 @@ const P = {
   song:{n:'Песня с именем',d:'Персональная песня, файл MP3',p:490},
   clip:{n:'Клип из фото',d:'Видеоклип из ваших фото под песню, файл MP4',p:790},
   live:{n:'Живые фото',d:'Оживление фотографий, файл MP4',p:1990},
+  cartoon:{n:'Мультфильм по вашей истории',d:'≈60 секунд, 10 сцен, песня с вашими именами, MP4',p:5990},
   ny:{n:'Поздравление от Деда Мороза',d:'Персональное видеопоздравление с именем ребёнка. Новогодние поздравления — до 25 декабря',p:490}
 };
 { const _t = new URLSearchParams(location.search).get('t'); if (_t && /^[0-9a-f]{16}$/.test(_t)) { let rf=''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){} location.replace('https://ru.api.talemir.com/checkout/' + _t + (rf ? '?ref=' + encodeURIComponent(rf) : '')); } }
