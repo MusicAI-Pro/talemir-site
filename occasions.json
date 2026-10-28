@@ -1,0 +1,337 @@
+{
+ "version": "2026-10-29",
+ "note": "Единый список поводов Talemir (OCC1). Источник для сайта, бота и чата-помощника. Свой вариант — до 60 символов, проходит модерацию (MOD1).",
+ "items": [
+  {
+   "id": "birthday",
+   "emoji": "🎂",
+   "label": {
+    "ru": "День рождения",
+    "en": "Birthday",
+    "kk": "Туған күн",
+    "hy": "Ծննդյան օր",
+    "ar": "عيد ميلاد"
+   }
+  },
+  {
+   "id": "newyear",
+   "emoji": "🎄",
+   "label": {
+    "ru": "Новый год",
+    "en": "New Year",
+    "kk": "Жаңа жыл",
+    "hy": "Ամանոր",
+    "ar": "رأس السنة"
+   }
+  },
+  {
+   "id": "mar8",
+   "emoji": "🌷",
+   "label": {
+    "ru": "8 Марта",
+    "en": "Women's Day (8 March)",
+    "kk": "8 наурыз",
+    "hy": "Մարտի 8",
+    "ar": "يوم المرأة (8 مارس)"
+   }
+  },
+  {
+   "id": "feb23",
+   "emoji": "🎖",
+   "label": {
+    "ru": "23 Февраля",
+    "en": "Defender of the Fatherland Day (23 February)",
+    "kk": "23 ақпан",
+    "hy": "Փետրվարի 23",
+    "ar": "23 فبراير"
+   }
+  },
+  {
+   "id": "valentine",
+   "emoji": "💘",
+   "label": {
+    "ru": "День святого Валентина",
+    "en": "Valentine's Day",
+    "kk": "Ғашықтар күні",
+    "hy": "Սուրբ Վալենտինի օր",
+    "ar": "عيد الحب"
+   }
+  },
+  {
+   "id": "love",
+   "emoji": "❤️",
+   "label": {
+    "ru": "Признание в любви",
+    "en": "A declaration of love",
+    "kk": "Махаббатты білдіру",
+    "hy": "Սիրո խոստովանություն",
+    "ar": "اعتراف بالحب"
+   }
+  },
+  {
+   "id": "justbecause",
+   "emoji": "😊",
+   "label": {
+    "ru": "Просто так, чтобы порадовать",
+    "en": "Just because",
+    "kk": "Жай ғана, қуанту үшін",
+    "hy": "Պարզապես ուրախացնելու համար",
+    "ar": "بدون مناسبة، فقط للإسعاد"
+   }
+  },
+  {
+   "id": "wedding",
+   "emoji": "💍",
+   "label": {
+    "ru": "Свадьба",
+    "en": "Wedding",
+    "kk": "Үйлену тойы",
+    "hy": "Հարսանիք",
+    "ar": "حفل زفاف"
+   }
+  },
+  {
+   "id": "anniversary",
+   "emoji": "🥂",
+   "label": {
+    "ru": "Годовщина",
+    "en": "Anniversary",
+    "kk": "Мерейтой",
+    "hy": "Տարեդարձ",
+    "ar": "ذكرى سنوية"
+   }
+  },
+  {
+   "id": "mothers",
+   "emoji": "💐",
+   "label": {
+    "ru": "День матери",
+    "en": "Mother's Day",
+    "kk": "Аналар күні",
+    "hy": "Մայրերի օր",
+    "ar": "عيد الأم"
+   }
+  },
+  {
+   "id": "newborn",
+   "emoji": "👶",
+   "label": {
+    "ru": "Рождение малыша",
+    "en": "A new baby",
+    "kk": "Сәбидің дүниеге келуі",
+    "hy": "Երեխայի ծնունդ",
+    "ar": "قدوم مولود جديد"
+   }
+  },
+  {
+   "id": "sibling",
+   "emoji": "🍼",
+   "label": {
+    "ru": "Рождение брата или сестры",
+    "en": "A new baby brother or sister",
+    "kk": "Бауырының дүниеге келуі",
+    "hy": "Եղբոր կամ քրոջ ծնունդ",
+    "ar": "قدوم أخ أو أخت"
+   }
+  },
+  {
+   "id": "school",
+   "emoji": "🎒",
+   "label": {
+    "ru": "Первый раз в садик или школу",
+    "en": "First day at kindergarten or school",
+    "kk": "Балабақшаға немесе мектепке алғаш бару",
+    "hy": "Մանկապարտեզի կամ դպրոցի առաջին օրը",
+    "ar": "أول يوم في الروضة أو المدرسة"
+   }
+  },
+  {
+   "id": "graduation",
+   "emoji": "🎓",
+   "label": {
+    "ru": "Выпускной",
+    "en": "Graduation",
+    "kk": "Бітіру кеші",
+    "hy": "Ավարտական երեկո",
+    "ar": "حفل تخرج"
+   }
+  },
+  {
+   "id": "teacher",
+   "emoji": "📚",
+   "label": {
+    "ru": "День учителя или воспитателя",
+    "en": "Teacher's Day",
+    "kk": "Мұғалімдер күні",
+    "hy": "Ուսուցչի օր",
+    "ar": "يوم المعلم"
+   }
+  },
+  {
+   "id": "corporate",
+   "emoji": "🏢",
+   "label": {
+    "ru": "Корпоратив",
+    "en": "Corporate party",
+    "kk": "Корпоративтік кеш",
+    "hy": "Կորպորատիվ երեկույթ",
+    "ar": "حفلة الشركة"
+   }
+  },
+  {
+   "id": "christmas",
+   "emoji": "⭐",
+   "label": {
+    "ru": "Рождество",
+    "en": "Christmas",
+    "kk": "Рождество",
+    "hy": "Սուրբ Ծնունդ",
+    "ar": "عيد الميلاد المجيد"
+   }
+  },
+  {
+   "id": "nauryz",
+   "emoji": "🌸",
+   "label": {
+    "ru": "Наурыз",
+    "en": "Nauryz",
+    "kk": "Наурыз",
+    "hy": "Նաուրիզ",
+    "ar": "عيد نوروز"
+   }
+  },
+  {
+   "id": "eid",
+   "emoji": "🌙",
+   "label": {
+    "ru": "Ураза-байрам или Курбан-байрам",
+    "en": "Eid",
+    "kk": "Айт (Ораза айт, Құрбан айт)",
+    "hy": "Ուրազա կամ Կուրբան բայրամ",
+    "ar": "عيد الفطر أو عيد الأضحى"
+   }
+  },
+  {
+   "id": "ramadan",
+   "emoji": "🕌",
+   "label": {
+    "ru": "Рамадан",
+    "en": "Ramadan",
+    "kk": "Рамазан",
+    "hy": "Ռամադան",
+    "ar": "رمضان"
+   }
+  },
+  {
+   "id": "tusaukeser",
+   "emoji": "👣",
+   "label": {
+    "ru": "Первые шаги (Тұсаукесер)",
+    "en": "First steps (Tusaukeser)",
+    "kk": "Тұсаукесер",
+    "hy": "Առաջին քայլեր",
+    "ar": "الخطوات الأولى"
+   }
+  },
+  {
+   "id": "atamhatik",
+   "emoji": "🦷",
+   "label": {
+    "ru": "Первый зубик (Атамхатик)",
+    "en": "First tooth (Atamhatik)",
+    "kk": "Алғашқы тіс",
+    "hy": "Ատամհատիկ",
+    "ar": "أول سن"
+   }
+  }
+ ],
+ "order": {
+  "kk": [
+   "birthday",
+   "nauryz",
+   "tusaukeser",
+   "newyear",
+   "mar8",
+   "eid",
+   "ramadan",
+   "feb23",
+   "valentine",
+   "love",
+   "justbecause",
+   "wedding",
+   "anniversary",
+   "mothers",
+   "newborn",
+   "sibling",
+   "school",
+   "graduation",
+   "teacher",
+   "corporate",
+   "christmas",
+   "atamhatik"
+  ],
+  "hy": [
+   "birthday",
+   "newyear",
+   "atamhatik",
+   "mar8",
+   "christmas",
+   "valentine",
+   "love",
+   "justbecause",
+   "wedding",
+   "anniversary",
+   "mothers",
+   "newborn",
+   "sibling",
+   "school",
+   "graduation",
+   "teacher",
+   "feb23",
+   "corporate",
+   "nauryz",
+   "eid",
+   "ramadan",
+   "tusaukeser"
+  ],
+  "ar": [
+   "ramadan",
+   "eid",
+   "birthday",
+   "newborn",
+   "sibling",
+   "newyear",
+   "mothers",
+   "wedding",
+   "anniversary",
+   "love",
+   "justbecause",
+   "mar8",
+   "valentine",
+   "school",
+   "graduation",
+   "teacher",
+   "corporate",
+   "christmas",
+   "nauryz",
+   "feb23",
+   "tusaukeser",
+   "atamhatik"
+  ]
+ },
+ "own": {
+  "ru": "✏️ Свой вариант…",
+  "en": "✏️ Other (type your own)…",
+  "kk": "✏️ Өз нұсқаңыз…",
+  "hy": "✏️ Այլ (գրեք ձերը)…",
+  "ar": "✏️ مناسبة أخرى (اكتبها)…"
+ },
+ "own_ph": {
+  "ru": "Например: юбилей бабушки, 60 лет",
+  "en": "For example: grandma's 60th birthday",
+  "kk": "Мысалы: әженің 60 жасқа толуы",
+  "hy": "Օրինակ՝ տատիկի 60-ամյակը",
+  "ar": "مثلاً: عيد ميلاد الجدة الستين"
+ },
+ "own_max": 60
+}

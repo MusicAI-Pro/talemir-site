@@ -642,7 +642,7 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
       <div class="row" data-for="book"><label for="fFamily" data-i="f_family"></label><input type="text" id="fFamily" autocomplete="off" maxlength="200" data-ph="ph_family"><span class="hint" data-i="h_family"></span></div>
       <div class="row" data-for="book"><label for="fDedic" data-i="f_dedic"></label><input type="text" id="fDedic" autocomplete="off" maxlength="200" data-ph="ph_dedic"><span class="hint" data-i="h_dedic"></span></div>
       <div class="row2 sel" data-for="song clip sing">
-        <div class="row"><label for="fOcc" data-i="f_occ"></label><select id="fOcc"></select></div>
+        <div class="row"><label for="fOcc" data-i="f_occ"></label><select id="fOcc"></select><input type="text" id="fOccOwn" maxlength="60" autocomplete="off" hidden style="margin-top:8px"></div>
         <div class="row"><label for="fGenre" data-i="f_genre"></label><select id="fGenre"></select></div>
       </div>
       <div class="row2 sel" data-for="song sing">
@@ -811,9 +811,29 @@ document.addEventListener('click', e => {
   const v = Number(b.dataset.st); stressAt = v; stressUnk = v < 0; stressAuto = false; renderStress();
   const f = document.querySelector(`#fStress [data-st="${v}"]`); if (f) f.focus();
 });
+/* 29.10 OCC1: единый список поводов — /occasions.json (тот же файл читает бот); свой вариант до 60 символов, проверяется модерацией */
+let OCCS = null;
+function occLabel(id){ if (!OCCS) return ''; const it = OCCS.items.find(x => x.id === id); return it ? (it.label[lang] || it.label.en || it.label.ru) : ''; }
+function fillOcc(){
+  const s = document.getElementById('fOcc'); if (!s) return; const keep = s.value;
+  if (!OCCS) { s.innerHTML = (I18N[lang].oc || I18N.en.oc).map(o => `<option>${o}</option>`).join(''); return; }
+  const ids = (OCCS.order && OCCS.order[lang]) || OCCS.items.map(x => x.id);
+  s.innerHTML = ids.map(id => { const it = OCCS.items.find(x => x.id === id); return it ? `<option value="${id}">${it.emoji} ${it.label[lang] || it.label.en || it.label.ru}</option>` : ''; }).join('')
+    + `<option value="own">${(OCCS.own && (OCCS.own[lang] || OCCS.own.en)) || 'Other'}</option>`;
+  if (keep && [...s.options].some(o => o.value === keep)) s.value = keep;
+  const own = document.getElementById('fOccOwn'); if (own) { own.placeholder = (OCCS.own_ph && (OCCS.own_ph[lang] || OCCS.own_ph.en)) || ''; own.hidden = s.value !== 'own'; }
+}
+function occValue(){
+  const s = document.getElementById('fOcc'); if (!s) return '';
+  if (!OCCS) return String(s.value || '').trim();
+  if (s.value === 'own') { const t = String((document.getElementById('fOccOwn') || {}).value || '').trim().slice(0, 60); return t || occLabel('justbecause'); }
+  return occLabel(s.value) || String(s.value || '');
+}
+document.addEventListener('change', e => { if (e.target && e.target.id === 'fOcc') { const own = document.getElementById('fOccOwn'); if (own) { own.hidden = e.target.value !== 'own'; if (!own.hidden) own.focus(); } } });
+fetch('/occasions.json', {cache: 'no-cache'}).then(r => r.ok ? r.json() : null).then(j => { if (j && j.items) { OCCS = j; fillOcc(); } }).catch(() => {});
 function fillSelects(){
   const fp = document.getElementById('fProd'); fp.innerHTML = PRODS.map(([k]) => `<option value="${k}">${t('p_'+k+'_t')}</option>`).join(''); fp.value = curProd;
-  document.getElementById('fOcc').innerHTML = (I18N[lang].oc || I18N.en.oc).map(o => `<option>${o}</option>`).join('');
+  fillOcc();
   const fg = document.getElementById('fGenre'), gv = fg.value || 'g_kids';
   fg.innerHTML = Object.keys(GENRES).map(g => `<option value="${g}">${t(g)}</option>`).join(''); fg.value = gv; fillStyles();
   document.getElementById('fVoice').innerHTML = ['v_girl','v_boy','v_kids2','v_kchoir','v_f','v_m','v_duet'].map(v => `<option value="${v}">${t(v)}</option>`).join('');
@@ -974,7 +994,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   fd.append('child_name', v('fName')); fd.append('child_age', v('fAge')); fd.append('gender', v('fGender'));
   fd.append('book_lang', v('fLang')); fd.append('style', v('fStyle') || v('fStyle2'));
   fd.append('family', v('fFamily')); fd.append('dedication', v('fDedic')); fd.append('title', v('fTitle'));
-  fd.append('occasion', v('fOcc')); fd.append('genre', v('fGenre')); fd.append('voice', v('fVoice')); fd.append('mood', v('fMood'));
+  fd.append('occasion', occValue()); fd.append('occasion_id', v('fOcc')); fd.append('genre', v('fGenre')); fd.append('voice', v('fVoice')); fd.append('mood', v('fMood'));
   fd.append('length', v('fLen')); fd.append('pet', v('fPet')); fd.append('from_whom', v('fFrom')); fd.append('wish', v('fWish')); fd.append('stress', typeof stressAt !== 'undefined' ? String(stressAt) : ''); fd.append('stress_auto', stressAuto ? '1' : '0'); { const gf = document.querySelector('#fGift input:checked'); fd.append('gift', gf ? gf.value : 'g1'); }
   fd.append('contact', contact); fd.append('consent', document.getElementById('fConsent').checked ? 'true' : 'false'); fd.append('consent_teen', document.getElementById('teenRow').hidden ? 'n/a' : (document.getElementById('fTeen').checked ? 'true' : 'false')); fd.append('consent_ver', '1.5/26.10.2026'); fd.append('consent_kind', consentKind()); fd.append('site_lang', lang);
   if (needPh || curProd === 'ny') [...fPhotos.files].slice(0, curProd === 'ny' ? 4 : curProd === 'sing' ? 1 : 8).forEach(f => fd.append('photos', f, f.name));
@@ -1143,7 +1163,7 @@ applyBundle();
   function go(p){
     closeC(false); openModal(p.key);
     var n = $('fName'); if (p.name && n && !n.value.trim()) { n.value = String(p.name).slice(0, 40); n.dispatchEvent(new Event('input', {bubbles:true})); }
-    var o = $('fOcc'), oi = (OCC[lang] || {})[p.occasion]; if (o && oi !== undefined && o.options.length > oi && !o.closest('[hidden]')) { o.selectedIndex = oi; o.dispatchEvent(new Event('change', {bubbles:true})); }
+    var o = $('fOcc'); if (o && p.occasion && !o.closest('[hidden]')) { var oi = (OCC[lang] || {})[p.occasion]; if ([...o.options].some(function(x){ return x.value === p.occasion; })) o.value = p.occasion; else if (oi !== undefined && o.options.length > oi) o.selectedIndex = oi; o.dispatchEvent(new Event('change', {bubbles:true})); }
   }
   async function ask(text){
     text = String(text || '').trim(); if (!text || busy) return;
