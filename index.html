@@ -679,10 +679,11 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
     </div>
     <div id="formSum" hidden style="display:flex;flex-direction:column;gap:14px">
       <h3 data-i="sum_h"></h3>
-      <div style="display:flex;justify-content:space-between;gap:12px"><span data-i="sum_prod"></span><strong id="sumProd"></strong></div>
-      <div style="display:flex;justify-content:space-between;gap:12px"><span data-i="sum_price"></span><span id="sumPrice"></span></div>
+      <div id="sumList" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div id="sumDisc" class="hint" style="margin:0"></div>
+      <button type="button" class="btn btn-ghost" id="sumEdit" style="align-self:flex-start"></button>
+      <p class="hint" id="sumMin" hidden style="margin:0"></p>
       <div style="display:flex;justify-content:space-between;gap:12px;font-size:1.15rem;border-top:1px solid var(--line);padding-top:10px"><strong data-i="sum_total"></strong><strong id="sumTotal"></strong></div>
-      <p class="hint" id="kNote" data-i="k_note" hidden></p>
       <p class="hint" data-i="sum_note"></p>
       <div class="acts"><button type="button" class="btn btn-gold" id="sumPay" data-i="sum_pay"></button><button type="button" class="btn btn-ghost" id="sumBack" data-i="sum_back"></button></div>
     </div>
@@ -709,7 +710,9 @@ const LANGS_ON = ['ru','en'];
    Включать вместе с публикацией оферты от 26.10.2026 и CHAT_INV_LIVE на сервере. */
 const INVITE_LIVE = true;   /* 26.10.2026: открыто по «да» собственника */
 function invSync(){ const on = INVITE_LIVE && lang === 'ru'; const s = document.getElementById('invite'); if (s) s.hidden = !on; const f = document.getElementById('ftInv'); if (f) f.hidden = !on; }
-function consentKind(){ return (curProd === 'clip' || curProd === 'live') ? 'universal' : 'parent'; }   /* = варианты 1.1 и 1.3 согласия 1.5 */
+function curSet(){ try { const b = bundleFor(curProd).filter(k => k !== 'inv' && k !== 'invkit'); return b.length ? b : [curProd]; } catch(_) { return [curProd]; } }   /* 29.10 CART1 */
+function photoMax(){ const S = curSet(); return S.length === 1 && S[0] === 'ny' ? 4 : S.length === 1 && S[0] === 'sing' ? 1 : 8; }
+function consentKind(){ return curSet().every(k => k === 'clip' || k === 'live') ? 'universal' : 'parent'; }   /* = варианты 1.1 и 1.3 согласия 1.5 */
 const SUP = SUP_ALL.filter(l => LANGS_ON.includes(l));
 const PRICES = { RUB:{pdf:990,print:2990,gift:3990,song:490,clip:790,live:1990,sing:1490,ny:490}, KZT:{pdf:7990,print:24990,gift:32990,song:2990,clip:4490,live:11990,sing:8990,ny:2290}, AED:{pdf:65,print:179,gift:249,song:22,clip:35,live:89,sing:69,ny:19}, SAR:{pdf:65,print:185,gift:259,song:22,clip:35,live:89,sing:69,ny:19}, AMD:{pdf:6900,print:18900,gift:26900,song:2490,clip:3490,live:9490,sing:7490,ny:1990}, USD:{pdf:17,print:49,gift:69,song:6,clip:9,live:24,sing:19,ny:5} };
 const LOCALE = {ru:'ru-RU',kk:'kk-KZ',hy:'hy-AM',ar:'ar-AE-u-nu-latn',en:'en-GB'};
@@ -845,8 +848,8 @@ function fillSelects(){
   document.getElementById('fGender').innerHTML = `<option value="f">${tE('f_girl')}</option><option value="m">${tE('f_boy')}</option>`;
 }
 function syncForm(){
-  document.getElementById('fTitle').textContent = t('p_'+curProd+'_t');
-  document.querySelectorAll('#form [data-for]').forEach(el => { el.hidden = !el.dataset.for.split(' ').includes(curProd); });
+  const _S = curSet(); document.getElementById('fTitle').textContent = _S.length > 1 ? _S.map(k => t('p_'+k+'_t')).join(' + ') : t('p_'+curProd+'_t');
+  document.querySelectorAll('#form [data-for]').forEach(el => { el.hidden = !el.dataset.for.split(' ').some(p => _S.includes(p)); });   /* 29.10 CART1: поля всех подарков комплекта сразу */
   const nl = document.getElementById('fNameL'); nl.dataset.i = (curProd==='song' || curProd==='sing') ? 'f_for' : 'f_name'; nl.textContent = t(nl.dataset.i);
   const pl = document.getElementById('fPhotosL'); pl.dataset.i = curProd==='clip' ? 'f_photos_clip' : curProd==='live' ? 'f_photos_live' : curProd==='sing' ? 'f_photos_sing' : curProd==='ny' ? 'f_photos_ny' : 'f_photos'; pl.textContent = t(pl.dataset.i);
   const ph = pl.parentElement.querySelector('.hint[data-i]'); if (ph) { ph.dataset.i = curProd==='ny' ? 'h_photos_ny' : curProd==='sing' ? 'h_photos_sing' : 'f_hint'; ph.textContent = t(ph.dataset.i); }
@@ -854,8 +857,7 @@ function syncForm(){
   if (wl) { wl.dataset.i = curProd==='ny' ? 'f_wish_ny' : 'f_wish'; wl.textContent = t(wl.dataset.i); }
   if (wi) { wi.dataset.ph = curProd==='ny' ? 'ph_wish_ny' : 'ph_wish'; wi.placeholder = t(wi.dataset.ph); }
   if (wh) { wh.dataset.i = curProd==='ny' ? 'h_wish_ny' : 'h_wish'; wh.textContent = t(wh.dataset.i); }
-  if (typeof PHOTOS !== 'undefined' && curProd==='ny' && PHOTOS.length > 4) { PHOTOS = PHOTOS.slice(0, 4); syncPhotos(); }
-  if (typeof PHOTOS !== 'undefined' && curProd==='sing' && PHOTOS.length > 1) { PHOTOS = PHOTOS.slice(0, 1); syncPhotos(); }
+  if (typeof PHOTOS !== 'undefined' && PHOTOS.length > photoMax()) { PHOTOS = PHOTOS.slice(0, photoMax()); syncPhotos(); }
   const sb = document.querySelector('#form button[type=submit]'); sb.dataset.i = curProd==='book' ? 'f_submit' : 'f_submit2'; sb.textContent = t(sb.dataset.i);
   const ll = document.getElementById('fLangL'); ll.dataset.i = (curProd==='song' || curProd==='sing') ? 'f_lang_song' : 'f_lang'; ll.textContent = t(ll.dataset.i);
   const ct = document.getElementById('fConsentT'); if (ct) { ct.dataset.i = consentKind() === 'universal' ? 'f_consent_u' : 'f_consent'; ct.textContent = t(ct.dataset.i); }   /* 26.10: согласие 1.5 — для клипа и «живых фото» возраст не спрашиваем */
@@ -955,7 +957,7 @@ function syncPhotos(){ try { const dt = new DataTransfer(); PHOTOS.forEach(f => 
   updateSel(); }
 fPhotos.addEventListener('change', () => {
   const add = [...(fPhotos.files || [])].filter(f => !PHOTOS.some(p => p.name === f.name && p.size === f.size && p.lastModified === f.lastModified));
-  if (add.length || !PHOTOS.length) PHOTOS = PHOTOS.concat(add).slice(0, curProd === 'ny' ? 4 : 8);
+  if (add.length || !PHOTOS.length) PHOTOS = PHOTOS.concat(add).slice(0, photoMax());
   syncPhotos();
 });
 const API = (document.querySelector('meta[name="talemir-api"]') || {}).content || '';
@@ -978,8 +980,8 @@ document.addEventListener('change', () => teenSync());
 let SEND_NOW = false;
 document.getElementById('form').addEventListener('submit', async e => {
   e.preventDefault();
-  const needPh = ['book','clip','live','sing'].includes(curProd);
-  const needSt = (curProd === 'song' || curProd === 'sing') && !document.getElementById('stressRow').hidden && stressAt < 0 && !stressUnk;
+  const needPh = curSet().some(k => ['book','clip','live','sing'].includes(k));
+  const needSt = curSet().some(k => k === 'song' || k === 'sing') && !document.getElementById('stressRow').hidden && stressAt < 0 && !stressUnk;
   const contact = document.getElementById('fContact').value.trim();
   const consentOk = document.getElementById('fConsent').checked;
   const teenNeed = !document.getElementById('teenRow').hidden;
@@ -987,9 +989,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   const ok = document.getElementById('fName').value.trim() && contact && !needSt && (!needPh || fPhotos.files.length) && consentOk && teenOk;
   if (!ok) { showErr(needSt ? 'f_stress' : (!contact ? 'f_contact_err' : (!consentOk ? 'f_consent_err' : (!teenOk ? 'f_teen_err' : 'f_err')))); return; }
   document.getElementById('fErr').hidden = true;
-  if (!SEND_NOW) { const B = bundleFor(curProd); const pkf = k => (PRODS.find(x => x[0] === k) || [k, k])[1]; const bc = bundleCalc(B); const tot = bc.total;
-    document.getElementById('sumProd').textContent = B.map(k => t('p_' + k + '_t')).join(' + '); document.getElementById('sumPrice').textContent = B.map(k => k === 'inv' ? money(B.some(x => x === 'book' || x === 'song') ? 145 : 290) : money(PRICES[cur][pkf(k)])).join(' + ') + (bc.disc ? ' − ' + t('sum_disc').replace('{p}', bc.disc) : '') + (bc.nyFree ? ' · ' + t('sum_dm_free') : ''); document.getElementById('sumTotal').textContent = money(tot); document.getElementById('kNote').hidden = B.length < 2;
-    document.getElementById('formBody').hidden = true; document.getElementById('formSum').hidden = false; return; }
+  if (!SEND_NOW) { SUM_EDIT = false; SUM_OUT = []; renderSum(); document.getElementById('formBody').hidden = true; document.getElementById('formSum').hidden = false; return; }
   if (!(await apiUp())) { SEND_NOW = false; document.getElementById('formBody').hidden = false; document.getElementById('formSum').hidden = true; showErr('f_neterr'); return; }
   const fd = new FormData(); const v = id => { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
   fd.append('product', curProd); fd.append('bundle', bundleFor(curProd).join(',')); if (typeof invOn === 'function' && invOn()) { fd.append('inv_date', v('fInvDate')); fd.append('inv_time', v('fInvTime').replace(/^(\d):/, '0$1:')); fd.append('inv_place', v('fInvPlace')); fd.append('inv_address', v('fInvAddr')); fd.append('inv_palette', v('fInvPal') || 'lavender'); }
@@ -999,7 +999,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   fd.append('occasion', occValue()); fd.append('occasion_id', v('fOcc')); fd.append('genre', v('fGenre')); fd.append('voice', v('fVoice')); fd.append('mood', v('fMood'));
   fd.append('length', v('fLen')); fd.append('pet', v('fPet')); fd.append('from_whom', v('fFrom')); fd.append('wish', v('fWish')); fd.append('stress', typeof stressAt !== 'undefined' ? String(stressAt) : ''); fd.append('stress_auto', stressAuto ? '1' : '0'); { const gf = document.querySelector('#fGift input:checked'); fd.append('gift', gf ? gf.value : 'g1'); }
   fd.append('contact', contact); fd.append('consent', document.getElementById('fConsent').checked ? 'true' : 'false'); fd.append('consent_teen', document.getElementById('teenRow').hidden ? 'n/a' : (document.getElementById('fTeen').checked ? 'true' : 'false')); fd.append('consent_ver', '1.5/26.10.2026'); fd.append('consent_kind', consentKind()); fd.append('site_lang', lang);
-  if (needPh || curProd === 'ny') [...fPhotos.files].slice(0, curProd === 'ny' ? 4 : curProd === 'sing' ? 1 : 8).forEach(f => fd.append('photos', f, f.name));
+  if (needPh || curSet().includes('ny')) [...fPhotos.files].slice(0, photoMax()).forEach(f => fd.append('photos', f, f.name));
   const btn = e.submitter; if (btn) btn.disabled = true;
   showDone('f_done_h', 'f_sending');
   try {
@@ -1285,6 +1285,47 @@ function load(){fetch('https://ru.api.talemir.com/api/widget',{credentials:'incl
  .then(function(d){var again=draw(d);clearTimeout(timer);if(again)timer=setTimeout(load,30000)}).catch(function(){})}
 window.tmGiftW={draw:draw,ding:ding};   /* для проверки в консоли */
 load();document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});})();
+</script>
+
+<script>
+/* 29.10 CART1: «Ваш заказ» — список подарков с ценами, «Изменить» → убрать/вернуть подарок, скидка комплекта пересчитывается сразу.
+   Итог оплаты всё равно считает сервер (chain.pricing по составу bundle) — цена из браузера не принимается. */
+var SUM_EDIT = false, SUM_OUT = [];
+Object.assign(I18N.ru, {sum_edit:"✏️ Изменить состав", sum_done:"✅ Готово", sum_rm:"Убрать", sum_ret:"↩ Вернуть", sum_min:"В заказе должен остаться хотя бы один подарок", sum_free:"🎁 в подарок", sum_none_disc:"Скидка за комплект — от 2 подарков"});
+Object.assign(I18N.en, {sum_edit:"✏️ Change gifts", sum_done:"✅ Done", sum_rm:"Remove", sum_ret:"↩ Return", sum_min:"At least one gift must stay in the order", sum_free:"🎁 free", sum_none_disc:"Bundle discount starts from 2 gifts"});
+if (I18N.kk) Object.assign(I18N.kk, {sum_edit:"✏️ Құрамын өзгерту", sum_done:"✅ Дайын", sum_rm:"Алып тастау", sum_ret:"↩ Қайтару", sum_min:"Тапсырыста кемінде бір сыйлық қалуы керек", sum_free:"🎁 сыйлыққа", sum_none_disc:"Жиынтық жеңілдігі — 2 сыйлықтан бастап"});
+if (I18N.hy) Object.assign(I18N.hy, {sum_edit:"✏️ Փոխել կազմը", sum_done:"✅ Պատրաստ է", sum_rm:"Հեռացնել", sum_ret:"↩ Վերադարձնել", sum_min:"Պատվերում պետք է մնա առնվազն մեկ նվեր", sum_free:"🎁 նվեր", sum_none_disc:"Հավաքածուի զեղչը՝ 2 նվերից"});
+if (I18N.ar) Object.assign(I18N.ar, {sum_edit:"✏️ تعديل الهدايا", sum_done:"✅ تم", sum_rm:"إزالة", sum_ret:"↩ إرجاع", sum_min:"يجب أن تبقى هدية واحدة على الأقل في الطلب", sum_free:"🎁 مجانًا", sum_none_disc:"خصم المجموعة يبدأ من هديتين"});
+function sumItemPrice(k, B){ const pk = (PRODS.find(x => x[0] === k) || [k, k])[1];
+  if (k === 'inv') return B.some(x => x === 'book' || x === 'song') ? 145 : 290; if (k === 'invkit') return 590; return PRICES[cur][pk]; }
+function renderSum(){
+  const B = bundleFor(curProd); const bc = bundleCalc(B); const box = document.getElementById('sumList'); if (!box) return;
+  const esc = x => String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const canRm = B.length > 1;
+  let h = B.map(k => { const free = k === 'ny' && bc.nyFree; const price = free ? t('sum_free') : money(sumItemPrice(k, B));
+    return '<div class="sumrow" style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px">'
+      + '<strong>' + esc(t('p_' + k + '_t')) + '</strong><span style="display:flex;align-items:center;gap:10px;white-space:nowrap">' + price
+      + (SUM_EDIT ? '<button type="button" class="btn btn-ghost" data-sumrm="' + k + '" ' + (canRm ? '' : 'disabled ') + 'aria-label="' + esc(t('sum_rm')) + '" style="padding:4px 10px;min-height:0">✕</button>' : '') + '</span></div>'; }).join('');
+  if (SUM_EDIT) h += SUM_OUT.filter(k => B.indexOf(k) < 0).map(k => '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border:1px dashed var(--line);border-radius:12px;opacity:.7">'
+      + '<span><s>' + esc(t('p_' + k + '_t')) + '</s></span><button type="button" class="btn btn-ghost" data-sumret="' + k + '" style="padding:4px 10px;min-height:0">' + esc(t('sum_ret')) + '</button></div>').join('');
+  box.innerHTML = h;
+  const d = document.getElementById('sumDisc'); const parts = []; if (bc.disc) parts.push(t('sum_disc').replace('{p}', bc.disc)); if (bc.nyFree) parts.push(t('sum_dm_free'));
+  d.textContent = parts.length ? parts.join(' · ') : (SUM_EDIT || SUM_OUT.length ? t('sum_none_disc') : ''); d.hidden = !d.textContent;
+  document.getElementById('sumTotal').textContent = money(bc.total);
+  const e = document.getElementById('sumEdit'); const multi = B.length > 1 || SUM_OUT.length > 0; e.hidden = !multi; e.textContent = t(SUM_EDIT ? 'sum_done' : 'sum_edit');
+  const m = document.getElementById('sumMin'); m.textContent = t('sum_min'); m.hidden = !(SUM_EDIT && !canRm);
+}
+document.addEventListener('click', function(ev){
+  const ed = ev.target.closest('#sumEdit'); if (ed) { SUM_EDIT = !SUM_EDIT; renderSum(); return; }
+  const rm = ev.target.closest('[data-sumrm]'); if (rm) { const k = rm.dataset.sumrm; const B = bundleFor(curProd); if (B.length < 2) return;
+    if (k === 'inv' || k === 'invkit') { const c = document.getElementById('fInvAdd'); if (c) { c.checked = false; if (typeof invAddSync === 'function') invAddSync(); } }
+    else { const i = BUNDLE.indexOf(k); if (i >= 0) BUNDLE.splice(i, 1); if (k === curProd) { const rest = bundleFor(BUNDLE.find(x => x !== 'inv' && x !== 'invkit') || curProd).filter(x => x !== 'inv' && x !== 'invkit'); if (rest.length) curProd = rest[0]; } if (BUNDLE.length === 1 && BUNDLE[0] === curProd) { /* один подарок — обычный заказ */ } }
+    if (SUM_OUT.indexOf(k) < 0) SUM_OUT.push(k); if (typeof applyBundle === 'function') applyBundle(); try { document.getElementById('fProd').value = curProd; syncForm(); } catch(_){} renderSum(); return; }
+  const rt = ev.target.closest('[data-sumret]'); if (rt) { const k = rt.dataset.sumret;
+    if (k === 'inv' || k === 'invkit') { const c = document.getElementById('fInvAdd'); if (c) { c.checked = true; if (typeof invAddSync === 'function') invAddSync(); } }
+    else { if (!BUNDLE.length) BUNDLE.push(curProd); if (BUNDLE.indexOf(k) < 0) BUNDLE.push(k); }
+    SUM_OUT = SUM_OUT.filter(x => x !== k); if (typeof applyBundle === 'function') applyBundle(); try { syncForm(); } catch(_){} renderSum(); return; }
+}, true);
 </script>
 </body>
 </html>
