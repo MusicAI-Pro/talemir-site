@@ -19,6 +19,18 @@
 <link rel="alternate" hreflang="x-default" href="https://talemir.com/">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}[data-i="proto"]:empty,[data-i="ft_proto"]:empty{display:none!important}
 .ftlinks{display:flex;flex-wrap:wrap;gap:6px 18px}.ftlinks a{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:3px}
+
+/* 29.10 HOME2: пример мультфильма наверху главной — клик ведёт в конструктор */
+.carth{margin:6px 0 22px;display:grid;gap:14px;align-items:center}
+.carth[hidden]{display:none}
+.carth-v{position:relative;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:20px;overflow:hidden;cursor:pointer;background:#1b1230;box-shadow:0 14px 40px rgba(35,23,58,.28)}
+.carth-v video,.carth-v img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.carth-v .carth-badge{position:absolute;left:12px;top:12px;background:rgba(27,18,48,.78);color:#fff;font-weight:700;font-size:13px;padding:6px 12px;border-radius:999px}
+.carth-t b{display:block;font-family:Montserrat,Nunito,system-ui,sans-serif;font-weight:800;font-size:clamp(20px,4.6vw,30px);line-height:1.2;margin-bottom:6px}
+.carth-t p{margin:0 0 12px;color:var(--muted)}
+.carth-t .btn{display:inline-flex}
+@media (min-width:900px){.carth{grid-template-columns:1.35fr 1fr;gap:28px}}
+@media (prefers-reduced-motion:reduce){.carth-v video{display:none}}
 </style>
 <title>Talemir</title>
 <meta name="x-removed" content="cover">
@@ -493,6 +505,18 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 <main id="top">
   <div class="cloth hero2">
     <div class="wrap">
+      <div class="carth" id="cartHero" hidden>
+        <button type="button" class="carth-v" data-open="cartoon" aria-label="Создать свой мультфильм — открыть конструктор">
+          <img src="img/ex/ex_cartoon.jpg" alt="" width="1280" height="720" loading="eager">
+          <video id="cartHeroVid" muted loop playsinline preload="metadata" poster="img/ex/ex_cartoon.jpg" width="1280" height="720"></video>
+          <span class="carth-badge">Новинка · мультфильм по вашей истории</span>
+        </button>
+        <div class="carth-t">
+          <b>Мультфильм, где главные герои — вы</b>
+          <p>Расскажите вашу историю и загрузите фото — получите мультфильм ≈1 минута, 10 сцен и песню с вашими именами.</p>
+          <button type="button" class="btn btn-gold" data-open="cartoon">Создать свой мультфильм</button>
+        </div>
+      </div>
       <span class="kicker" data-i="hv_kicker"></span>
       <h1 data-i="hero_h1"></h1>
       <p class="lead" id="heroSub" data-i="hero_sub"></p>
@@ -757,6 +781,14 @@ const STYLES = [["st_3d", "st_3d"], ["st_water", "st_water"], ["st_pencil", "st_
 
 const PRODS = [['cartoon','cartoon'],['book','pdf'],['song','song'],['clip','clip'],['live','live'],['sing','sing'],['ny','ny']];
 const cartOn = () => cur === 'RUB' && lang === 'ru';   /* 28.10 MULT1: мультфильм — только RU/RUB */
+function syncCartHero(){   /* 29.10 HOME2 */
+  const h = document.getElementById('cartHero'); if (!h) return;
+  const on = cartOn(); h.hidden = !on;
+  const v = document.getElementById('cartHeroVid'); if (!v) return;
+  const rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (on && !rm) { if (!v.getAttribute('src')) v.setAttribute('src','img/ex/ex_cartoon.mp4'); const pr = v.play(); if (pr && pr.catch) pr.catch(()=>{}); }
+  else if (!on) { try { v.pause(); } catch(_){} }
+}
 const GRID = () => PRODS.filter(([k]) => k !== 'ny' && (k !== 'cartoon' || cartOn()));   /* 24.10.2026 указ владельца: Дед Мороз — не в списке, а акционным баннером */
 const ICONS = {"cartoon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M7 5v4M12 5v4M17 5v4M7 15v4M12 15v4M17 15v4\"/></svg>", "book": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z\"/><path d=\"M4 19V5\"/></svg>", "song": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M9 18V5l11-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"17\" cy=\"16\" r=\"3\"/></svg>", "clip": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M10 9l5 3-5 3z\"/></svg>", "live": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z\"/><path d=\"M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z\"/></svg>", "sing": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"11\" rx=\"3\"/><path d=\"M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8\"/></svg>", "ny": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 2v20M4.9 6l14.2 12M19.1 6L4.9 18\"/><path d=\"M9 3.5l3 2 3-2M9 20.5l3-2 3 2\"/></svg>"};
 function media(k){
@@ -927,7 +959,7 @@ if (heroVid) {
     document.getElementById('hvSound').textContent = t(heroVid.muted ? 'hv_sound' : 'hv_mute');
   });
 }
-function render(){
+function render(){ try { syncCartHero(); } catch(_){} 
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   document.querySelectorAll('[data-i]').forEach(el => { el.textContent = t(el.dataset.i); });
