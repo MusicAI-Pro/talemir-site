@@ -669,6 +669,7 @@ var cu=c||(RU?'RUB':'');h.hidden=!(l==='ru'&&cu==='RUB');}catch(e){}})();
 </div>
 <div class="modal" id="modal" hidden>
   <form class="sheet" id="form" novalidate>
+    <div class="psteps" id="pSteps" aria-live="polite"><div class="psteps-t" id="pStepsT"></div><div class="psteps-bar" aria-hidden="true"><i></i><i></i><i></i></div></div>
     <div id="formBody" style="display:flex;flex-direction:column;gap:14px">
       <h3 id="fTitle"></h3>
       <div class="row"><label for="fProd" data-i="f_prod"></label><select id="fProd"></select></div>
@@ -734,6 +735,25 @@ var cu=c||(RU?'RUB':'');h.hidden=!(l==='ru'&&cu==='RUB');}catch(e){}})();
       <div style="display:flex;justify-content:space-between;gap:12px;font-size:1.15rem;border-top:1px solid var(--line);padding-top:10px"><strong data-i="sum_total"></strong><strong id="sumTotal"></strong></div>
       <p class="hint" data-i="sum_note"></p>
       <div class="acts"><button type="button" class="btn btn-gold" id="sumPay" data-i="sum_pay"></button><button type="button" class="btn btn-ghost" id="sumBack" data-i="sum_back"></button></div>
+    </div>
+    <div id="formPay" hidden style="display:flex;flex-direction:column;gap:14px"><!-- 29.10 PAYUX1: оплата в том же окне (тексты = checkout_page.html) -->
+      <h3 data-i="pay_h"></h3>
+      <div class="paycard">
+        <div class="paytitle" id="payTitle"></div>
+        <div class="hint" id="payHeroRow" style="margin:0"><span data-i="pay_hero"></span> <b id="payHero"></b></div>
+        <div class="payprice"><s id="payOld" hidden></s><strong id="payPrice"></strong></div>
+        <div class="hint" id="payDisc" hidden style="margin:0"></div>
+        <div class="hint" id="payRub" hidden data-i="pay_rub" style="margin:0"></div>
+      </div>
+      <p class="hint" data-i="pay_after" style="margin:0"></p>
+      <div class="row"><label for="payEm" data-i="pay_em"></label><input type="email" id="payEm" autocomplete="email" inputmode="email" maxlength="120" placeholder="mama@mail.ru" spellcheck="false" autocapitalize="off"></div>
+      <div class="row"><label for="payTg" data-i="pay_tg"></label><input type="text" id="payTg" maxlength="40" autocomplete="off" spellcheck="false" autocapitalize="off" data-pph="ph_pay_tg"></div>
+      <div class="row"><label for="payRf" data-i="pay_rf"></label><div class="payrf"><input type="text" id="payRf" maxlength="40" autocomplete="off" spellcheck="false" autocapitalize="characters" data-pph="ph_pay_rf"><button type="button" class="btn btn-ghost" id="payRfBtn" data-i="pay_apply"></button></div><span class="hint" id="payRfm" role="status" aria-live="polite"></span></div>
+      <div class="row"><label class="consent" style="margin:0"><input type="checkbox" id="payOk"><span><span data-i="pay_ok1"></span> <a href="https://talemir.com/offer" target="_blank" rel="noopener" data-i="pay_ok_offer"></a> <span data-i="pay_ok_and"></span> <a href="https://talemir.com/privacy" target="_blank" rel="noopener" data-i="pay_ok_priv"></a><span data-i="pay_ok2"></span></span></label></div>
+      <div class="payvpn" role="note"><span aria-hidden="true">💡</span><span><b data-i="pay_vpn_b"></b><span data-i="pay_vpn"></span></span></div>
+      <span class="err" id="payErr" role="alert" hidden></span>
+      <div class="acts"><button type="button" class="btn btn-gold" id="payGo" data-i="sum_pay"></button><button type="button" class="btn btn-ghost" id="payBack" data-i="pay_back"></button></div>
+      <p class="hint" data-i="pay_bank" style="margin:0"></p>
     </div>
     <div id="formDone" hidden style="display:flex;flex-direction:column;gap:14px">
       <h3 id="fDoneH" data-i="f_done_h"></h3><p id="fDoneP" data-i="f_done"></p>
@@ -1143,12 +1163,16 @@ document.getElementById('form').addEventListener('submit', async e => {
     ['fCartP1','fCartP2','fCartP3'].forEach(id => { const fs = [...document.getElementById(id).files].slice(0, 3); cnt.push(fs.length); fs.forEach(f => fd.append('photos', f, f.name)); });
     fd.append('cart_counts', cnt.join(','));
   }
+  const _keys = bundleFor(curProd), _sig = (window.PAYUX && PAYUX.sig) ? PAYUX.sig(fd) : '';   /* 29.10 PAYUX1: тот же состав и данные — тот же заказ (без второй заявки) */
+  if (window.PAYUX && PAYUX.last && PAYUX.last.tok && PAYUX.last.sig === _sig) { SEND_NOW = false; PAYUX.after(PAYUX.last.tok, _keys, _sig); return; }
   const btn = e.submitter; if (btn) btn.disabled = true;
   showDone('f_done_h', 'f_sending');
   try {
     const r = await fetch(API + '/api/orders', {method:'POST', body:fd});
     const j = await r.json().catch(() => ({}));
-    if (r.status === 201) { try { localStorage.setItem('tm_order', j.token); } catch(_){} let rf = ''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){} location.href = API + '/api/start/' + encodeURIComponent(j.token || '') + (rf ? '?ref=' + encodeURIComponent(rf) : ''); return; }
+    if (r.status === 201) { try { localStorage.setItem('tm_order', j.token); } catch(_){} SEND_NOW = false;
+      if (window.PAYUX && j.token) { PAYUX.after(j.token, _keys, _sig); return; }   /* 29.10 PAYUX1: оплата — в этом же окне */
+      let rf = ''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){} location.href = API + '/api/start/' + encodeURIComponent(j.token || '') + (rf ? '?ref=' + encodeURIComponent(rf) : ''); return; }
     SEND_NOW = false;
     document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true;
     srvErr(String(j.detail || ''), r.status);   /* 28.10 ERR1: ответ сервера — понятным текстом у нужного поля */
@@ -1500,5 +1524,229 @@ document.addEventListener('click', function(ev){
 <script>/* 28.10 MULT1: счётчик знаков истории */
 (function(){var t=document.getElementById('fCartStory'),c=document.getElementById('fCartCnt');if(!t||!c)return;
 function u(){var n=t.value.trim().length;c.textContent=n+' / 1500 знаков'+(n<150?' · минимум 150':' ✓');c.style.color=n<150?'#c0392b':'';}
-t.addEventListener('input',u);u();})();</script></body>
+t.addEventListener('input',u);u();})();</script>
+<style>
+/* 29.10 PAYUX1: шаги и оплата в одном окне */
+.psteps{display:flex;flex-direction:column;gap:6px;margin:-4px 0 0}
+.psteps[hidden]{display:none}
+.psteps-t{font-size:var(--fs-2,.85rem);font-weight:700;color:var(--muted);letter-spacing:.01em}
+.psteps-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.psteps-bar i{display:block;height:5px;border-radius:99px;background:var(--line)}
+.psteps-bar i.on{background:var(--gold)}
+#formPay .paycard{border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:color-mix(in srgb,var(--gold) 7%,var(--card))}
+#formPay .paytitle{font-weight:800;font-size:1.05rem;line-height:1.3}
+#formPay .payprice{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:4px}
+#formPay .payprice strong{font-size:1.9rem;line-height:1.1}
+#formPay .payprice s{color:var(--muted);font-size:1.1rem}
+#formPay input[type=email],#formPay input[type=text]{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:.6em .8em;width:100%;font:inherit;box-sizing:border-box;min-height:46px}
+#formPay input[aria-invalid=true]{border-color:#c0392b}
+#formPay .payrf{display:flex;gap:8px;align-items:stretch}
+#formPay .payrf input{flex:1;min-width:0}
+#formPay .payrf .btn{flex:none;padding:.5em 1em;min-height:46px}
+#formPay .payok{color:#2e7d4f;font-weight:600}
+#formPay .paybad{color:#c0392b;font-weight:600}
+#formPay .payvpn{display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,var(--gold) 14%,var(--card));border:1px solid color-mix(in srgb,var(--gold) 45%,var(--card));color:var(--ink);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45}
+#formPay .acts .btn-gold{flex:1 1 auto}
+#formPay .btn[disabled]{opacity:.55;cursor:default;transform:none}
+#formPay .consent input{width:22px;height:22px;flex:none;margin-top:1px}
+</style>
+<script>
+/* 29.10 PAYUX1 (решение собственника): вся покупка — в одном окне. Подарок → состав → оплата (оферта, цена, промокод, e-mail) → «Перейти к оплате» → страница банка ЮKassa.
+   Сервер не меняется: цена — POST /api/quote/{tok}, оплата — POST /api/pay/{tok} (те же поля, что на /checkout). Книга (сначала предпросмотр), временно недоступный подарок
+   и любая непредвиденная ошибка — как раньше: /api/start/{tok}. Тексты, ссылки оферты и причины по коду — дословно со страницы checkout_page.html (правило №140). */
+Object.assign(I18N.ru, {st_of:'Шаг {n} из {m}', st_1:'Подарок', st_2:'Ваш заказ', st_3:'Оплата', sum_next:'Далее: оплата', pay_h:'Оплата', pay_hero:'Герой:',
+  pay_after:'После оплаты сразу начнём готовить подарок — обычно это занимает от 30 минут до 2 часов. Подарок будет на странице заказа и на почте; в Telegram — после одного нажатия «Получить в Telegram».',
+  pay_em:'E-mail для чека и подарка', pay_tg:'Telegram (необязательно)', ph_pay_tg:'@username — подарок можно будет получить и в Telegram', pay_rf:'Промокод или код друга (если есть)', ph_pay_rf:'Например: ANNA-7K2Q', pay_apply:'Применить',
+  pay_ok1:'Принимаю', pay_ok_offer:'условия оферты', pay_ok_and:'и', pay_ok_priv:'политику конфиденциальности', pay_ok2:'',
+  pay_vpn_b:'Перед оплатой выключите VPN', pay_vpn:', если он включён — иначе банк может не открыть страницу оплаты. После оплаты VPN можно включить снова. Если что-то не получается — напишите нам: support@talemir.com, поможем.',
+  pay_back:'Назад', pay_bank:'Оплата картой, через СБП, SberPay, T-Pay или ЮMoney — на защищённой странице ЮKassa. Чек придёт на почту.', pay_rub:'Оплата проходит в рублях.',
+  pay_disc:'Скидка за комплект {p}% (было {s})', pay_wait:'Считаем цену…', pay_going:'Переходим к оплате…', pay_checking:'Проверяем код…', pay_own:'Применена ваша скидка: −{p}%.',
+  rs_none:'Есть код друга? Скидка 10% на первый заказ.', rs_need_email:'Укажите e-mail выше — проверим код.', rs_friend:'Код друга применён: −{p}%.', rs_promo_ok:'Промокод применён: −{p}%.', rs_new_only:'Промокод только для новых клиентов.',
+  rs_inactive:'Промокод сейчас не действует.', rs_own_better:'У вас есть скидка больше — применена она: −{p}%.', rs_owner:'Промокод применён: −{p}%.', rs_not_found:'Промокод не найден. Проверьте написание — например, ANNA-7K2Q.',
+  rs_own_code:'Это ваш собственный код: им делятся с друзьями, для себя он не действует.', rs_used:'Скидка по коду друга действует только на первый заказ — она уже использована.', rs_bound_other:'Этот промокод привязан к другой почте или аккаунту.',
+  rs_expired_own:'Срок вашей скидки истёк.', rs_expired:'Срок промокода истёк.', rs_not_for_product:'Промокод не действует на этот подарок.', rs_ny_cap:'Для Деда Мороза скидка — не больше 10%.',
+  qe_http:'Не удалось проверить код (ошибка {c}). Попробуйте ещё раз — или оплатите без кода.', qe_429:'Слишком много проверок кода подряд — подождите несколько минут и попробуйте снова.', qe_net:'Не удалось проверить код: нет связи с сервером. Проверьте интернет и попробуйте ещё раз.',
+  em_empty:'Укажите e-mail — на него придут чек и подарок.', em_noat:'Почта указана с ошибкой: нет символа @. Пример: name@mail.ru', em_space:'В почте не должно быть пробелов — уберите их.', em_2at:'В почте должен быть только один символ @.',
+  em_nouser:'Почта указана с ошибкой: нет имени перед @. Пример: name@mail.ru', em_cyr:'После @ пишите латиницей, например mail.ru или gmail.com.', em_dom:'Почта указана с ошибкой: после @ нужен адрес почты с точкой, например mail.ru или gmail.com.', em_bad:'Проверьте e-mail: пример name@mail.ru',
+  pe_ok:'Отметьте согласие с условиями оферты и политикой — без этого оплата невозможна.', pe_tg:'Ник в Telegram — латиница, цифры и «_», от 5 до 32 знаков, например @mama_anna. Поле можно оставить пустым.',
+  pe_already:'Этот заказ уже оплачен или уже в работе — откройте страницу заказа по ссылке из письма.', pe_unavailable:'Этот подарок сейчас временно недоступен — попробуйте через несколько минут.',
+  pe_promo_unavailable:'Акция с этим кодом сейчас не действует — уберите код и оплатите заказ.', pe_bad_choice:'Подарок не найден — нажмите «Назад» и оформите заказ заново.', pe_409:'Условия заказа изменились — нажмите «Назад» и оформите заказ заново.',
+  pe_http:'Не получилось перейти к оплате (код {c}). Открываем страницу оформления заказа…', pe_net:'Нет связи с сервером. Проверьте интернет (и выключите VPN) и попробуйте ещё раз.'});
+Object.assign(I18N.en, {st_of:'Step {n} of {m}', st_1:'Gift', st_2:'Your order', st_3:'Payment', sum_next:'Next: payment', pay_h:'Payment', pay_hero:'Hero:',
+  pay_after:'Right after payment we start preparing your gift — it usually takes from 30 minutes to 2 hours. The gift will be on the order page and in your email; in Telegram — after one tap on “Get in Telegram”.',
+  pay_em:'Email for the receipt and the gift', pay_tg:'Telegram (optional)', ph_pay_tg:'@username — you can also get the gift in Telegram', pay_rf:'Promo code or friend’s code (if you have one)', ph_pay_rf:'For example: ANNA-7K2Q', pay_apply:'Apply',
+  pay_ok1:'I accept the', pay_ok_offer:'terms of the offer', pay_ok_and:'and the', pay_ok_priv:'privacy policy', pay_ok2:'',
+  pay_vpn_b:'Turn off your VPN before paying', pay_vpn:' if it is on — otherwise the bank may not open the payment page. You can turn the VPN back on after paying. If something doesn’t work, write to us: support@talemir.com — we’ll help.',
+  pay_back:'Back', pay_bank:'Pay by card, SBP, SberPay, T-Pay or YooMoney on the secure YooKassa page. The receipt will be sent to your email.', pay_rub:'Payment is made in Russian roubles.',
+  pay_disc:'Bundle discount {p}% (was {s})', pay_wait:'Calculating the price…', pay_going:'Opening the payment page…', pay_checking:'Checking the code…', pay_own:'Your discount is applied: −{p}%.',
+  rs_none:'Have a friend’s code? 10% off your first order.', rs_need_email:'Enter your email above — we’ll check the code.', rs_friend:'Friend’s code applied: −{p}%.', rs_promo_ok:'Promo code applied: −{p}%.', rs_new_only:'This promo code is for new customers only.',
+  rs_inactive:'This promo code is not active right now.', rs_own_better:'You already have a bigger discount — it is applied: −{p}%.', rs_owner:'Promo code applied: −{p}%.', rs_not_found:'Promo code not found. Check the spelling — for example, ANNA-7K2Q.',
+  rs_own_code:'This is your own code: it is for sharing with friends and does not work for you.', rs_used:'A friend’s code discount works only on the first order — it has already been used.', rs_bound_other:'This promo code is linked to another email or account.',
+  rs_expired_own:'Your discount has expired.', rs_expired:'This promo code has expired.', rs_not_for_product:'This promo code does not apply to this gift.', rs_ny_cap:'For Father Frost the discount is at most 10%.',
+  qe_http:'Could not check the code (error {c}). Try again — or pay without a code.', qe_429:'Too many code checks in a row — please wait a few minutes and try again.', qe_net:'Could not check the code: no connection to the server. Check your internet and try again.',
+  em_empty:'Enter your email — the receipt and the gift will be sent there.', em_noat:'The email has a mistake: there is no @ sign. Example: name@mail.com', em_space:'An email cannot contain spaces — please remove them.', em_2at:'An email can contain only one @ sign.',
+  em_nouser:'The email has a mistake: there is no name before @. Example: name@mail.com', em_cyr:'After @ use Latin letters, for example gmail.com.', em_dom:'The email has a mistake: after @ there must be a domain with a dot, for example gmail.com.', em_bad:'Check your email: example name@mail.com',
+  pe_ok:'Tick the box to accept the offer terms and the privacy policy — payment is not possible without it.', pe_tg:'A Telegram username uses Latin letters, digits and “_”, 5 to 32 characters, for example @mama_anna. You can leave this field empty.',
+  pe_already:'This order has already been paid or is in progress — open the order page using the link from the email.', pe_unavailable:'This gift is temporarily unavailable — please try again in a few minutes.',
+  pe_promo_unavailable:'The promotion for this code is not active right now — remove the code and pay for the order.', pe_bad_choice:'Gift not found — tap “Back” and place the order again.', pe_409:'The order conditions have changed — tap “Back” and place the order again.',
+  pe_http:'Could not open the payment (code {c}). Opening the order page…', pe_net:'No connection to the server. Check your internet (and turn off your VPN) and try again.'});
+if (I18N.kk) Object.assign(I18N.kk, {st_of:'{m} қадамның {n}-сі', st_1:'Сыйлық', st_2:'Сіздің тапсырысыңыз', st_3:'Төлем', sum_next:'Әрі қарай: төлем', pay_h:'Төлем', pay_hero:'Кейіпкер:',
+  pay_after:'Төлемнен кейін сыйлықты бірден дайындай бастаймыз — әдетте бұл 30 минуттан 2 сағатқа дейін созылады. Сыйлық тапсырыс бетінде және поштада болады; Telegram-да — «Telegram-да алу» батырмасын бір рет басқаннан кейін.',
+  pay_em:'Чек пен сыйлыққа арналған e-mail', pay_tg:'Telegram (міндетті емес)', ph_pay_tg:'@username — сыйлықты Telegram-да да алуға болады', pay_rf:'Промокод немесе досыңыздың коды (бар болса)', ph_pay_rf:'Мысалы: ANNA-7K2Q', pay_apply:'Қолдану',
+  pay_ok1:'', pay_ok_offer:'Оферта шарттарын', pay_ok_and:'және', pay_ok_priv:'құпиялылық саясатын', pay_ok2:' қабылдаймын',
+  pay_vpn_b:'Төлем алдында VPN-ді өшіріңіз', pay_vpn:', егер ол қосулы болса — әйтпесе банк төлем бетін ашпауы мүмкін. Төлемнен кейін VPN-ді қайта қосуға болады. Бірдеңе болмаса — бізге жазыңыз: support@talemir.com, көмектесеміз.',
+  pay_back:'Артқа', pay_bank:'Картамен, СБП, SberPay, T-Pay немесе ЮMoney арқылы — ЮKassa-ның қорғалған бетінде төлейсіз. Чек поштаға келеді.', pay_rub:'Төлем рубльмен жүргізіледі.',
+  pay_disc:'Жиынтық жеңілдігі {p}% (бұрын {s})', pay_wait:'Бағаны есептеп жатырмыз…', pay_going:'Төлемге өтудеміз…', pay_checking:'Кодты тексеріп жатырмыз…', pay_own:'Сіздің жеңілдігіңіз қолданылды: −{p}%.',
+  rs_none:'Досыңыздың коды бар ма? Алғашқы тапсырысқа 10% жеңілдік.', rs_need_email:'Жоғарыда e-mail көрсетіңіз — кодты тексереміз.', rs_friend:'Досыңыздың коды қолданылды: −{p}%.', rs_promo_ok:'Промокод қолданылды: −{p}%.', rs_new_only:'Промокод тек жаңа клиенттерге арналған.',
+  rs_inactive:'Промокод қазір жарамсыз.', rs_own_better:'Сізде одан үлкен жеңілдік бар — сол қолданылды: −{p}%.', rs_owner:'Промокод қолданылды: −{p}%.', rs_not_found:'Промокод табылмады. Жазылуын тексеріңіз — мысалы, ANNA-7K2Q.',
+  rs_own_code:'Бұл — сіздің өз кодыңыз: оны достарыңызбен бөлісесіз, өзіңізге жарамайды.', rs_used:'Дос кодымен жеңілдік тек алғашқы тапсырысқа беріледі — ол пайдаланылып қойған.', rs_bound_other:'Бұл промокод басқа поштаға немесе аккаунтқа байланған.',
+  rs_expired_own:'Сіздің жеңілдігіңіздің мерзімі өтті.', rs_expired:'Промокодтың мерзімі өтті.', rs_not_for_product:'Промокод бұл сыйлыққа жарамайды.', rs_ny_cap:'Аяз Ата үшін жеңілдік — 10%-дан аспайды.',
+  qe_http:'Кодты тексеру мүмкін болмады (қате {c}). Қайталап көріңіз — немесе кодсыз төлеңіз.', qe_429:'Код тым көп рет қатарынан тексерілді — бірнеше минут күтіп, қайталап көріңіз.', qe_net:'Кодты тексеру мүмкін болмады: сервермен байланыс жоқ. Интернетті тексеріп, қайталап көріңіз.',
+  em_empty:'E-mail көрсетіңіз — чек пен сыйлық соған келеді.', em_noat:'Поштада қате бар: @ белгісі жоқ. Мысал: name@mail.ru', em_space:'Поштада бос орын болмауы керек — оларды алып тастаңыз.', em_2at:'Поштада тек бір @ белгісі болуы керек.',
+  em_nouser:'Поштада қате бар: @ алдында атау жоқ. Мысал: name@mail.ru', em_cyr:'@ белгісінен кейін латынша жазыңыз, мысалы mail.ru немесе gmail.com.', em_dom:'Поштада қате бар: @ кейін нүктесі бар пошта мекенжайы керек, мысалы mail.ru немесе gmail.com.', em_bad:'E-mail-ді тексеріңіз: мысал name@mail.ru',
+  pe_ok:'Оферта шарттары мен саясатқа келісімді белгілеңіз — онсыз төлем мүмкін емес.', pe_tg:'Telegram-дағы ник — латын әріптері, сандар және «_», 5-тен 32 таңбаға дейін, мысалы @mama_anna. Өрісті бос қалдыруға болады.',
+  pe_already:'Бұл тапсырыс төленіп қойған немесе жұмыста — хаттағы сілтеме арқылы тапсырыс бетін ашыңыз.', pe_unavailable:'Бұл сыйлық қазір уақытша қолжетімсіз — бірнеше минуттан кейін қайталап көріңіз.',
+  pe_promo_unavailable:'Бұл кодпен акция қазір жарамсыз — кодты алып тастап, тапсырысты төлеңіз.', pe_bad_choice:'Сыйлық табылмады — «Артқа» басып, тапсырысты қайта ресімдеңіз.', pe_409:'Тапсырыс шарттары өзгерді — «Артқа» басып, тапсырысты қайта ресімдеңіз.',
+  pe_http:'Төлемге өту мүмкін болмады (код {c}). Тапсырыс бетін ашып жатырмыз…', pe_net:'Сервермен байланыс жоқ. Интернетті тексеріп (және VPN-ді өшіріп), қайталап көріңіз.'});
+if (I18N.hy) Object.assign(I18N.hy, {st_of:'Քայլ {n}՝ {m}-ից', st_1:'Նվեր', st_2:'Ձեր պատվերը', st_3:'Վճարում', sum_next:'Հաջորդը՝ վճարում', pay_h:'Վճարում', pay_hero:'Հերոս՝',
+  pay_after:'Վճարումից անմիջապես հետո կսկսենք պատրաստել նվերը․ սովորաբար դա տևում է 30 րոպեից մինչև 2 ժամ։ Նվերը կլինի պատվերի էջում և էլ. փոստում, իսկ Telegram-ում՝ «Ստանալ Telegram-ում» կոճակը մեկ անգամ սեղմելուց հետո։',
+  pay_em:'Էլ. փոստ՝ կտրոնի և նվերի համար', pay_tg:'Telegram (ըստ ցանկության)', ph_pay_tg:'@username — նվերը կարող եք ստանալ նաև Telegram-ում', pay_rf:'Պրոմոկոդ կամ ընկերոջ կոդ (եթե կա)', ph_pay_rf:'Օրինակ՝ ANNA-7K2Q', pay_apply:'Կիրառել',
+  pay_ok1:'Ընդունում եմ', pay_ok_offer:'օֆերտայի պայմանները', pay_ok_and:'և', pay_ok_priv:'գաղտնիության քաղաքականությունը', pay_ok2:'',
+  pay_vpn_b:'Վճարելուց առաջ անջատեք VPN-ը', pay_vpn:', եթե այն միացված է, այլապես բանկը կարող է չբացել վճարման էջը։ Վճարումից հետո VPN-ը կարող եք նորից միացնել։ Եթե ինչ-որ բան չի ստացվում, գրեք մեզ՝ support@talemir.com, կօգնենք։',
+  pay_back:'Հետ', pay_bank:'Վճարում քարտով, СБП-ով, SberPay-ով, T-Pay-ով կամ ЮMoney-ով՝ ЮKassa-ի պաշտպանված էջում։ Կտրոնը կգա էլ. փոստին։', pay_rub:'Վճարումը կատարվում է ռուբլով։',
+  pay_disc:'Հավաքածուի զեղչ {p}% (նախկինում՝ {s})', pay_wait:'Հաշվում ենք գինը…', pay_going:'Անցնում ենք վճարման…', pay_checking:'Ստուգում ենք կոդը…', pay_own:'Կիրառվել է ձեր զեղչը՝ −{p}%։',
+  rs_none:'Ունե՞ք ընկերոջ կոդ։ 10% զեղչ առաջին պատվերի համար։', rs_need_email:'Վերևում նշեք էլ. փոստը՝ կստուգենք կոդը։', rs_friend:'Ընկերոջ կոդը կիրառվել է՝ −{p}%։', rs_promo_ok:'Պրոմոկոդը կիրառվել է՝ −{p}%։', rs_new_only:'Պրոմոկոդը միայն նոր հաճախորդների համար է։',
+  rs_inactive:'Պրոմոկոդն այժմ չի գործում։', rs_own_better:'Դուք ունեք ավելի մեծ զեղչ, կիրառվել է այն՝ −{p}%։', rs_owner:'Պրոմոկոդը կիրառվել է՝ −{p}%։', rs_not_found:'Պրոմոկոդը չի գտնվել։ Ստուգեք գրությունը, օրինակ՝ ANNA-7K2Q։',
+  rs_own_code:'Սա ձեր սեփական կոդն է․ այն կիսում են ընկերների հետ, ձեզ համար չի գործում։', rs_used:'Ընկերոջ կոդով զեղչը գործում է միայն առաջին պատվերի համար, և այն արդեն օգտագործվել է։', rs_bound_other:'Այս պրոմոկոդը կապված է այլ էլ. փոստի կամ հաշվի հետ։',
+  rs_expired_own:'Ձեր զեղչի ժամկետը լրացել է։', rs_expired:'Պրոմոկոդի ժամկետը լրացել է։', rs_not_for_product:'Պրոմոկոդը չի գործում այս նվերի համար։', rs_ny_cap:'Ձմեռ պապի համար զեղչը 10%-ից ավելի չէ։',
+  qe_http:'Չհաջողվեց ստուգել կոդը (սխալ {c})։ Կրկին փորձեք կամ վճարեք առանց կոդի։', qe_429:'Կոդը շատ անգամ է ստուգվել անընդմեջ․ սպասեք մի քանի րոպե և կրկին փորձեք։', qe_net:'Չհաջողվեց ստուգել կոդը․ սերվերի հետ կապ չկա։ Ստուգեք ինտերնետը և կրկին փորձեք։',
+  em_empty:'Նշեք էլ. փոստը՝ կտրոնը և նվերը կգան այնտեղ։', em_noat:'Էլ. փոստում սխալ կա՝ չկա @ նշանը։ Օրինակ՝ name@mail.ru', em_space:'Էլ. փոստում բացատներ չպետք է լինեն՝ հեռացրեք դրանք։', em_2at:'Էլ. փոստում պետք է լինի միայն մեկ @ նշան։',
+  em_nouser:'Էլ. փոստում սխալ կա՝ @-ից առաջ անուն չկա։ Օրինակ՝ name@mail.ru', em_cyr:'@-ից հետո գրեք լատինատառ, օրինակ՝ mail.ru կամ gmail.com։', em_dom:'Էլ. փոստում սխալ կա՝ @-ից հետո պետք է կետով հասցե, օրինակ՝ mail.ru կամ gmail.com։', em_bad:'Ստուգեք էլ. փոստը՝ օրինակ name@mail.ru',
+  pe_ok:'Նշեք համաձայնությունը օֆերտայի պայմաններին և քաղաքականությանը․ առանց դրա վճարումը հնարավոր չէ։', pe_tg:'Telegram-ի անունը՝ լատինատառ, թվեր և «_», 5-ից 32 նիշ, օրինակ՝ @mama_anna։ Դաշտը կարող եք թողնել դատարկ։',
+  pe_already:'Այս պատվերն արդեն վճարված է կամ ընթացքում է․ բացեք պատվերի էջը նամակի հղումով։', pe_unavailable:'Այս նվերը ժամանակավորապես անհասանելի է․ կրկին փորձեք մի քանի րոպեից։',
+  pe_promo_unavailable:'Այս կոդով ակցիան այժմ չի գործում․ հեռացրեք կոդը և վճարեք պատվերը։', pe_bad_choice:'Նվերը չի գտնվել․ սեղմեք «Հետ» և նորից ձևակերպեք պատվերը։', pe_409:'Պատվերի պայմանները փոխվել են․ սեղմեք «Հետ» և նորից ձևակերպեք պատվերը։',
+  pe_http:'Չհաջողվեց անցնել վճարման (կոդ {c})։ Բացում ենք պատվերի էջը…', pe_net:'Սերվերի հետ կապ չկա։ Ստուգեք ինտերնետը (և անջատեք VPN-ը) և կրկին փորձեք։'});
+if (I18N.ar) Object.assign(I18N.ar, {st_of:'الخطوة {n} من {m}', st_1:'الهدية', st_2:'طلبك', st_3:'الدفع', sum_next:'التالي: الدفع', pay_h:'الدفع', pay_hero:'البطل:',
+  pay_after:'فور الدفع نبدأ بتحضير هديتك — يستغرق ذلك عادةً من 30 دقيقة إلى ساعتين. ستكون الهدية في صفحة الطلب وفي بريدك الإلكتروني، وفي تيليجرام — بعد ضغطة واحدة على «الاستلام في تيليجرام».',
+  pay_em:'البريد الإلكتروني للإيصال والهدية', pay_tg:'تيليجرام (اختياري)', ph_pay_tg:'@username — يمكنك استلام الهدية في تيليجرام أيضًا', pay_rf:'رمز ترويجي أو رمز صديق (إن وجد)', ph_pay_rf:'مثال: ANNA-7K2Q', pay_apply:'تطبيق',
+  pay_ok1:'أوافق على', pay_ok_offer:'شروط العرض', pay_ok_and:'و', pay_ok_priv:'سياسة الخصوصية', pay_ok2:'',
+  pay_vpn_b:'أوقف VPN قبل الدفع', pay_vpn:' إن كان مفعّلًا — وإلا فقد لا يفتح البنك صفحة الدفع. يمكنك تشغيله مجددًا بعد الدفع. إن لم ينجح شيء، راسلنا: support@talemir.com — سنساعدك.',
+  pay_back:'رجوع', pay_bank:'الدفع بالبطاقة أو عبر SBP أو SberPay أو T-Pay أو YooMoney على صفحة YooKassa الآمنة. سيصلك الإيصال بالبريد الإلكتروني.', pay_rub:'يتم الدفع بالروبل الروسي.',
+  pay_disc:'خصم المجموعة {p}% (كان {s})', pay_wait:'نحسب السعر…', pay_going:'ننتقل إلى الدفع…', pay_checking:'نتحقق من الرمز…', pay_own:'تم تطبيق خصمك: −{p}%.',
+  rs_none:'لديك رمز صديق؟ خصم 10% على أول طلب.', rs_need_email:'أدخل بريدك الإلكتروني أعلاه — وسنتحقق من الرمز.', rs_friend:'تم تطبيق رمز الصديق: −{p}%.', rs_promo_ok:'تم تطبيق الرمز الترويجي: −{p}%.', rs_new_only:'الرمز الترويجي للعملاء الجدد فقط.',
+  rs_inactive:'الرمز الترويجي غير فعّال حاليًا.', rs_own_better:'لديك خصم أكبر — وقد طُبّق: −{p}%.', rs_owner:'تم تطبيق الرمز الترويجي: −{p}%.', rs_not_found:'لم يُعثر على الرمز. تحقّق من كتابته — مثلًا ANNA-7K2Q.',
+  rs_own_code:'هذا رمزك الخاص: تشاركه مع الأصدقاء، ولا يعمل لك.', rs_used:'خصم رمز الصديق يسري على الطلب الأول فقط — وقد استُخدم بالفعل.', rs_bound_other:'هذا الرمز مرتبط ببريد إلكتروني أو حساب آخر.',
+  rs_expired_own:'انتهت صلاحية خصمك.', rs_expired:'انتهت صلاحية الرمز الترويجي.', rs_not_for_product:'الرمز الترويجي لا يسري على هذه الهدية.', rs_ny_cap:'خصم بابا نويل لا يتجاوز 10%.',
+  qe_http:'تعذّر التحقق من الرمز (خطأ {c}). حاول مجددًا — أو ادفع بدون رمز.', qe_429:'محاولات تحقق كثيرة متتالية — انتظر بضع دقائق ثم حاول مجددًا.', qe_net:'تعذّر التحقق من الرمز: لا اتصال بالخادم. تحقّق من الإنترنت وحاول مجددًا.',
+  em_empty:'أدخل بريدك الإلكتروني — سيصلك عليه الإيصال والهدية.', em_noat:'في البريد خطأ: لا توجد علامة @. مثال: name@mail.com', em_space:'لا يجب أن يحتوي البريد على مسافات — احذفها.', em_2at:'يجب أن يحتوي البريد على علامة @ واحدة فقط.',
+  em_nouser:'في البريد خطأ: لا يوجد اسم قبل @. مثال: name@mail.com', em_cyr:'بعد @ اكتب بأحرف لاتينية، مثل gmail.com.', em_dom:'في البريد خطأ: بعد @ يجب نطاق يحتوي على نقطة، مثل gmail.com.', em_bad:'تحقّق من البريد الإلكتروني: مثال name@mail.com',
+  pe_ok:'ضع علامة الموافقة على شروط العرض والسياسة — لا يمكن الدفع بدونها.', pe_tg:'اسم تيليجرام: أحرف لاتينية وأرقام و«_»، من 5 إلى 32 حرفًا، مثل @mama_anna. يمكن ترك الحقل فارغًا.',
+  pe_already:'هذا الطلب مدفوع بالفعل أو قيد التنفيذ — افتح صفحة الطلب من الرابط في الرسالة.', pe_unavailable:'هذه الهدية غير متاحة مؤقتًا — حاول بعد بضع دقائق.',
+  pe_promo_unavailable:'العرض بهذا الرمز غير فعّال حاليًا — احذف الرمز وادفع ثمن الطلب.', pe_bad_choice:'لم يُعثر على الهدية — اضغط «رجوع» وأعد إنشاء الطلب.', pe_409:'تغيّرت شروط الطلب — اضغط «رجوع» وأعد إنشاء الطلب.',
+  pe_http:'تعذّر الانتقال إلى الدفع (الرمز {c}). نفتح صفحة الطلب…', pe_net:'لا اتصال بالخادم. تحقّق من الإنترنت (وأوقف VPN) وحاول مجددًا.'});
+var PAYUX = (function(){
+  const $ = id => document.getElementById(id);
+  const EM_RE = /^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$/;          /* = chain.py /api/pay */
+  const TG_RE = /^@?[A-Za-z0-9_]{5,32}$/;                              /* = checkout_page.html */
+  const RS_OK = {friend:1, promo_ok:1, own_better:1, owner:1}, RS_BAD = {new_only:1, inactive:1, not_found:1, own_code:1, used:1, bound_other:1, expired_own:1, expired:1, not_for_product:1};
+  const RUB = {cartoon:5990, book:990, song:490, clip:790, live:1990, sing:1490, ny:490, inv:290, invkit:590};   /* = chain.py PRICE (только для строки «было …»; цену считает сервер) */
+  const S = {tok:'', keys:[], sig:'', last:null, base:null, q:0, busy:false, timer:0};
+  function fmt(n){ n = Number(n) || 0; return n.toLocaleString(LOCALE[lang] || 'ru-RU', {minimumFractionDigits: (n % 1 ? 2 : 0), maximumFractionDigits: 2}).replace(/ | /g, ' ') + ' ₽'; }
+  function rubCalc(keys){   /* = chain.pricing: sub и total в рублях */
+    const IK = {inv:1, invkit:1}; const main = keys.filter(k => !IK[k]);
+    const nyFree = main.includes('ny') && main.length > 1 && Date.now() <= Date.parse('2026-12-25T23:59:59+03:00');
+    const paid = main.filter(k => !(k === 'ny' && nyFree)); const disc = paid.length >= 4 ? 20 : paid.length === 3 ? 15 : paid.length === 2 ? 10 : 0;
+    const msub = paid.reduce((a, k) => a + (RUB[k] || 0), 0); const mtotal = disc ? Math.floor(Math.floor(msub * (100 - disc) / 100) / 10) * 10 : msub;
+    const half = main.some(k => k === 'book' || k === 'song'); const inv = keys.filter(k => IK[k]).reduce((a, k) => a + (k === 'inv' && half ? 145 : RUB[k]), 0);
+    return {sub: msub + inv, total: mtotal + inv, disc}; }
+  function oldStart(tok){ let rf = ''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){}
+    location.href = API + '/api/start/' + encodeURIComponent(tok || S.tok || '') + (rf ? '?ref=' + encodeURIComponent(rf) : ''); }
+  function show(id){ ['formBody','formSum','formDone','formPay'].forEach(x => { const el = $(x); if (el) el.hidden = x !== id; }); steps(); }
+  function steps(){ const box = $('pSteps'); if (!box) return; const n = !$('formBody').hidden ? 1 : !$('formSum').hidden ? 2 : !$('formPay').hidden ? 3 : 0;
+    box.hidden = !n; if (!n) return; $('pStepsT').textContent = t('st_of').replace('{n}', n).replace('{m}', 3) + ' · ' + t('st_' + n);
+    box.querySelectorAll('.psteps-bar i').forEach((b, i) => b.classList.toggle('on', i < n)); }
+  function clearErr(){ const e = $('payErr'); e.hidden = true; e.textContent = ''; e.className = 'err'; document.querySelectorAll('#formPay .ferr').forEach(x => x.remove()); document.querySelectorAll('#formPay [aria-invalid="true"]').forEach(x => x.removeAttribute('aria-invalid')); }
+  function err(id, msg){ clearErr(); const e = $('payErr'); e.textContent = msg; e.hidden = false;
+    const el = id && $(id); if (!el) { try { e.scrollIntoView({block:'center', behavior:'smooth'}); } catch(_){} return; }
+    const row = el.closest('.row') || el.parentNode; const sp = document.createElement('span'); sp.className = 'ferr'; sp.setAttribute('role', 'alert'); sp.textContent = msg; row.appendChild(sp);
+    if (el.type !== 'checkbox') el.setAttribute('aria-invalid', 'true');
+    try { row.scrollIntoView({block:'center', behavior:'smooth'}); } catch(_){} try { el.focus({preventScroll:true}); } catch(_){} }
+  function emWhy(c){ c = String(c || '').trim(); if (!c) return t('em_empty'); if (!c.includes('@')) return t('em_noat'); if (/\s/.test(c)) return t('em_space'); if (c.split('@').length > 2) return t('em_2at');
+    const u = c.split('@')[0], d = c.split('@')[1]; if (!u) return t('em_nouser'); if (/[а-яё]/i.test(d)) return t('em_cyr'); if (!/^[^@\s]+\.[A-Za-z]{2,}$/.test(d)) return t('em_dom'); if (!EM_RE.test(c)) return t('em_bad'); return ''; }
+  function rfMsg(text, kind){ const m = $('payRfm'); m.textContent = text || ''; m.className = 'hint' + (kind === 'ok' ? ' payok' : kind === 'bad' ? ' paybad' : ''); }
+  function price(d){ /* d = ответ /api/quote */
+    const p = Number(d.price), base = Number(d.base); S.base = base; const rc = rubCalc(S.keys); const sure = rc.total === base;   /* «было» — только если расчёт в браузере совпал с сервером */
+    const full = sure ? rc.sub : base; $('payPrice').textContent = fmt(p);
+    const o = $('payOld'); o.hidden = !(p < full); o.textContent = fmt(full);
+    const dd = $('payDisc'); const bundle = d.src === 'bundle' && Number(d.pct) > 0; dd.hidden = !(bundle && sure); dd.textContent = bundle && sure ? t('pay_disc').replace('{p}', d.pct).replace('{s}', fmt(rc.sub)) : '';
+    $('payGo').disabled = false; }
+  function reason(d, hasCode){ let r = d.reason;
+    if (!hasCode) { if (r === 'expired_own') return rfMsg(t('rs_expired_own'), 'bad'); if (Number(d.price) < Number(d.base) && d.src && d.src !== 'bundle') return rfMsg(t('pay_own').replace('{p}', d.pct), 'ok'); return rfMsg(t('rs_none'), ''); }
+    if (!t('rs_' + r)) r = 'none'; let s = t('rs_' + r).replace('{p}', d.pct); if (RS_OK[r] && d.ny_cap) s += ' ' + t('rs_ny_cap');
+    rfMsg(s, RS_OK[r] ? 'ok' : RS_BAD[r] ? 'bad' : ''); }
+  async function quote(first){ const my = ++S.q; const code = $('payRf').value.trim().toUpperCase(); const em = $('payEm').value.trim();
+    if (!first && code) rfMsg(t('pay_checking'), '');
+    const fd = new FormData(); fd.append('email', EM_RE.test(em) ? em : ''); fd.append('ref', code);
+    let r; try { r = await fetch(API + '/api/quote/' + encodeURIComponent(S.tok), {method:'POST', body:fd, cache:'no-store'}); }
+    catch(_) { if (my !== S.q) return; if (first) return oldStart(); return rfMsg(t('qe_net'), 'bad'); }
+    if (my !== S.q) return;
+    if (!r.ok) { if (first) return oldStart(); return rfMsg(r.status === 429 ? t('qe_429') : t('qe_http').replace('{c}', r.status), 'bad'); }
+    let d; try { d = await r.json(); } catch(_) { if (first) return oldStart(); return rfMsg(t('qe_http').replace('{c}', r.status), 'bad'); }
+    if (my !== S.q) return; if (d == null || d.price == null || d.base == null) { if (first) return oldStart(); return rfMsg(t('qe_http').replace('{c}', r.status), 'bad'); }
+    price(d); reason(d, !!code); }
+  function later(){ clearTimeout(S.timer); S.timer = setTimeout(() => quote(false), 700); }
+  async function offNow(keys){ try { const c = new AbortController(); const tm = setTimeout(() => c.abort(), 2500);
+      const r = await fetch('https://api.talemir.com/api/availability', {cache:'no-store', signal:c.signal}); clearTimeout(tm); if (!r.ok) return false;
+      const j = await r.json(); return keys.some(k => (j.off || []).indexOf(k) >= 0); } catch(_) { return false; } }   /* нет ответа — как на сервере: продаём, сервер сам ответит «unavailable» */
+  async function after(tok, keys, sig){   /* заказ создан (201) — дальше в этом же окне */
+    S.tok = tok; S.keys = keys.slice(); S.last = {tok, sig};
+    if (keys.indexOf('book') >= 0) return oldStart(tok);                  /* книга: сначала обложка и 2 страницы (страница заказа) */
+    clearErr(); $('payTitle').textContent = keys.map(k => t('p_' + k + '_t') || k).join(' + ');
+    const nm = (document.getElementById('fName').value || '').trim(); $('payHero').textContent = nm; $('payHeroRow').hidden = !nm;
+    $('payRub').hidden = (typeof cur === 'undefined' || cur === 'RUB');
+    const ct = (document.getElementById('fContact').value || '').trim(); if (!$('payEm').value.trim() && EM_RE.test(ct)) $('payEm').value = ct;
+    if (!$('payRf').value.trim()) { try { const rf = localStorage.getItem('tm_ref'); if (rf) $('payRf').value = rf; } catch(_){} }
+    $('payPrice').textContent = t('pay_wait'); $('payOld').hidden = true; $('payDisc').hidden = true; $('payGo').disabled = true; rfMsg('', '');
+    show('formPay'); try { $('formPay').scrollIntoView({block:'start'}); document.getElementById('form').scrollTop = 0; } catch(_){}
+    const q1 = quote(true); if (await offNow(keys)) return oldStart(tok); await q1; }   /* подарок временно недоступен — страница «временно недоступно» */
+  async function pay(){ if (S.busy) return; clearErr();
+    const em = $('payEm').value.trim(); const ew = emWhy(em); if (ew) return err('payEm', ew);
+    if (!$('payOk').checked) return err('payOk', t('pe_ok'));
+    const tg = $('payTg').value.trim(); if (tg && !TG_RE.test(tg)) return err('payTg', t('pe_tg'));
+    S.busy = true; const b = $('payGo'); b.disabled = true; const e = $('payErr'); e.hidden = false; e.className = 'hint'; e.textContent = t('pay_going');
+    const fd = new FormData(); fd.append('email', em); fd.append('ref', $('payRf').value.trim().toUpperCase()); fd.append('tg', tg);
+    try { const r = await fetch(API + '/api/pay/' + encodeURIComponent(S.tok), {method:'POST', body:fd, cache:'no-store'}); e.className = 'err';
+      if (!r.ok) { S.busy = false; b.disabled = false; let d = ''; try { d = (await r.json()).detail || ''; } catch(_){}
+        if (d === 'nophoto_consent') return oldStart();                    /* согласие «без фото» — только на прежней странице оформления */
+        if (d === 'bad_email') return err('payEm', emWhy(em) || t('em_bad'));
+        if (d === 'promo_unavailable') return err('payRf', t('pe_promo_unavailable'));
+        if (d === 'already' || d === 'unavailable') return err(null, t('pe_' + d));
+        if (d === 'bad_choice') { S.last = null; return err(null, t('pe_bad_choice')); }
+        if (r.status === 409) { S.last = null; return err(null, t('pe_409')); }
+        err(null, t('pe_http').replace('{c}', r.status)); b.disabled = true; S.busy = true; setTimeout(() => oldStart(), 1800); return; }   /* непредвиденная ошибка — прежняя страница оформления */
+      let j = {}; try { j = await r.json(); } catch(_){}
+      if (!j.confirmation_url) { err(null, t('pe_http').replace('{c}', r.status)); S.busy = true; setTimeout(() => oldStart(), 1800); return; }
+      location.href = j.confirmation_url; }                                 /* страница банка — в этой же вкладке */
+    catch(_) { S.busy = false; b.disabled = false; err(null, t('pe_net')); } }
+  function back(){ clearErr(); show('formSum'); }
+  function sig(fd){ const a = []; try { for (const [k, v] of fd.entries()) a.push(k + '=' + (typeof v === 'string' ? v : (v.name + ':' + v.size + ':' + v.lastModified))); } catch(_) { return Math.random() + ''; } return a.join('\n'); }
+  function sumBtn(){ const b = $('sumPay'); if (!b) return; let ks = []; try { ks = bundleFor(curProd); } catch(_) { ks = [curProd]; } b.dataset.i = ks.indexOf('book') >= 0 ? 'sum_pay' : 'sum_next'; b.textContent = t(b.dataset.i); }
+  function texts(){ document.querySelectorAll('#formPay [data-pph]').forEach(el => { el.placeholder = t(el.dataset.pph); }); document.querySelectorAll('#formPay [data-i], #pSteps [data-i]').forEach(el => { el.textContent = t(el.dataset.i); }); sumBtn(); steps(); }
+  /* события */
+  $('payGo').addEventListener('click', pay); $('payBack').addEventListener('click', back);
+  $('payRfBtn').addEventListener('click', () => { clearTimeout(S.timer); quote(false); });
+  $('payRf').addEventListener('input', later); $('payRf').addEventListener('change', () => { clearTimeout(S.timer); quote(false); });
+  $('payEm').addEventListener('change', () => { if ($('payRf').value.trim()) quote(false); });
+  ['input','change'].forEach(ev => $('formPay').addEventListener(ev, e => { const tg = e.target; if (!tg || !tg.closest) return; const r = tg.closest('.row'); if (r) r.querySelectorAll('.ferr').forEach(x => x.remove()); if (tg.removeAttribute) tg.removeAttribute('aria-invalid'); }));
+  $('formPay').addEventListener('keydown', e => { if (e.key !== 'Enter' || !e.target || e.target.tagName !== 'INPUT') return; e.preventDefault(); if (e.target.id === 'payRf') { clearTimeout(S.timer); quote(false); } else pay(); });
+  document.addEventListener('submit', e => { if (e.target && e.target.id === 'form' && !$('formPay').hidden) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);   /* Enter на шаге оплаты не создаёт второй заказ */
+  ['formBody','formSum','formDone','formPay'].forEach(id => { try { new MutationObserver(steps).observe($(id), {attributes:true, attributeFilter:['hidden']}); } catch(_){} });
+  if (typeof openModal === 'function') { const _om = openModal; openModal = function(){ const r = _om.apply(this, arguments); $('formPay').hidden = true; clearErr(); steps(); return r; }; }
+  if (typeof renderSum === 'function') { const _rs = renderSum; renderSum = function(){ const r = _rs.apply(this, arguments); sumBtn(); return r; }; }
+  if (typeof render === 'function') { const _r = render; render = function(){ const r = _r.apply(this, arguments); texts(); return r; }; }
+  texts();
+  return {after, oldStart, sig, get last(){ return S.last; }};
+})();
+</script>
+</body>
 </html>
