@@ -1227,5 +1227,34 @@ function invAddSync(){ const r = document.getElementById('invAddRow'); if (!r) r
   }, 6000);
 })();
 </script>
+<!-- 28.10 UX1: значок «подарок готовится / готов» (заказы этого клиента: вход в кабинет или этот браузер) -->
+<style>
+.tm-giftw{position:fixed;z-index:39;inset-inline-start:max(16px,env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;border:0;font:600 15px/1.2 Nunito,system-ui,sans-serif;color:#fff;background:#6b3fa0;box-shadow:0 8px 24px rgba(42,26,74,.28);cursor:pointer;text-decoration:none}
+.tm-giftw[hidden]{display:none}
+.tm-giftw .tm-gi{font-size:20px;display:inline-block;animation:tmgw 1.6s ease-in-out infinite}
+.tm-giftw .tm-dots::after{content:"";animation:tmgd 1.5s steps(4,end) infinite}
+.tm-giftw.ready{background:#2e7d4f;animation:tmgp 2.4s ease-in-out infinite}
+.tm-giftw.ready .tm-gi{animation:none}
+@keyframes tmgw{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.08)}}
+@keyframes tmgd{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+@keyframes tmgp{0%,100%{box-shadow:0 8px 24px rgba(46,125,79,.35)}50%{box-shadow:0 8px 32px rgba(46,125,79,.75)}}
+@media (max-width:720px){.tm-giftw{bottom:calc(84px + env(safe-area-inset-bottom,0px));font-size:14px;padding:10px 14px}}
+@media (prefers-reduced-motion:reduce){.tm-giftw .tm-gi,.tm-giftw .tm-dots::after,.tm-giftw.ready{animation:none}}
+</style>
+<a class="tm-giftw" id="tmGiftW" hidden href="#" aria-live="polite"><span class="tm-gi" aria-hidden="true">🎁</span><span class="tm-gt"></span></a>
+<script>
+(function(){var W=document.getElementById('tmGiftW');if(!W)return;var T=W.querySelector('.tm-gt'),timer=0;
+function seen(){try{return JSON.parse(localStorage.getItem('tm_seen')||'[]')}catch(e){return[]}}
+function mark(n){try{var s=seen();if(s.indexOf(n)<0){s.push(n);localStorage.setItem('tm_seen',JSON.stringify(s.slice(-30)))}}catch(e){}}
+function draw(d){var os=(d&&d.orders)||[],sn=seen();
+ var ready=os.filter(function(o){return o.stage==='ready'&&sn.indexOf(o.num)<0})[0];
+ var work=os.filter(function(o){return o.stage!=='ready'&&o.stage!=='wish_fix'})[0];
+ if(ready){W.className='tm-giftw ready';T.textContent='Подарок готов — открыть';W.href=ready.link;W.onclick=function(){mark(ready.num)};W.hidden=false;return false}
+ if(work){W.className='tm-giftw';T.innerHTML='Подарок готовится<span class="tm-dots"></span>';W.href=work.link;W.onclick=null;W.hidden=false;return true}
+ W.hidden=true;return false}
+function load(){fetch('https://ru.api.talemir.com/api/widget',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null})
+ .then(function(d){var again=draw(d);clearTimeout(timer);if(again)timer=setTimeout(load,30000)}).catch(function(){})}
+load();document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});})();
+</script>
 </body>
 </html>
