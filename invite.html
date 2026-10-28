@@ -381,14 +381,18 @@ function mark(id, bad){ const r = $(id); r.classList.toggle('bad', bad); const e
 function check(){
   const bad = [];
   if (mark('rName', !/^[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІі' -]{1,20}$/.test(val('fName')) || !/[A-Za-zА-Яа-яЁё]/.test(val('fName')))) bad.push('rName');
-  const dt = val('fDate'); if (mark('rDate', !fmtDate(dt) || dt < todayISO() || dt > $('fDate').max)) bad.push('rDate');
+  const dt = val('fDate'); { const de = $('rDate').querySelector('.err'); if (de) de.textContent = !dt ? 'Выберите дату праздника.' : dt < todayISO() ? 'Эта дата уже прошла — выберите сегодняшнюю или будущую.' : dt > $('fDate').max ? 'Дата слишком далеко — не дальше чем через год.' : 'Проверьте дату праздника.'; }
+  if (mark('rDate', !fmtDate(dt) || dt < todayISO() || dt > $('fDate').max)) bad.push('rDate');
   if (mark('rTime', !/^([01]?\d|2[0-3]):[0-5]\d$/.test(val('fTime')))) bad.push('rTime');
   if (mark('rPlace', !val('fPlace'))) bad.push('rPlace');
   if (mark('rUrl', !!val('fUrl') && !/^https?:\/\/\S{4,300}$/.test(val('fUrl')))) bad.push('rUrl');
-  if (mark('rContact', !CONTACT_RE.test(val('fContact')))) bad.push('rContact');
+  { const cw = (function(c){ if (!c) return 'Укажите e-mail или номер телефона — туда пришлём приглашение.';   /* 28.10 ERR1: конкретная причина */
+      if (c.includes('@') || /[a-zа-я]/i.test(c)) { if (!c.includes('@')) return 'Почта указана с ошибкой: нет символа @. Пример: anna@mail.ru'; if (/\s/.test(c)) return 'В почте не должно быть пробелов.'; const a = c.split('@'); if (a.length > 2) return 'В почте должен быть только один символ @.'; if (!a[0]) return 'Почта указана с ошибкой: нет имени перед @.'; if (/[а-яё]/i.test(a[1])) return 'После @ пишите латиницей, например mail.ru.'; if (!/^[^@\s]+\.[A-Za-z]{2,}$/.test(a[1])) return 'После @ нужен адрес почты с точкой, например mail.ru или gmail.com.'; return ''; }
+      const d = c.replace(/\D/g, ''); if (d.length < 7) return 'В номере не хватает цифр: вы ввели ' + d.length + '. Пример: +7 900 123-45-67'; if (d.length > 15) return 'В номере слишком много цифр (' + d.length + ').'; return CONTACT_RE.test(c) ? '' : 'В номере есть лишние символы — оставьте цифры, «+», пробелы, скобки и дефис.'; })(val('fContact'));
+    const ce = $('rContact').querySelector('.err'); if (ce && cw) ce.textContent = cw; if (mark('rContact', !!cw || !CONTACT_RE.test(val('fContact')))) bad.push('rContact'); }
   return bad;
 }
-const ERR = {bad_contact: 'Проверьте e-mail или телефон.', inv_date: 'Проверьте дату праздника — она не может быть в прошлом.', inv_time: 'Проверьте время начала (ЧЧ:ММ).',
+const ERR = {bad_contact: 'Проверьте e-mail или телефон: в почте нужен символ @, в номере — не меньше 7 цифр.', inv_date: 'Проверьте дату праздника — она не может быть в прошлом.', inv_time: 'Проверьте время начала (ЧЧ:ММ).',
   inv_age: 'Проверьте возраст.', inv_place: 'Укажите место праздника.', inv_url: 'Ссылка на карту должна начинаться с https://', photo_count: 'Можно приложить только одно фото.',
   photo_type: 'Фото должно быть в формате JPG, PNG или HEIC.', photo_too_large: 'Фото больше 15 МБ — выберите поменьше.', consent: 'Отметьте согласие на обработку персональных данных.',
   consent_teen: 'Для ребёнка 14–17 лет нужно согласие самого подростка.', too_many: 'Слишком много заявок подряд — попробуйте через час или напишите нам: info@talemir.com'};
