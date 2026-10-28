@@ -648,6 +648,7 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
         <div class="row"><label for="fOcc" data-i="f_occ"></label><select id="fOcc"></select><input type="text" id="fOccOwn" maxlength="60" autocomplete="off" hidden style="margin-top:8px"></div>
         <div class="row"><label for="fGenre" data-i="f_genre"></label><select id="fGenre"></select></div>
       </div>
+      <div class="row" data-for="cartoon" id="cartMusicRow"><label for="fCartMusic">Музыка в мультфильме</label><select id="fCartMusic"><option value="song" selected>🎵 Песня с вашими именами</option><option value="instrumental">🎻 Красивая музыка без слов</option></select><span class="hint">Песня входит в цену</span></div>
       <div class="row2 sel" data-for="song sing">
         <div class="row"><label for="fStyle2" data-i="f_style2"></label><select id="fStyle2"></select></div>
         <div class="row"><label for="fVoice" data-i="f_voice"></label><select id="fVoice"></select></div>
@@ -796,6 +797,7 @@ const stressVar = (ch, i) => ch.slice(0, i + 1).join('') + '́' + ch.slice(i + 1
 const stressEsc = x => String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderStress(){
   const row = document.getElementById('stressRow'), box = document.getElementById('fStress'); if (!row) return;
+  if (curProd === 'cartoon' && (document.getElementById('fCartMusic') || {}).value === 'instrumental') { row.hidden = true; return; }   /* 28.10 MULT5: музыка без слов — ударение не нужно */
   const name = (document.getElementById('fName').value || '').trim(), V = /[аеёиоуыэюяaeiouy]/i, ch = [...name];
   const idx = ch.map((c, i) => V.test(c) ? i : -1).filter(i => i >= 0);
   if (name !== stressName) { stressAt = -1; stressAuto = false; stressMode = 'ask'; stressUnk = false; stressName = name; }
@@ -873,8 +875,15 @@ function syncForm(){
   const sb = document.querySelector('#form button[type=submit]'); sb.dataset.i = curProd==='book' ? 'f_submit' : 'f_submit2'; sb.textContent = t(sb.dataset.i);
   const ll = document.getElementById('fLangL'); ll.dataset.i = (curProd==='song' || curProd==='sing') ? 'f_lang_song' : 'f_lang'; ll.textContent = t(ll.dataset.i);
   const ct = document.getElementById('fConsentT'); if (ct) { ct.dataset.i = consentKind() === 'universal' ? 'f_consent_u' : 'f_consent'; ct.textContent = t(ct.dataset.i); }   /* 26.10: согласие 1.5 — для клипа и «живых фото» возраст не спрашиваем */
+  cartMusicSync();
   if (typeof renderStress === 'function') renderStress();
 }
+function cartMusicSync(){   /* 28.10 MULT5: при «музыке без слов» прячем жанр песни и ударение */
+  const m = document.getElementById('fCartMusic'), g = document.getElementById('fGenre'); if (!m || !g) return;
+  const instr = curProd === 'cartoon' && m.value === 'instrumental';
+  g.parentElement.hidden = instr;
+}
+document.addEventListener('change', e => { if (e.target.id === 'fCartMusic') { cartMusicSync(); if (typeof renderStress === 'function') renderStress(); } });
 document.addEventListener('click', e => {
   const pb = e.target.closest('[data-play]'), pp = e.target.closest('.pm-pp'), fs = e.target.closest('.pm-fs'), tr = e.target.closest('.pm-track');
   const vc = e.target.matches && e.target.matches('.media.pm.started video') ? e.target : null;
@@ -1085,7 +1094,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   if (needPh || curSet().includes('ny')) [...fPhotos.files].slice(0, photoMax()).forEach(f => fd.append('photos', f, f.name));
   if (curProd === 'cartoon') {   /* 28.10 MULT1: герои, история, стиль, фото по героям (по 3) */
     const others = v('fCartOthers').split(',').map(x => x.trim()).filter(Boolean).slice(0, 2);
-    fd.append('cart_heroes', [v('fName')].concat(others).join(', ')); fd.append('cart_story', v('fCartStory')); fd.append('cart_style', v('fCartStyle'));
+    fd.append('cart_heroes', [v('fName')].concat(others).join(', ')); fd.append('cart_story', v('fCartStory')); fd.append('cart_style', v('fCartStyle')); fd.append('cart_music', v('fCartMusic') || 'song');
     const cnt = [];
     ['fCartP1','fCartP2','fCartP3'].forEach(id => { const fs = [...document.getElementById(id).files].slice(0, 3); cnt.push(fs.length); fs.forEach(f => fd.append('photos', f, f.name)); });
     fd.append('cart_counts', cnt.join(','));
