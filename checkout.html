@@ -68,7 +68,7 @@ header.site .brand{color:#EDB250}
   <p class="muted" style="margin:6px 0 0">Оплата проходит на защищённой странице платёжного сервиса ЮKassa. Данные карты вводятся только там — Talemir их не видит и не хранит.</p>
   <div class="methods" aria-label="Способы оплаты"><span>Банковская карта</span><span>СБП</span></div>
   <label class="chk"><input type="checkbox" id="agree"><span>Я принимаю условия <a href="/offer.html" target="_blank" rel="noopener">публичной оферты</a> и ознакомлен(а) с <a href="/privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span></label>
-  <button type="button" class="pay" id="payBtn" disabled>Оплатить</button>
+  <button type="button" class="pay" id="payBtn">Оплатить</button><p id="payErr" role="alert" hidden style="color:#b3261e;font-weight:600;margin:10px 0 0"></p>
   <p class="muted" style="margin:12px 0 0">После оплаты чек придёт на ваш e-mail (54-ФЗ). Условия возврата — в разделе 8 <a href="/offer.html#refund" target="_blank" rel="noopener">оферты</a>.</p>
 </section>
 <section class="card status" id="redirBox" hidden aria-live="polite">
@@ -105,9 +105,10 @@ document.getElementById('pPrice').textContent = rub(it.p);
 document.getElementById('pTotal').textContent = rub(it.p);
 const btn = document.getElementById('payBtn');
 btn.textContent = 'Оплатить ' + rub(it.p);
-document.getElementById('agree').addEventListener('change', e => { btn.disabled = !e.target.checked; });
+const payErr = document.getElementById('payErr');   /* 28.10 ERR1: не блокируем кнопку молча — говорим, что отметить */
+document.getElementById('agree').addEventListener('change', e => { if (e.target.checked) payErr.hidden = true; });
 btn.addEventListener('click', () => {
-  if (btn.disabled) return;
+  if (!document.getElementById('agree').checked) { payErr.textContent = 'Отметьте согласие с условиями оферты и политикой конфиденциальности — без этого оплата невозможна.'; payErr.hidden = false; const a = document.getElementById('agree'); a.scrollIntoView({block:'center', behavior:'smooth'}); a.focus({preventScroll:true}); return; }
   location.href = '/?order=' + encodeURIComponent(keys[0]);   // оплата — после формы заказа (данные ребёнка нужны для подарка)
 });
 </script>

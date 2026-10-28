@@ -278,6 +278,9 @@ footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;
 .sheet input[type=text],.sheet input[type=number],.sheet select{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:.6em .8em;width:100%}
 .hint{font-size:.85rem;color:var(--muted)}
 .thumbs{display:flex;gap:6px;flex-wrap:wrap}
+.ferr{display:block;color:#c0392b;font-size:14px;font-weight:600;margin-top:6px;line-height:1.35}
+#form [aria-invalid="true"]{border-color:#c0392b!important;box-shadow:0 0 0 3px rgba(192,57,43,.15)}
+#form .row.has-err .filebtn{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,.15)}
 .thumbs img{width:56px;height:56px;object-fit:cover;border-radius:8px}
 .consent{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:.9rem}
 .err{color:var(--pome);font-weight:700;font-size:.9rem}
@@ -638,10 +641,10 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
         <div class="row" data-for="book song sing"><label for="fAge" data-i="f_age"></label><input type="number" id="fAge" min="0" max="14" value="5"><span class="hint" data-i="h_age"></span></div>
         <div class="row" data-for="ny"><label for="fGender" data-i="f_gender"></label><select id="fGender"></select></div>
       </div>
-      <div class="row" data-for="song clip live sing ny" id="stressRow" hidden><label id="fStressL" data-i="f_stress_l"></label><div class="stress" id="fStress" role="radiogroup" aria-labelledby="fStressL"></div><span class="hint" id="stressHint"></span></div>
+      <div class="row" data-for="song clip live sing ny cartoon" id="stressRow" hidden><label id="fStressL" data-i="f_stress_l"></label><div class="stress" id="fStress" role="radiogroup" aria-labelledby="fStressL"></div><span class="hint" id="stressHint"></span></div>
       <div class="row" data-for="book"><label for="fFamily" data-i="f_family"></label><input type="text" id="fFamily" autocomplete="off" maxlength="200" data-ph="ph_family"><span class="hint" data-i="h_family"></span></div>
       <div class="row" data-for="book"><label for="fDedic" data-i="f_dedic"></label><input type="text" id="fDedic" autocomplete="off" maxlength="200" data-ph="ph_dedic"><span class="hint" data-i="h_dedic"></span></div>
-      <div class="row2 sel" data-for="song clip sing">
+      <div class="row2 sel" data-for="song clip sing cartoon">
         <div class="row"><label for="fOcc" data-i="f_occ"></label><select id="fOcc"></select><input type="text" id="fOccOwn" maxlength="60" autocomplete="off" hidden style="margin-top:8px"></div>
         <div class="row"><label for="fGenre" data-i="f_genre"></label><select id="fGenre"></select></div>
       </div>
@@ -672,13 +675,12 @@ body.has-kbar .tmc-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
         </div>
       </div>
       <div class="row" data-for="cartoon"><label for="fCartOthers">Кто ещё в истории — до 2 имён через запятую</label><input type="text" id="fCartOthers" maxlength="60" autocomplete="off" placeholder="Например: Максим, дочка Соня"><span class="hint">Первый герой — имя выше. Можно рассказать о паре, семье или ребёнке.</span></div>
-      <div class="row" data-for="cartoon"><label for="fCartOcc">Повод</label><select id="fCartOcc"><option>Годовщина</option><option>Годовщина свадьбы</option><option>День рождения</option><option>Свадьба</option><option>Предложение</option><option>8 Марта</option><option>14 февраля</option><option>Рождение ребёнка</option><option>Новый год</option><option>Просто так</option></select></div>
-      <div class="row" data-for="cartoon"><label for="fCartStory">Ваша история</label><textarea id="fCartStory" rows="7" maxlength="1500" style="width:100%;font:inherit;padding:12px;border-radius:14px;border:1px solid var(--line)" placeholder="Например: Познакомились осенью в книжном магазине — потянулись за одной книгой. Первое свидание — кофе и прогулка под дождём с одним зонтом. Летом поехали к морю, катались на велосипедах. Предложение — на холме на закате. Свадьба в саду с гирляндами. Теперь у нас дочка Соня, и вечером мы втроём читаем сказки."></textarea><div id="fCartCnt" style="font-size:13px;color:var(--muted);text-align:right;margin-top:4px" aria-live="polite"></div><span class="hint" id="fCartCnt">От 150 до 1500 знаков. 5–8 главных моментов по порядку — каждый станет сценой.</span></div>
+      <div class="row" data-for="cartoon"><label for="fCartStory">Ваша история</label><textarea id="fCartStory" rows="7" maxlength="1500" style="width:100%;font:inherit;padding:12px;border-radius:14px;border:1px solid var(--line)" placeholder="Например: Познакомились осенью в книжном магазине — потянулись за одной книгой. Первое свидание — кофе и прогулка под дождём с одним зонтом. Летом поехали к морю, катались на велосипедах. Предложение — на холме на закате. Свадьба в саду с гирляндами. Теперь у нас дочка Соня, и вечером мы втроём читаем сказки."></textarea><div id="fCartCnt" style="font-size:13px;color:var(--muted);text-align:right;margin-top:4px" aria-live="polite"></div><span class="hint" id="fCartHint">От 150 до 1500 знаков. 5–8 главных моментов по порядку — каждый станет сценой.</span></div>
       <div class="row" data-for="cartoon"><label for="fCartStyle">Стиль мультфильма</label><select id="fCartStyle"><option value="3d">3D-мультфильм</option><option value="watercolor">Акварель</option><option value="anime">Аниме</option></select></div>
       <div class="row" data-for="cartoon"><label>Фото героев — 1–3 фото каждого, лицо хорошо видно</label>
-        <div style="display:grid;gap:8px"><label style="display:grid;gap:4px;font-weight:600">Герой 1 (имя выше)<input type="file" id="fCartP1" accept="image/*" multiple></label>
-        <label style="display:grid;gap:4px;font-weight:600">Герой 2 — по желанию<input type="file" id="fCartP2" accept="image/*" multiple></label>
-        <label style="display:grid;gap:4px;font-weight:600">Герой 3 — по желанию<input type="file" id="fCartP3" accept="image/*" multiple></label></div>
+        <div style="display:grid;gap:8px"><div class="cph" style="display:grid;gap:6px"><b>Герой 1 (имя выше)</b><input type="file" id="fCartP1" class="vh" accept="image/*" multiple><label for="fCartP1" class="btn btn-ghost filebtn" id="fCartP1b">Выбрать фото</label><span class="hint" id="fCartP1n"></span><div class="thumbs" id="fCartP1t"></div></div>
+        <div class="cph" style="display:grid;gap:6px"><b>Герой 2 — по желанию</b><input type="file" id="fCartP2" class="vh" accept="image/*" multiple><label for="fCartP2" class="btn btn-ghost filebtn" id="fCartP2b">Выбрать фото</label><span class="hint" id="fCartP2n"></span><div class="thumbs" id="fCartP2t"></div></div>
+        <div class="cph" style="display:grid;gap:6px"><b>Герой 3 — по желанию</b><input type="file" id="fCartP3" class="vh" accept="image/*" multiple><label for="fCartP3" class="btn btn-ghost filebtn" id="fCartP3b">Выбрать фото</label><span class="hint" id="fCartP3n"></span><div class="thumbs" id="fCartP3t"></div></div></div>
         <span class="hint">Фото используются только для создания героев. Героя без фото нарисуем по описанию в истории.</span></div>
       <div class="row"><label for="fContact" data-i="f_contact"></label><input type="text" id="fContact" autocomplete="off" data-ph="ph_contact"><span class="hint" data-i="h_contact"></span></div>
       <label class="consent"><input type="checkbox" id="fConsent"><span><span id="fConsentT" data-i="f_consent"></span> — <a href="/consent.html" target="_blank" rel="noopener" data-i="f_consent_link"></a></span></label>
@@ -789,7 +791,7 @@ const tE = k => (EMJ[k] ? EMJ[k] + ' ' : '') + t(k);
 function fillStyles(){ const g = document.getElementById('fGenre').value || 'g_kids', st = document.getElementById('fStyle2'); const keep = st.value; st.innerHTML = GENRES[g].map(s => `<option value="${s}">${tE(s)}</option>`).join(''); if (GENRES[g].includes(keep)) st.value = keep; }
 const NSD = {"александр":5,"михаил":4,"максим":4,"артем":3,"иван":2,"дмитрий":2,"матвей":4,"даниил":4,"тимофей":5,"роман":3,"илья":3,"кирилл":3,"андрей":4,"егор":2,"арсений":3,"никита":3,"федор":1,"ярослав":5,"владимир":4,"алексей":5,"константин":8,"мирон":3,"павел":1,"сергей":4,"макар":3,"степан":4,"владислав":7,"георгий":2,"григорий":4,"николай":5,"евгений":3,"денис":3,"захар":3,"савелий":3,"демид":3,"платон":4,"виктор":1,"артур":3,"данил":3,"игорь":0,"антон":3,"вячеслав":6,"руслан":4,"святослав":7,"семен":3,"елисей":4,"олег":2,"юрий":0,"василий":3,"вадим":3,"гордей":4,"борис":3,"станислав":7,"анатолий":4,"филипп":3,"родион":4,"прохор":2,"назар":3,"леонид":4,"дамир":3,"ростислав":7,"тихон":1,"марат":3,"валерий":3,"геннадий":4,"аркадий":3,"анна":0,"мария":3,"ева":0,"виктория":4,"полина":3,"алиса":2,"варвара":4,"василиса":5,"александра":5,"елизавета":6,"ксения":2,"арина":2,"дарья":1,"анастасия":7,"милана":3,"вероника":5,"кира":1,"валерия":3,"екатерина":6,"ульяна":3,"есения":2,"аделина":4,"маргарита":6,"таисия":2,"алена":2,"кристина":5,"ольга":0,"камила":3,"злата":2,"агата":2,"амелия":2,"майя":1,"юлия":0,"диана":2,"наталья":3,"светлана":5,"евгения":3,"вера":1,"надежда":3,"любовь":3,"татьяна":4,"ирина":2,"елена":2,"марина":3,"оксана":3,"мирослава":6,"ярослава":5,"ника":1,"аврора":3,"лидия":1,"ангелина":5,"карина":3,"снежана":4,"алина":2,"яна":0,"инна":0,"галина":3,"валентина":6,"людмила":4,"нина":1,"лариса":3,"алла":0,"зоя":1,"тамара":3,"раиса":2,"саша":1,"миша":1,"тема":1,"ваня":1,"дима":1,"мотя":1,"даня":1,"тима":1,"рома":1,"илюша":2,"кирюша":3,"андрюша":4,"федя":1,"ярик":0,"вова":1,"леша":1,"костя":1,"паша":1,"сережа":3,"стёпа":2,"гоша":1,"гриша":2,"коля":1,"женя":1,"дениска":3,"сава":1,"витя":1,"гарик":1,"антоша":3,"слава":2,"сёма":1,"сева":1,"олежка":2,"юра":0,"петя":1,"вася":1,"вадик":1,"боря":1,"толя":1,"филя":1,"родя":1,"лёня":1,"валера":3,"гена":1,"соня":1,"маша":1,"вика":1,"поля":1,"варя":1,"лиза":1,"ксюша":2,"даша":1,"настя":1,"лера":1,"катя":1,"уля":0,"рита":1,"тая":1,"оля":0,"юля":0,"наташа":3,"света":2,"люба":1,"таня":1,"ира":0,"лена":1,"мира":1,"стеша":2,"геля":1,"снежа":2,"аля":0,"иннуся":3,"галя":1,"валя":1,"люда":1,"лара":1,"зоенька":1,"тома":1,"рая":1,"алихан":4,"айсултан":6,"нурислам":6,"алдияр":4,"амир":2,"алинур":4,"ерасыл":4,"санжар":4,"рамазан":5,"мирас":3,"айбын":3,"нурсултан":7,"ислам":3,"динмухаммед":9,"асылжан":5,"алишер":4,"ибрагим":5,"таир":2,"кайрат":4,"талгат":4,"ерлан":3,"нурлан":4,"аскар":3,"бауыржан":3,"даурен":2,"ержан":3,"мейрам":4,"рустем":4,"самат":3,"болат":3,"жандос":4,"канат":3,"мурат":3,"рашид":3,"азамат":4,"ернар":3,"дастан":4,"куаныш":4,"темирлан":6,"данияр":4,"бекзат":4,"абылай":4,"айдар":3,"тимурлан":6,"асылым":4,"айым":2,"айару":4,"каусар":2,"айзере":5,"аружан":4,"айгуль":3,"ботагоз":5,"гульжан":5,"жулдыз":4,"камшат":4,"меруерт":4,"назгуль":4,"салтанат":6,"шолпан":4,"жанар":3,"каракат":5,"макпал":4,"нургуль":4,"перизат":5,"тогжан":4,"улжан":3,"баян":2,"гаухар":2,"дильназ":5,"еркежан":5,"жансая":5,"инкар":3,"куралай":5,"ляззат":4,"орынгуль":5,"раушан":2,"сымбат":4,"таншолпан":7,"ханшайым":6,"шахназ":4,"амирхан":5,"султан":4,"радмир":4,"ринат":3,"ильдар":4,"рустам":4,"рамиль":3,"азат":2,"ильназ":4,"алмаз":3,"булат":3,"фарид":3,"тагир":3,"ильяс":3,"анвар":3,"ренат":3,"айрат":3,"ильнур":4,"чулпан":4,"лилия":1,"гульназ":5,"айсылу":5,"лейсан":4,"ильсияр":5,"сирануш":5,"гоар":2,"татевик":5,"шушан":3,"ануш":2,"аревик":4,"астхик":4,"вардуи":5,"заруи":4,"кнарик":4,"сатеник":5,"тагуи":4,"тигран":4,"арам":2,"микаэл":4,"даниэль":4,"арман":3,"армен":3,"геворг":3,"левон":3,"ованес":4,"саргис":4,"севак":3,"сурен":3,"тарон":3,"акоп":2,"артак":3,"ашот":2,"баграт":4,"ваагн":2,"вазген":4,"вардан":4,"гарник":4,"гурген":4,"корюн":3,"мхитар":4,"норайр":3,"паруйр":3,"саак":2,"тиран":3,"хорен":3,"шаварш":3};
 let stressAt = -1, stressAuto = false, stressName = '', stressMode = 'ask', stressUnk = false;
-const STRESS_P = ['song','clip','live','sing','ny'];       /* 25.10: поющее фото тоже спрашивает ударение (как бот и data-for) */
+const STRESS_P = ['song','clip','live','sing','ny','cartoon'];       /* 25.10: поющее фото тоже спрашивает ударение (как бот и data-for) */
 const stressVar = (ch, i) => ch.slice(0, i + 1).join('') + '́' + ch.slice(i + 1).join('');
 const stressEsc = x => String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderStress(){
@@ -957,7 +959,7 @@ function renderStyPv(){ const pv = document.getElementById('fStyPv'); if (!pv) r
 document.getElementById('fStyGrid').addEventListener('click', e => { const b = e.target.closest('[data-fsty]'); if (!b) return; document.getElementById('fStyle').value = b.dataset.fsty; markSty(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
 const fPhotos = document.getElementById('fPhotos');
-function updateSel(){ const n = fPhotos.files ? fPhotos.files.length : 0; document.getElementById('fSel').textContent = n ? t('f_sel').replace('{n}', n) : ''; }
+function updateSel(){ const n = fPhotos.files ? fPhotos.files.length : 0; document.getElementById('fSel').textContent = n ? t('f_sel').replace('{n}', n + (lang === 'ru' ? ' из ' : ' / ') + photoMax()) : ''; }   /* 28.10 UX2: «2 из 8» */
 let PHOTOS = [];
 function syncPhotos(){ try { const dt = new DataTransfer(); PHOTOS.forEach(f => dt.items.add(f)); fPhotos.files = dt.files; } catch(_){}
   const th = document.getElementById('thumbs'); th.innerHTML = '';
@@ -967,8 +969,11 @@ function syncPhotos(){ try { const dt = new DataTransfer(); PHOTOS.forEach(f => 
   updateSel(); }
 fPhotos.addEventListener('change', () => {
   const add = [...(fPhotos.files || [])].filter(f => !PHOTOS.some(p => p.name === f.name && p.size === f.size && p.lastModified === f.lastModified));
-  if (add.length || !PHOTOS.length) PHOTOS = PHOTOS.concat(add).slice(0, photoMax());
+  const bad = photoWhy(add); const okAdd = bad ? add.filter(f => !photoWhy([f])) : add;   /* 28.10 ERR1: неподходящие файлы не добавляем и говорим почему */
+  const over = PHOTOS.length + okAdd.length > photoMax();
+  if (okAdd.length || !PHOTOS.length) PHOTOS = PHOTOS.concat(okAdd).slice(0, photoMax());
   syncPhotos();
+  if (bad) fieldErr('fPhotos', bad); else if (over) fieldErr('fPhotos', 'Можно до ' + photoMax() + ' фото — лишние не добавлены.');
 });
 const API = (document.querySelector('meta[name="talemir-api"]') || {}).content || '';
 async function apiUp(){ try { const c = new AbortController(); setTimeout(()=>c.abort(), 3000);
@@ -987,25 +992,85 @@ async function poll(token, until){
 function teenSync(){ const a=document.getElementById('fAge'); const row=document.getElementById('teenRow'); const vis=a && !a.closest('[hidden]') && a.offsetParent!==null; const n=parseInt(a&&a.value,10); const show=vis && n>=14 && n<=17; row.hidden=!show; if(!show) document.getElementById('fTeen').checked=false; }
 document.addEventListener('input', e => { if (e.target && e.target.id==='fAge') teenSync(); });
 document.addEventListener('change', () => teenSync());
+/* 28.10 ERR1 (решение собственника): везде — конкретная причина рядом с полем, прокрутка и фокус на нём */
+function clearFieldErrs(){ document.querySelectorAll('#form .ferr').forEach(x => x.remove()); document.querySelectorAll('#form [aria-invalid="true"]').forEach(x => x.removeAttribute('aria-invalid')); document.querySelectorAll('#form .row.has-err').forEach(x => x.classList.remove('has-err')); }
+function fieldErr(id, msg){ clearFieldErrs(); const e2 = document.getElementById('fErr'); e2.textContent = msg; e2.hidden = false;
+  const el = document.getElementById(id); if (!el) return;
+  const row = el.closest('.cph') || el.closest('.row') || el.parentNode; const sp = document.createElement('span'); sp.className = 'ferr'; sp.setAttribute('role', 'alert'); sp.textContent = msg; row.appendChild(sp); row.classList.add('has-err');
+  if (el.type !== 'file' && el.tagName !== 'DIV') el.setAttribute('aria-invalid', 'true');
+  try { row.scrollIntoView({block:'center', behavior:'smooth'}); } catch(_) {}
+  try { if (el.type !== 'file' && el.tagName !== 'DIV') el.focus({preventScroll:true}); } catch(_) {} }
+['input','change'].forEach(ev => document.addEventListener(ev, e => { const tg = e.target; if (!tg || !tg.closest || !tg.closest('#form')) return; const r = tg.closest('.cph') || tg.closest('.row'); if (r) { r.querySelectorAll('.ferr').forEach(x => x.remove()); r.classList.remove('has-err'); } tg.removeAttribute && tg.removeAttribute('aria-invalid'); }));
+function contactWhy(c){ c = String(c || '').trim();
+  if (!c) return 'Укажите почту или номер WhatsApp — туда пришлём готовый подарок.';
+  if (c.includes('@') || /[a-zа-я]/i.test(c)) {
+    if (!c.includes('@')) return 'Почта указана с ошибкой: нет символа @. Пример: name@mail.ru';
+    if (/\s/.test(c)) return 'В почте не должно быть пробелов — уберите их.';
+    if (c.split('@').length > 2) return 'В почте должен быть только один символ @.';
+    const u = c.split('@')[0], dm = c.split('@')[1];
+    if (!u) return 'Почта указана с ошибкой: нет имени перед @. Пример: name@mail.ru';
+    if (/[а-яё]/i.test(dm)) return 'После @ пишите латиницей, например mail.ru или gmail.com.';
+    if (!/^[^@\s]+\.[A-Za-z]{2,}$/.test(dm)) return 'Почта указана с ошибкой: после @ нужен адрес почты с точкой, например mail.ru или gmail.com.';
+    return ''; }
+  const d = c.replace(/\D/g, '');
+  if (d.length < 7) return 'В номере не хватает цифр: вы ввели ' + d.length + '. Пример: +7 900 123-45-67';
+  if (d.length > 15) return 'В номере слишком много цифр (' + d.length + '). Проверьте номер.';
+  if (!/^\+?[0-9][0-9 ()-]{6,20}$/.test(c)) return 'В номере есть лишние символы — оставьте цифры, «+», пробелы, скобки и дефис.';
+  return ''; }
+function photoWhy(files){ for (const f of (files || [])) {
+    if (f.size > 15e6) return 'Фото «' + f.name + '» больше 15 МБ — выберите снимок поменьше.';
+    if (f.type && !/^image\/(jpe?g|png|heic|heif|webp)$/i.test(f.type)) return 'Файл «' + f.name + '» не подходит — загрузите фото JPG или PNG.'; }
+  return ''; }
+function whyBlocked(){
+  const S = curSet(); const nm = document.getElementById('fName').value.trim();
+  if (!nm) return ['fName', curProd === 'cartoon' ? 'Укажите имя главного героя.' : 'Укажите имя — так оно прозвучит и будет написано в подарке.'];
+  const sr = document.getElementById('stressRow');
+  if (S.some(k => k === 'song' || k === 'sing' || k === 'cartoon') && sr && !sr.hidden && stressAt < 0 && !stressUnk) return ['fStress', t('f_stress')];
+  const oc = document.getElementById('fOcc'), own = document.getElementById('fOccOwn');
+  if (oc && oc.offsetParent !== null && oc.value === 'own' && own && !own.value.trim()) return ['fOccOwn', 'Напишите свой повод — например «Выпускной в садике» или «Просто так».'];
+  if (curProd === 'cartoon') {
+    const sn = document.getElementById('fCartStory').value.trim().length;
+    if (sn < 150) return ['fCartStory', 'История слишком короткая: ' + sn + ' из 150 знаков. Добавьте ещё пару деталей — каждая станет сценой.'];
+    if (!document.getElementById('fCartP1').files.length) return ['fCartP1', 'Добавьте хотя бы одно фото первого героя (Герой 1) — нажмите «Выбрать фото».'];
+    for (const id of ['fCartP1','fCartP2','fCartP3']) { const w = photoWhy(document.getElementById(id).files); if (w) return [id, w]; }
+  }
+  const needPh = S.some(k => ['book','clip','live','sing'].includes(k));
+  if (needPh && !fPhotos.files.length) return ['fPhotos', S.includes('sing') ? 'Добавьте одно фото, где хорошо видно лицо, — нажмите «Выбрать фото».' : 'Добавьте хотя бы одно фото, где хорошо видно лицо, — нажмите «Выбрать фото».'];
+  { const w = photoWhy(fPhotos.files); if (w) return ['fPhotos', w]; }
+  if (typeof invOn === 'function' && invOn()) {
+    const dv = document.getElementById('fInvDate').value, tv = document.getElementById('fInvTime').value, pv = document.getElementById('fInvPlace').value.trim();
+    if (!dv) return ['fInvDate', 'Укажите дату праздника для приглашения.'];
+    const dd = new Date(dv + 'T12:00:00'), now = new Date(); if (dd < new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)) return ['fInvDate', 'Дата праздника уже прошла — выберите сегодняшнюю или будущую.'];
+    if (dd > new Date(now.getTime() + 366 * 864e5)) return ['fInvDate', 'Дата праздника слишком далеко — не дальше чем через год.'];
+    if (!tv) return ['fInvTime', 'Укажите время праздника, например 15:00.'];
+    if (!pv) return ['fInvPlace', 'Укажите, где праздник: кафе, дом или парк.'];
+  }
+  const cw = contactWhy(document.getElementById('fContact').value); if (cw) return ['fContact', cw];
+  if (!document.getElementById('fConsent').checked) return ['fConsent', t('f_consent_err')];
+  if (!document.getElementById('teenRow').hidden && !document.getElementById('fTeen').checked) return ['fTeen', t('f_teen_err')];
+  return null; }
+const SRV_ERR = { bad_contact: ['fContact', null], photo_count: ['fPhotos', 'Проверьте фото: нужно от 1 до 10 снимков и отметка согласия.'], photo_too_large: ['fPhotos', 'Одно из фото больше 15 МБ — выберите снимок поменьше.'],
+  photo_type: ['fPhotos', 'Одно из фото не открывается — загрузите JPG или PNG.'], cart_story: ['fCartStory', 'История для мультфильма — от 150 до 1500 знаков.'], cart_heroes: ['fName', 'Укажите имя главного героя.'],
+  cart_style: ['fCartStyle', 'Выберите стиль мультфильма.'], inv_date: ['fInvDate', 'Проверьте дату праздника: сегодня или позже, не дальше чем через год.'], inv_time: ['fInvTime', 'Укажите время праздника, например 15:00.'],
+  inv_age: ['fAge', 'Для приглашения укажите возраст именинника от 1 до 17 лет.'], inv_place: ['fInvPlace', 'Укажите, где праздник: кафе, дом или парк (до 80 знаков).'], inv_url: ['fInvPlace', 'Ссылка на место должна начинаться с https://'],
+  inv_address: ['fInvAddr', 'Адрес слишком длинный — до 150 знаков.'], child_name: ['fName', 'Имя для приглашения — до 20 знаков.'], consent: ['fConsent', null], consent_teen: ['fTeen', null],
+  too_many: ['fContact', 'Слишком много заявок подряд. Подождите минуту и попробуйте снова.'], bad_choice: ['fProd', 'Выберите подарок ещё раз — список обновился.'] };
+function srvErr(d, status){ if (status === 413) d = 'photo_too_large'; const m = SRV_ERR[d];
+  if (!m) { showErr(/image|photo/.test(d) ? 'f_photo_err' : 'f_err'); return; }
+  let msg = m[1]; if (!msg) msg = d === 'bad_contact' ? (contactWhy(document.getElementById('fContact').value) || 'Проверьте почту или номер WhatsApp.') : d === 'consent' ? t('f_consent_err') : t('f_teen_err');
+  if (curProd === 'cartoon' && m[0] === 'fPhotos') m[0] = 'fCartP1';
+  fieldErr(m[0], msg); }
 let SEND_NOW = false;
 document.getElementById('form').addEventListener('submit', async e => {
   e.preventDefault();
   const needPh = curSet().some(k => ['book','clip','live','sing'].includes(k));
-  const needSt = curSet().some(k => k === 'song' || k === 'sing') && !document.getElementById('stressRow').hidden && stressAt < 0 && !stressUnk;
+  const needSt = curSet().some(k => k === 'song' || k === 'sing' || k === 'cartoon') && !document.getElementById('stressRow').hidden && stressAt < 0 && !stressUnk;
   const contact = document.getElementById('fContact').value.trim();
   const consentOk = document.getElementById('fConsent').checked;
   const teenNeed = !document.getElementById('teenRow').hidden;
   const teenOk = !teenNeed || document.getElementById('fTeen').checked;
-  let cartMsg = '', cartEl = null;   /* 28.10 MULT1: понятная причина вместо общего сообщения */
-  if (curProd === 'cartoon') {
-    const sn = document.getElementById('fCartStory').value.trim().length;
-    if (!document.getElementById('fName').value.trim()) { cartMsg = 'Укажите имя главного героя.'; cartEl = 'fName'; }
-    else if (sn < 150) { cartMsg = 'История слишком короткая: ' + sn + ' из 150 знаков. Добавьте ещё пару деталей.'; cartEl = 'fCartStory'; }
-    else if (!document.getElementById('fCartP1').files.length) { cartMsg = 'Добавьте хотя бы одно фото первого героя (Герой 1).'; cartEl = 'fCartP1'; }
-  }
-  if (cartMsg) { const e2 = document.getElementById('fErr'); e2.textContent = cartMsg; e2.hidden = false; const el = document.getElementById(cartEl); if (el) { el.scrollIntoView({block:'center', behavior:'smooth'}); try { el.focus(); } catch(_) {} } return; }
-  const ok = document.getElementById('fName').value.trim() && contact && !needSt && (!needPh || fPhotos.files.length) && consentOk && teenOk;
-  if (!ok) { showErr(needSt ? 'f_stress' : (!contact ? 'f_contact_err' : (!consentOk ? 'f_consent_err' : (!teenOk ? 'f_teen_err' : 'f_err')))); return; }
+  const why = whyBlocked(); if (why) { fieldErr(why[0], why[1]); return; }   /* 28.10 ERR1 */
+  clearFieldErrs();
   document.getElementById('fErr').hidden = true;
   if (!SEND_NOW) { SUM_EDIT = false; SUM_OUT = []; renderSum(); document.getElementById('formBody').hidden = true; document.getElementById('formSum').hidden = false; return; }
   if (!(await apiUp())) { SEND_NOW = false; document.getElementById('formBody').hidden = false; document.getElementById('formSum').hidden = true; showErr('f_neterr'); return; }
@@ -1021,7 +1086,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   if (curProd === 'cartoon') {   /* 28.10 MULT1: герои, история, стиль, фото по героям (по 3) */
     const others = v('fCartOthers').split(',').map(x => x.trim()).filter(Boolean).slice(0, 2);
     fd.append('cart_heroes', [v('fName')].concat(others).join(', ')); fd.append('cart_story', v('fCartStory')); fd.append('cart_style', v('fCartStyle'));
-    fd.set('occasion', v('fCartOcc')); const cnt = [];
+    const cnt = [];
     ['fCartP1','fCartP2','fCartP3'].forEach(id => { const fs = [...document.getElementById(id).files].slice(0, 3); cnt.push(fs.length); fs.forEach(f => fd.append('photos', f, f.name)); });
     fd.append('cart_counts', cnt.join(','));
   }
@@ -1033,14 +1098,26 @@ document.getElementById('form').addEventListener('submit', async e => {
     if (r.status === 201) { try { localStorage.setItem('tm_order', j.token); } catch(_){} let rf = ''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){} location.href = API + '/api/start/' + encodeURIComponent(j.token || '') + (rf ? '?ref=' + encodeURIComponent(rf) : ''); return; }
     SEND_NOW = false;
     document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true;
-    const d = String(j.detail || '');
-    showErr(d === 'bad_contact' ? 'f_contact_err' : /image|photo/.test(d) ? 'f_photo_err' : 'f_err');
+    srvErr(String(j.detail || ''), r.status);   /* 28.10 ERR1: ответ сервера — понятным текстом у нужного поля */
   } catch(err) {
     SEND_NOW = false; document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true; showErr('f_neterr');
   } finally { if (btn) btn.disabled = false; }
 });
 document.getElementById('sumBack').addEventListener('click', () => { document.getElementById('formSum').hidden = true; document.getElementById('formBody').hidden = false; });
 document.getElementById('sumPay').addEventListener('click', () => { SEND_NOW = true; document.getElementById('formSum').hidden = true; document.getElementById('form').requestSubmit(); });
+/* 28.10 UX2: превью фото героев мультфильма — миниатюры, ✕, «2 из 3» */
+const CPH = {fCartP1: [], fCartP2: [], fCartP3: []};
+function cphSync(id){ const inp = document.getElementById(id); try { const dt = new DataTransfer(); CPH[id].forEach(f => dt.items.add(f)); inp.files = dt.files; } catch(_) {}
+  const th = document.getElementById(id + 't'); th.innerHTML = '';
+  CPH[id].forEach((f, idx) => { const w = document.createElement('span'); w.className = 'th'; const im = new Image(); im.alt = ''; const r = new FileReader(); r.onload = () => { im.src = r.result; }; r.readAsDataURL(f); w.appendChild(im);
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'thx'; x.textContent = '×'; x.setAttribute('aria-label', 'Убрать фото'); x.addEventListener('click', () => { CPH[id].splice(idx, 1); cphSync(id); }); w.appendChild(x); th.appendChild(w); });
+  const n = CPH[id].length; document.getElementById(id + 'n').textContent = n ? 'Фото: ' + n + ' из 3' : '';
+  const b = document.getElementById(id + 'b'); if (b) { b.textContent = n ? 'Добавить ещё' : 'Выбрать фото'; b.hidden = n >= 3; } }
+Object.keys(CPH).forEach(id => { const inp = document.getElementById(id); if (!inp) return; inp.addEventListener('change', () => {
+  const add = [...(inp.files || [])].filter(f => !CPH[id].some(p => p.name === f.name && p.size === f.size && p.lastModified === f.lastModified));
+  const bad = photoWhy(add); const okAdd = add.filter(f => !photoWhy([f])); const over = CPH[id].length + okAdd.length > 3;
+  if (okAdd.length || !CPH[id].length) CPH[id] = CPH[id].concat(okAdd).slice(0, 3);
+  cphSync(id); if (bad) fieldErr(id, bad); else if (over) fieldErr(id, 'Для одного героя — до 3 фото, лишние не добавлены.'); }); });
 render();
 (function(){ fetch('img/ex/ex_cartoon.mp4', {method:'HEAD'}).then(r => { if (!r.ok) document.querySelectorAll('#p-cartoon .media, #p-cartoon .exc').forEach(m => m.hidden = true); }).catch(() => {}); })();   /* 28.10 MULT1: пример появится после пилота */
 </script>
