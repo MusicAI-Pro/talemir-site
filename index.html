@@ -698,9 +698,10 @@ var cu=c||(RU?'RUB':'');h.hidden=!(l==='ru'&&cu==='RUB');}catch(e){}})();
       <div class="row2" data-for="ny"><div class="row"><label for="fPet" data-i="f_pet_ny"></label><input type="text" id="fPet" autocomplete="off" maxlength="80" data-ph="ph_pet_ny"><span class="hint" data-i="h_pet_ny"></span></div><div class="row"><label for="fFrom" data-i="f_from_ny"></label><input type="text" id="fFrom" autocomplete="off" maxlength="80" data-ph="ph_from_ny"><span class="hint" data-i="h_from_ny"></span></div></div>
       <div class="row" data-for="ny"><label data-i="f_gift"></label><div class="giftopts" id="fGift" role="radiogroup"><label><input type="radio" name="gift" value="g1" checked><span aria-hidden="true">🎄</span> <span data-i="gift_g1"></span></label><label><input type="radio" name="gift" value="g2"><span aria-hidden="true">🌅</span> <span data-i="gift_g2"></span></label><label><input type="radio" name="gift" value="g3"><span aria-hidden="true">📦</span> <span data-i="gift_g3"></span></label><label><input type="radio" name="gift" value="g0"><span aria-hidden="true">🙅</span> <span data-i="gift_g0"></span></label></div><span class="hint" data-i="h_gift"></span></div>
       <div class="row nyplan" data-for="ny"><b data-i="ny_plan_h"></b><ol><li data-i="ny_plan_1"></li><li data-i="ny_plan_2"></li><li data-i="ny_plan_3"></li><li data-i="ny_plan_4"></li><li data-i="ny_plan_5"></li></ol></div>
-      <div class="row2" data-for="book song sing">
+      <div class="row2" data-for="book song sing clip live">
         <div class="row"><label for="fLang" id="fLangL" data-i="f_lang"></label><select id="fLang"></select></div>
       </div>
+      <p class="hint" id="fLangNote" role="note" hidden style="margin:-4px 0 12px;padding:10px 12px;border-radius:10px;background:#fff4e0;color:#6b4a00"></p>
       <div class="row" data-for="book"><label id="fStyleL" data-i="f_style"></label><select id="fStyle" hidden></select><div class="stygrid" id="fStyGrid" role="radiogroup" aria-labelledby="fStyleL"></div><div class="stypv" id="fStyPv" aria-live="polite"></div></div>
       <div class="row" data-for="book clip live sing ny"><label for="fPhotos" id="fPhotosL" data-i="f_photos"></label><input type="file" id="fPhotos" class="vh" accept="image/*" multiple><label for="fPhotos" class="btn btn-ghost filebtn" data-i="f_pick"></label><span class="hint" data-i="f_hint"></span><span class="hint" id="fSel"></span><div class="thumbs" id="thumbs"></div></div>
       <div class="row invadd" id="invAddRow" hidden>
@@ -937,11 +938,23 @@ function syncForm(){
   if (wh) { wh.dataset.i = curProd==='ny' ? 'h_wish_ny' : 'h_wish'; wh.textContent = t(wh.dataset.i); }
   if (typeof PHOTOS !== 'undefined' && PHOTOS.length > photoMax()) { PHOTOS = PHOTOS.slice(0, photoMax()); syncPhotos(); }
   const sb = document.querySelector('#form button[type=submit]'); sb.dataset.i = curProd==='book' ? 'f_submit' : 'f_submit2'; sb.textContent = t(sb.dataset.i);
-  const ll = document.getElementById('fLangL'); ll.dataset.i = (curProd==='song' || curProd==='sing') ? 'f_lang_song' : 'f_lang'; ll.textContent = t(ll.dataset.i);
+  const ll = document.getElementById('fLangL'); ll.dataset.i = ['song','sing','clip','live'].includes(curProd) ? 'f_lang_song' : 'f_lang'; ll.textContent = t(ll.dataset.i);
+  langNote();
   const ct = document.getElementById('fConsentT'); if (ct) { ct.dataset.i = consentKind() === 'universal' ? 'f_consent_u' : 'f_consent'; ct.textContent = t(ct.dataset.i); }   /* 26.10: согласие 1.5 — для клипа и «живых фото» возраст не спрашиваем */
   cartMusicSync();
   if (typeof renderStress === 'function') renderStress();
 }
+/* C1 29.10.2026 (BUG1, правило №140): язык подарка. Песня (и клип, «Живые фото», «Поющее фото»), книга — русский или английский;
+   Дед Мороз, мультфильм и приглашения пока только на русском — предупреждаем ДО оплаты. */
+const RU_ONLY = {ny:['Поздравление Деда Мороза','Ded Moroz greeting'], cartoon:['Мультфильм','Cartoon'], inv:['Приглашение','Party invitation'], invkit:['Набор приглашений','Party kit']};
+function langNote(){ const el = document.getElementById('fLangNote'); if (!el) return;
+  const S = curSet(), ro = S.filter(k => RU_ONLY[k]), row = document.getElementById('fLang').closest('.row2');
+  const chosen = (row && !row.hidden) ? (document.getElementById('fLang').value || lang) : lang;
+  const on = ro.length > 0 && (lang !== 'ru' || chosen !== 'ru'); el.hidden = !on; if (!on) return;
+  const ru = lang === 'ru', names = ro.map(k => RU_ONLY[k][ru ? 0 : 1]).join(', '), others = S.length > ro.length;
+  el.textContent = ru ? `Только на русском языке: ${names} — эти подарки пока делаем только на русском (текст, песня и озвучка).${others ? ' Остальные подарки заказа — на выбранном языке.' : ''}`
+                      : `Russian only: ${names} — this gift is currently made in Russian only (text, song and voice-over).${others ? ' Other gifts in your order will be in the language you chose.' : ''}`; }
+document.addEventListener('change', e => { if (e.target.id === 'fLang') langNote(); });
 function cartMusicSync(){   /* 28.10 MULT5: при «музыке без слов» прячем жанр песни и ударение */
   const m = document.getElementById('fCartMusic'), g = document.getElementById('fGenre'); if (!m || !g) return;
   const instr = curProd === 'cartoon' && m.value === 'instrumental';
@@ -1471,8 +1484,9 @@ function draw(d){var os=(d&&d.orders)||[],sn=ls('tm_seen'),dn=ls('tm_dinged');
  os.forEach(function(o){if(o.stage==='ready'&&prev[o.num]&&prev[o.num]!=='ready'&&dn.indexOf(o.num)<0){if(ding())lsAdd('tm_dinged',o.num)}prev[o.num]=o.stage});
  var ready=os.filter(function(o){return o.stage==='ready'&&sn.indexOf(o.num)<0})[0];
  var work=os.filter(function(o){return o.stage!=='ready'&&o.stage!=='wish_fix'})[0];
- if(ready){W.className='tm-giftw ready';T.textContent='Подарок готов — открыть';W.href=ready.link;W.onclick=function(){lsAdd('tm_seen',ready.num)};W.hidden=false;return !!work}
+ /* C1 29.10 (BUG2): заказ в работе показываем первым — раньше непросмотренный старый готовый подарок закрывал значок «Подарок готовится» */
  if(work){W.className='tm-giftw';T.innerHTML='Подарок готовится<span class="tm-dots"></span>';W.href=work.link;W.onclick=null;W.hidden=false;return true}
+ if(ready){W.className='tm-giftw ready';T.textContent='Подарок готов — открыть';W.href=ready.link;W.onclick=function(){lsAdd('tm_seen',ready.num)};W.hidden=false;return false}
  W.hidden=true;return false}
 function load(){fetch('https://ru.api.talemir.com/api/widget',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null})
  .then(function(d){var again=draw(d);clearTimeout(timer);if(again)timer=setTimeout(load,30000)}).catch(function(){})}
