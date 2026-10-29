@@ -750,6 +750,13 @@ var cu=c||(RU?'RUB':'');h.hidden=!(l==='ru'&&cu==='RUB');}catch(e){}})();
       <div class="row"><label for="payEm" data-i="pay_em"></label><input type="email" id="payEm" autocomplete="email" inputmode="email" maxlength="120" placeholder="mama@mail.ru" spellcheck="false" autocapitalize="off"></div>
       <div class="row"><label for="payTg" data-i="pay_tg"></label><input type="text" id="payTg" maxlength="40" autocomplete="off" spellcheck="false" autocapitalize="off" data-pph="ph_pay_tg"></div>
       <div class="row"><label for="payRf" data-i="pay_rf"></label><div class="payrf"><input type="text" id="payRf" maxlength="40" autocomplete="off" spellcheck="false" autocapitalize="characters" data-pph="ph_pay_rf"><button type="button" class="btn btn-ghost" id="payRfBtn" data-i="pay_apply"></button></div><span class="hint" id="payRfm" role="status" aria-live="polite"></span></div>
+      <div class="row" id="payWal" hidden><!-- 29.10 С4 (BAL5): песня из пакета, бонусные рубли, сохранённая карта — только вошедшему в кабинет -->
+        <label class="consent" id="payPackRow" hidden style="margin:0"><input type="checkbox" id="payPack"><span><span data-i="w_pack"></span> <span id="payPackN"></span></span></label>
+        <label class="consent" id="payBonusRow" hidden style="margin:0"><input type="checkbox" id="payBonus"><span id="payBonusT"></span></label>
+        <span class="hint" id="payBonusM" role="status" aria-live="polite"></span>
+        <div id="payCards" hidden style="display:flex;flex-direction:column;gap:6px"><strong data-i="w_how"></strong><div id="payCardList" style="display:flex;flex-direction:column;gap:6px"></div>
+          <label class="consent" id="paySaveRow" style="margin:0;font-weight:400"><input type="checkbox" id="paySave"><span data-i="w_save"></span></label></div>
+      </div>
       <div class="row"><label class="consent" style="margin:0"><input type="checkbox" id="payOk"><span><span data-i="pay_ok1"></span> <a href="https://talemir.com/offer" target="_blank" rel="noopener" data-i="pay_ok_offer"></a> <span data-i="pay_ok_and"></span> <a href="https://talemir.com/privacy" target="_blank" rel="noopener" data-i="pay_ok_priv"></a><span data-i="pay_ok2"></span></span></label></div>
       <div class="payvpn" role="note"><span aria-hidden="true">💡</span><span><b data-i="pay_vpn_b"></b><span data-i="pay_vpn"></span></span></div>
       <span class="err" id="payErr" role="alert" hidden></span>
@@ -1631,7 +1638,13 @@ Object.assign(I18N.ru, {st_of:'Шаг {n} из {m}', st_1:'Подарок', st_2
   pe_ok:'Отметьте согласие с условиями оферты и политикой — без этого оплата невозможна.', pe_tg:'Ник в Telegram — латиница, цифры и «_», от 5 до 32 знаков, например @mama_anna. Поле можно оставить пустым.',
   pe_already:'Этот заказ уже оплачен или уже в работе — откройте страницу заказа по ссылке из письма.', pe_unavailable:'Этот подарок сейчас временно недоступен — попробуйте через несколько минут.',
   pe_promo_unavailable:'Акция с этим кодом сейчас не действует — уберите код и оплатите заказ.', pe_bad_choice:'Подарок не найден — нажмите «Назад» и оформите заказ заново.', pe_409:'Условия заказа изменились — нажмите «Назад» и оформите заказ заново.',
-  pe_http:'Не получилось перейти к оплате (код {c}). Открываем страницу оформления заказа…', pe_net:'Нет связи с сервером. Проверьте интернет (и выключите VPN) и попробуйте ещё раз.'});
+  pe_http:'Не получилось перейти к оплате (код {c}). Открываем страницу оформления заказа…', pe_net:'Нет связи с сервером. Проверьте интернет (и выключите VPN) и попробуйте ещё раз.',
+  w_pack:'Оплатить песней из пакета —', w_pack_n:'осталось {n}', w_pack_price:'0 ₽ — песня из пакета', w_pack_rf:'Песня из пакета уже оплачена — промокод и бонусы не нужны.',
+  w_bonus:'Списать бонусные рубли (у вас {b}; к оплате останется не меньше 1 ₽)', w_bonus_ok:'Списываем {u} бонусами. Останется бонусов: {r}.', w_bonus_pct:'Ваша скидка выгоднее — бонусы не списываем, они остаются у вас (скидки не суммируются).',
+  w_bonus_code:'Скидки не суммируются: бонусы выгоднее, поэтому код не применён.', w_how:'Чем оплатить', w_card:'Оплатить: {t} — в один клик', w_new:'Новая карта или другой способ',
+  w_save:'Запомнить карту для оплаты в один клик. Списание — только когда вы сами нажмёте «Оплатить»; отвязать карту можно в личном кабинете.', w_go_pack:'Оформить — песня из пакета',
+  pe_bonus_low:'Бонусов стало меньше, чем нужно (возможно, они списаны в другом заказе) — снимите галочку или нажмите «Назад» и попробуйте снова.', pe_pack_empty:'В пакете не осталось песен — снимите галочку и оплатите заказ.',
+  pe_pack_not_for_order:'Песня из пакета — только для заказа одной песни, без других подарков.', pe_need_login:'Войдите в личный кабинет в этом браузере, чтобы оплатить песней из пакета.', pe_pm_gone:'Сохранённая карта отвязана — выберите «Новая карта или другой способ».'});
 Object.assign(I18N.en, {st_of:'Step {n} of {m}', st_1:'Gift', st_2:'Your order', st_3:'Payment', sum_next:'Next: payment', pay_h:'Payment', pay_hero:'Hero:',
   pay_after:'Right after payment we start preparing your gift. {eta} The gift will be on the order page and in your email; in Telegram — after one tap on “Get in Telegram”.',
   pay_em:'Email for the receipt and the gift', pay_tg:'Telegram (optional)', ph_pay_tg:'@username — you can also get the gift in Telegram', pay_rf:'Promo code or friend’s code (if you have one)', ph_pay_rf:'For example: ANNA-7K2Q', pay_apply:'Apply',
@@ -1649,7 +1662,13 @@ Object.assign(I18N.en, {st_of:'Step {n} of {m}', st_1:'Gift', st_2:'Your order',
   pe_ok:'Tick the box to accept the offer terms and the privacy policy — payment is not possible without it.', pe_tg:'A Telegram username uses Latin letters, digits and “_”, 5 to 32 characters, for example @mama_anna. You can leave this field empty.',
   pe_already:'This order has already been paid or is in progress — open the order page using the link from the email.', pe_unavailable:'This gift is temporarily unavailable — please try again in a few minutes.',
   pe_promo_unavailable:'The promotion for this code is not active right now — remove the code and pay for the order.', pe_bad_choice:'Gift not found — tap “Back” and place the order again.', pe_409:'The order conditions have changed — tap “Back” and place the order again.',
-  pe_http:'Could not open the payment (code {c}). Opening the order page…', pe_net:'No connection to the server. Check your internet (and turn off your VPN) and try again.'});
+  pe_http:'Could not open the payment (code {c}). Opening the order page…', pe_net:'No connection to the server. Check your internet (and turn off your VPN) and try again.',
+  w_pack:'Pay with a song from your pack —', w_pack_n:'{n} left', w_pack_price:'0 ₽ — song from your pack', w_pack_rf:'The song from your pack is already paid — no promo code or bonuses needed.',
+  w_bonus:'Use bonus roubles (you have {b}; at least 1 ₽ remains to pay)', w_bonus_ok:'Using {u} in bonuses. Bonuses left: {r}.', w_bonus_pct:'Your discount is better — bonuses are not used and stay with you (discounts do not add up).',
+  w_bonus_code:'Discounts do not add up: bonuses are better, so the code is not applied.', w_how:'How to pay', w_card:'Pay with {t} — one click', w_new:'New card or another method',
+  w_save:'Remember the card for one-click payment. We charge it only when you press “Pay” yourself; you can unlink the card in your account.', w_go_pack:'Place order — song from your pack',
+  pe_bonus_low:'You have fewer bonuses than needed (they may have been used in another order) — untick the box or tap “Back” and try again.', pe_pack_empty:'No songs left in your pack — untick the box and pay for the order.',
+  pe_pack_not_for_order:'A song from a pack works only for an order of one song, without other gifts.', pe_need_login:'Sign in to your account in this browser to pay with a song from your pack.', pe_pm_gone:'The saved card has been unlinked — choose “New card or another method”.'});
 if (I18N.kk) Object.assign(I18N.kk, {st_of:'{m} қадамның {n}-сі', st_1:'Сыйлық', st_2:'Сіздің тапсырысыңыз', st_3:'Төлем', sum_next:'Әрі қарай: төлем', pay_h:'Төлем', pay_hero:'Кейіпкер:',
   pay_after:'Төлемнен кейін сыйлықты бірден дайындай бастаймыз. {eta} Сыйлық тапсырыс бетінде және поштада болады; Telegram-да — «Telegram-да алу» батырмасын бір рет басқаннан кейін.',
   pay_em:'Чек пен сыйлыққа арналған e-mail', pay_tg:'Telegram (міндетті емес)', ph_pay_tg:'@username — сыйлықты Telegram-да да алуға болады', pay_rf:'Промокод немесе досыңыздың коды (бар болса)', ph_pay_rf:'Мысалы: ANNA-7K2Q', pay_apply:'Қолдану',
@@ -1710,7 +1729,28 @@ var PAYUX = (function(){
   const TG_RE = /^@?[A-Za-z0-9_]{5,32}$/;                              /* = checkout_page.html */
   const RS_OK = {friend:1, promo_ok:1, own_better:1, owner:1}, RS_BAD = {new_only:1, inactive:1, not_found:1, own_code:1, used:1, bound_other:1, expired_own:1, expired:1, not_for_product:1};
   const RUB = {cartoon:5990, book:990, song:490, clip:790, live:1990, sing:1490, ny:490, inv:290, invkit:590};   /* = chain.py PRICE (только для строки «было …»; цену считает сервер) */
-  const S = {tok:'', keys:[], sig:'', last:null, base:null, q:0, busy:false, timer:0};
+  const S = {tok:'', keys:[], sig:'', last:null, base:null, q:0, busy:false, timer:0, w:null};   /* w — ответ /api/wallet/offer (С4) */
+  const CRED = {credentials:'include'};   /* С4: cookie кабинета ru.api (тот же сайт talemir.com) — бонусы/пакет/карта вошедшего клиента */
+  function fmtN(n){ return fmt(n).replace(/ ₽$/, '\u00a0₽'); }   /* С4: «350 ₽» не разрывается на две строки */
+  function songsN(n){ if (lang !== 'ru') return String(n) + (n === 1 ? ' song' : ' songs'); const a = n % 10, b = n % 100; return n + ' ' + (a === 1 && b !== 11 ? 'песня' : (a >= 2 && a <= 4 && !(b >= 12 && b <= 14)) ? 'песни' : 'песен'); }
+  function packOn(){ return !$('payPackRow').hidden && $('payPack').checked; }
+  function bonusOn(){ return !$('payBonusRow').hidden && $('payBonus').checked && !packOn(); }
+  function walSync(){ const w = S.w, p = packOn(); $('payBonusRow').hidden = p || !(w && w.bonus && w.bonus.on && w.bonus.balance > 0);
+    $('payCards').hidden = p || !(w && w.oneclick && w.oneclick.on); $('payRf').disabled = p; $('payRfBtn').disabled = p; if (p) { $('payBonusM').textContent = ''; } }
+  function walRender(){ const w = S.w; let any = false; $('payPackRow').hidden = true; $('payBonusRow').hidden = true; $('payCards').hidden = true; $('payPack').checked = false; $('payBonus').checked = false; $('payBonusM').textContent = '';
+    if (w && w.logged) {
+      if (w.pack && w.pack.ok) { $('payPackN').textContent = t('w_pack_n').replace('{n}', songsN(w.pack.credits)); $('payPackRow').hidden = false; any = true; }
+      if (w.bonus && w.bonus.on && w.bonus.balance > 0) { $('payBonusT').textContent = t('w_bonus').replace('{b}', fmtN(w.bonus.balance)); any = true; }
+      if (w.oneclick && w.oneclick.on) { const box = $('payCardList'); box.textContent = ''; const ms = w.oneclick.methods || [];
+        ms.concat([{id:'', title:''}]).forEach((x, i) => { const l = document.createElement('label'); l.className = 'consent'; l.style.margin = '0'; l.style.fontWeight = '400';
+          const r = document.createElement('input'); r.type = 'radio'; r.name = 'payPm'; r.value = x.id; r.checked = i === 0; r.addEventListener('change', () => { $('paySaveRow').hidden = !!r.value; });
+          const sp = document.createElement('span'); sp.textContent = x.id ? t('w_card').replace('{t}', x.title) : t('w_new'); l.appendChild(r); l.appendChild(sp); box.appendChild(l); });
+        $('paySaveRow').hidden = ms.length > 0; $('paySave').checked = false; any = true; }
+    }
+    $('payWal').hidden = !any; walSync(); }
+  async function walLoad(tok){ S.w = null; walRender(); try { const r = await fetch(API + '/api/wallet/offer/' + encodeURIComponent(tok), {...CRED, cache:'no-store'}); if (r.ok && S.tok === tok) { S.w = await r.json(); walRender(); if (bonusOn()) quote(false); } } catch(_){} }
+  function pmChosen(){ const r = document.querySelector('input[name="payPm"]:checked'); return (r && !$('payCards').hidden) ? r.value : ''; }
+  function packPrice(){ $('payPrice').textContent = t('w_pack_price'); $('payOld').hidden = true; $('payDisc').hidden = true; $('payGo').textContent = t('w_go_pack'); $('payGo').disabled = false; rfMsg(t('w_pack_rf'), ''); }
   function fmt(n){ n = Number(n) || 0; return n.toLocaleString(LOCALE[lang] || 'ru-RU', {minimumFractionDigits: (n % 1 ? 2 : 0), maximumFractionDigits: 2}).replace(/ | /g, ' ') + ' ₽'; }
   function rubCalc(keys){   /* = chain.pricing: sub и total в рублях */
     const IK = {inv:1, invkit:1}; const main = keys.filter(k => !IK[k]);
@@ -1739,20 +1779,25 @@ var PAYUX = (function(){
     const full = sure ? rc.sub : base; $('payPrice').textContent = fmt(p);
     const o = $('payOld'); o.hidden = !(p < full); o.textContent = fmt(full);
     const dd = $('payDisc'); const bundle = d.src === 'bundle' && Number(d.pct) > 0; dd.hidden = !(bundle && sure); dd.textContent = bundle && sure ? t('pay_disc').replace('{p}', d.pct).replace('{s}', fmt(rc.sub)) : '';
-    $('payGo').disabled = false; }
+    $('payGo').disabled = false; $('payGo').textContent = t('sum_pay'); }
   function reason(d, hasCode){ let r = d.reason;
+    const bm = $('payBonusM'); bm.textContent = ''; bm.className = 'hint';
+    if (bonusOn() && d.bonus_mode === 'bonus') { bm.textContent = t('w_bonus_ok').replace('{u}', fmtN(d.bonus_use)).replace('{r}', fmtN(Math.max(0, (d.bonus_avail || 0) - (d.bonus_use || 0)))); bm.className = 'hint payok'; return rfMsg(hasCode ? t('w_bonus_code') : t('rs_none'), ''); }
+    else if (bonusOn() && d.bonus_mode === 'pct_better') bm.textContent = t('w_bonus_pct');
     if (!hasCode) { if (r === 'expired_own') return rfMsg(t('rs_expired_own'), 'bad'); if (Number(d.price) < Number(d.base) && d.src && d.src !== 'bundle') return rfMsg(t('pay_own').replace('{p}', d.pct), 'ok'); return rfMsg(t('rs_none'), ''); }
     if (!t('rs_' + r)) r = 'none'; let s = t('rs_' + r).replace('{p}', d.pct); if (RS_OK[r] && d.ny_cap) s += ' ' + t('rs_ny_cap');
     rfMsg(s, RS_OK[r] ? 'ok' : RS_BAD[r] ? 'bad' : ''); }
   async function quote(first){ const my = ++S.q; const code = $('payRf').value.trim().toUpperCase(); const em = $('payEm').value.trim();
+    if (packOn()) return packPrice();                                       /* С4: песня из пакета — 0 ₽, цену не спрашиваем */
     if (!first && code) rfMsg(t('pay_checking'), '');
-    const fd = new FormData(); fd.append('email', EM_RE.test(em) ? em : ''); fd.append('ref', code);
-    let r; try { r = await fetch(API + '/api/quote/' + encodeURIComponent(S.tok), {method:'POST', body:fd, cache:'no-store'}); }
+    const fd = new FormData(); fd.append('email', EM_RE.test(em) ? em : ''); fd.append('ref', code); fd.append('use_bonus', bonusOn() ? '1' : '');
+    let r; try { r = await fetch(API + '/api/quote/' + encodeURIComponent(S.tok), {method:'POST', body:fd, cache:'no-store', ...CRED}); }
     catch(_) { if (my !== S.q) return; if (first) return oldStart(); return rfMsg(t('qe_net'), 'bad'); }
     if (my !== S.q) return;
     if (!r.ok) { if (first) return oldStart(); return rfMsg(r.status === 429 ? t('qe_429') : t('qe_http').replace('{c}', r.status), 'bad'); }
     let d; try { d = await r.json(); } catch(_) { if (first) return oldStart(); return rfMsg(t('qe_http').replace('{c}', r.status), 'bad'); }
     if (my !== S.q) return; if (d == null || d.price == null || d.base == null) { if (first) return oldStart(); return rfMsg(t('qe_http').replace('{c}', r.status), 'bad'); }
+    if (packOn()) return packPrice();
     price(d); reason(d, !!code); }
   function later(){ clearTimeout(S.timer); S.timer = setTimeout(() => quote(false), 700); }
   async function offNow(keys){ try { const c = new AbortController(); const tm = setTimeout(() => c.abort(), 2500);
@@ -1768,18 +1813,23 @@ var PAYUX = (function(){
     if (!$('payRf').value.trim()) { try { const rf = localStorage.getItem('tm_ref'); if (rf) $('payRf').value = rf; } catch(_){} }
     $('payPrice').textContent = t('pay_wait'); $('payOld').hidden = true; $('payDisc').hidden = true; $('payGo').disabled = true; rfMsg('', '');
     show('formPay'); try { $('formPay').scrollIntoView({block:'start'}); document.getElementById('form').scrollTop = 0; } catch(_){}
-    const q1 = quote(true); if (await offNow(keys)) return oldStart(tok); await q1; }   /* подарок временно недоступен — страница «временно недоступно» */
+    const q1 = quote(true); walLoad(tok); if (await offNow(keys)) return oldStart(tok); await q1; }   /* подарок временно недоступен — страница «временно недоступно» */
   async function pay(){ if (S.busy) return; clearErr();
     const em = $('payEm').value.trim(); const ew = emWhy(em); if (ew) return err('payEm', ew);
     if (!$('payOk').checked) return err('payOk', t('pe_ok'));
     const tg = $('payTg').value.trim(); if (tg && !TG_RE.test(tg)) return err('payTg', t('pe_tg'));
     S.busy = true; const b = $('payGo'); b.disabled = true; const e = $('payErr'); e.hidden = false; e.className = 'hint'; e.textContent = t('pay_going');
     const fd = new FormData(); fd.append('email', em); fd.append('ref', $('payRf').value.trim().toUpperCase()); fd.append('tg', tg);
-    try { const r = await fetch(API + '/api/pay/' + encodeURIComponent(S.tok), {method:'POST', body:fd, cache:'no-store'}); e.className = 'err';
+    if (packOn()) fd.append('use_pack', '1'); else { if (bonusOn()) fd.append('use_bonus', '1'); const pm = pmChosen(); if (pm) fd.append('pm', pm); else if (!$('payCards').hidden && $('paySave').checked) fd.append('save_card', '1'); }   /* С4 */
+    try { const r = await fetch(API + '/api/pay/' + encodeURIComponent(S.tok), {method:'POST', body:fd, cache:'no-store', ...CRED}); e.className = 'err';
       if (!r.ok) { S.busy = false; b.disabled = false; let d = ''; try { d = (await r.json()).detail || ''; } catch(_){}
         if (d === 'nophoto_consent') return oldStart();                    /* согласие «без фото» — только на прежней странице оформления */
         if (d === 'bad_email') return err('payEm', emWhy(em) || t('em_bad'));
         if (d === 'promo_unavailable') return err('payRf', t('pe_promo_unavailable'));
+        if (d === 'bonus_low') return err('payBonus', t('pe_bonus_low'));                                   /* С4 */
+        if (d === 'pack_empty' || d === 'pack_used' || d === 'pack_not_for_order') return err('payPack', t(d === 'pack_used' ? 'pe_already' : d === 'pack_empty' ? 'pe_pack_empty' : 'pe_pack_not_for_order'));
+        if (d === 'need_login') return err('payPack', t('pe_need_login'));
+        if (d === 'pm_gone') { walLoad(S.tok); return err(null, t('pe_pm_gone')); }
         if (d === 'already' || d === 'unavailable') return err(null, t('pe_' + d));
         if (d === 'bad_choice') { S.last = null; return err(null, t('pe_bad_choice')); }
         if (r.status === 409) { S.last = null; return err(null, t('pe_409')); }
@@ -1794,6 +1844,8 @@ var PAYUX = (function(){
   function texts(){ document.querySelectorAll('#formPay [data-pph]').forEach(el => { el.placeholder = t(el.dataset.pph); }); document.querySelectorAll('#formPay [data-i], #pSteps [data-i]').forEach(el => { el.textContent = t(el.dataset.i); }); $('payAfter').textContent = TIME1.payAfter(S.keys); sumBtn(); steps(); }
   /* события */
   $('payGo').addEventListener('click', pay); $('payBack').addEventListener('click', back);
+  $('payPack').addEventListener('change', () => { walSync(); clearTimeout(S.timer); quote(false); });   /* С4 */
+  $('payBonus').addEventListener('change', () => { clearTimeout(S.timer); quote(false); });
   $('payRfBtn').addEventListener('click', () => { clearTimeout(S.timer); quote(false); });
   $('payRf').addEventListener('input', later); $('payRf').addEventListener('change', () => { clearTimeout(S.timer); quote(false); });
   $('payEm').addEventListener('change', () => { if ($('payRf').value.trim()) quote(false); });
