@@ -2398,5 +2398,440 @@ var PAYUX = (function(){
   render();
 })();
 </script>
+<style>
+/* 29.10 C6b (София — продукт, Арман — сайт, Дарья — право, Ламис — этика, Айрис — QA): «Малыш по УЗИ» — карточка, страница-окно с примером, предзапись.
+   Приём снимков — только после уведомлений РКН (ст. 22 и ст. 12) и 10 рабочих дней: сейчас режим «Предзапись»; сервер (/api/preg/config) сам скажет, когда откроется заказ. */
+#products .e-preg .media{position:relative;overflow:hidden;background:#efe7f6}
+#products .e-preg .media>img.pg-main{width:100%;height:100%;object-fit:cover;object-position:50% 38%}
+#products .e-preg .pg-us{position:absolute;inset-inline-end:10px;bottom:10px;width:31%;aspect-ratio:1;border-radius:14px;overflow:hidden;border:3px solid #fff;box-shadow:0 6px 18px rgba(20,10,40,.35);background:#000}
+#products .e-preg .pg-us img{width:100%;height:100%;object-fit:cover}
+#products .e-preg .pg-us span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font:800 10px/1.3 var(--f-body);text-align:center;padding:2px 0}
+#products .e-preg .e-eta{color:var(--pome)!important;opacity:1!important}
+.pg-tag{background:#2E1F4F;color:#fff}
+#pregModal .pg-sheet{width:min(940px,100%);padding:0;gap:0;position:relative}
+.pg-x{position:absolute;inset-inline-end:12px;top:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#23173A;font-size:24px;line-height:1;cursor:pointer;z-index:3;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.pg-head{padding:26px 26px 18px;background:linear-gradient(135deg,#2E1F4F 0%,#5B2F6E 60%,#8E3A63 100%);color:#F5EFFF;border-radius:20px 20px 0 0}
+.pg-head .pg-k{display:inline-block;font-weight:800;font-size:13px;letter-spacing:.02em;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 12px;margin-bottom:10px}
+.pg-head h3{font-size:clamp(1.5rem,3.6vw,2.1rem);color:#fff;margin:0 0 6px}
+.pg-head p{margin:0;color:#E9DEF7;max-width:42em}
+.pg-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:22px}
+#pregModal section{padding:0;margin:0}
+.pg-sec h4,.pg-box h4,.pg-wl h4{font-size:1.08rem;margin:0 0 10px;font-family:var(--f-display);text-transform:none;letter-spacing:0;color:var(--ink)}
+.pg-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1.25fr;gap:12px;align-items:center}
+.pg-flow figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.pg-flow figcaption{font-size:13px;color:var(--muted);font-weight:700;text-align:center;line-height:1.3}
+.pg-flow img,.pg-flow video{width:100%;height:auto;border-radius:14px;display:block;background:#000}
+.pg-usf img{aspect-ratio:1}
+.pg-par{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pg-par img{aspect-ratio:3/4;object-fit:cover}
+.pg-arr{font-size:26px;color:var(--gold);font-weight:800;text-align:center}
+.pg-res{display:grid;grid-template-columns:1.4fr 1fr;gap:8px}
+.pg-res .pg-side{display:grid;grid-template-rows:1fr 1fr;gap:8px}
+.pg-res img,.pg-res video{height:100%;object-fit:cover;min-height:0}
+.pg-res .pg-side img,.pg-res .pg-side video{aspect-ratio:1}
+.pg-res .pg-main{aspect-ratio:4/5;height:auto}
+.pg-vid{position:relative}.pg-vid span{position:absolute;inset-inline-start:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font:800 11px var(--f-body);border-radius:999px;padding:2px 8px}
+.pg-cap{font-size:13px;color:var(--muted);margin:10px 0 0;text-align:center}
+.pg-cap b{color:var(--ink)}
+.pg-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0;padding:0;list-style:none;counter-reset:pg}
+.pg-steps li{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:14.5px;line-height:1.45;counter-increment:pg}
+.pg-steps li::before{content:counter(pg);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--gold-ink);font-weight:800;margin-bottom:8px}
+.pg-steps b{display:block;margin-bottom:2px}
+.pg-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pg-box{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px}
+.pg-box ul{margin:0;padding-inline-start:18px;font-size:14.5px;line-height:1.5}
+.pg-box li+li{margin-top:4px}
+.pg-note{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+.pg-prices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pg-price{border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--card)}
+.pg-price b{display:block;font-size:1.35rem}
+.pg-price span{font-size:14px;color:var(--muted)}
+.pg-cons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pg-cons div{border:1px dashed var(--line);border-radius:14px;padding:10px;font-size:13px;color:var(--muted);text-align:center;line-height:1.35}
+.pg-cons div b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+.pg-cons div i{font-style:normal;display:block;font-size:18px;margin-bottom:4px}
+.pg-wl{background:color-mix(in srgb,var(--gold) 14%,var(--card));border-radius:18px;padding:18px}
+.pg-wl h4{margin-bottom:4px}
+#products .e-preg .pg-vp{font-size:13px;color:var(--muted);font-weight:700}
+#products .e-preg .body>.pp{grid-column:1/-1}
+#products .e-preg .body>.e-act{grid-column:1/-1;justify-self:start}
+/* попутно (C6b): у «Мультфильма» кнопка «Создать мультфильм» наезжала на цену 5 990 ₽ на ширине 1440 — цена и кнопка в разные строки, как у приглашения */
+#products #p-cartoon .body>.pp{grid-column:1/-1}
+#products #p-cartoon .body>[data-open]{grid-column:1/-1;justify-self:start}
+.pg-wl .pg-row{display:grid;grid-template-columns:1fr 1.3fr;gap:10px;margin-top:12px}
+.pg-sheet label{font-weight:700;font-size:.92rem}
+.pg-sheet input[type=text],.pg-sheet input[type=email],.pg-sheet input[type=date],.pg-sheet input[type=number],.pg-sheet select,.pg-sheet textarea{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:.65em .8em;width:100%;font:inherit;font-size:16px;box-sizing:border-box}
+.pg-f{display:flex;flex-direction:column;gap:5px}
+.pg-chk{display:flex;gap:10px;align-items:flex-start;font-weight:600!important;font-size:13.5px!important;line-height:1.45;margin-top:12px}
+.pg-chk input{margin-top:3px;flex:none;width:18px;height:18px}
+.pg-plan{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pg-plan label{display:flex;gap:6px;align-items:center;font-weight:700;font-size:14px;border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--card);cursor:pointer}
+.pg-plan label:has(input:checked){border-color:var(--gold)}
+.pg-act{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.pg-act .btn{padding:12px 22px}
+.pg-err{color:#c0392b;font-weight:600;font-size:14px;margin:8px 0 0}
+.pg-ok{font-weight:700;color:#1d7a3a;margin:0}
+.pg-link{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;font:inherit;font-size:13.5px}
+.pg-doc{white-space:pre-wrap;font-size:12.5px;line-height:1.45;max-height:240px;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px}
+.pg-crop{position:relative;touch-action:none;user-select:none;max-width:420px;margin-top:8px;overflow:hidden;border-radius:10px}
+.pg-crop img{display:block;width:100%;border-radius:10px}
+.pg-crop .pg-box2{position:absolute;border:3px solid var(--gold);box-shadow:0 0 0 2000px rgba(10,5,20,.55);border-radius:6px;cursor:move}
+.pg-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:760px){
+  .pg-head{padding:22px 18px 16px}.pg-body{padding:18px 16px 22px;gap:18px}
+  .pg-flow{grid-template-columns:1fr}.pg-arr{transform:rotate(90deg);line-height:1}
+  .pg-flow figure.pg-usf{max-width:260px;margin:0 auto}
+  .pg-par{max-width:300px;margin:0 auto;width:100%}
+  .pg-steps,.pg-two,.pg-prices,.pg-wl .pg-row,.pg-grid2{grid-template-columns:1fr}
+  .pg-cons{grid-template-columns:1fr 1fr}
+}
+@media (max-width:360px){.pg-res{grid-template-columns:1fr}.pg-res .pg-side{grid-template-rows:none;grid-template-columns:1fr 1fr}.pg-cons{grid-template-columns:1fr}}
+</style>
+<div class="modal" id="pregModal" hidden>
+  <div class="sheet pg-sheet" role="dialog" aria-modal="true" aria-labelledby="pgTitle">
+    <button type="button" class="pg-x" id="pgClose" aria-label="Закрыть">×</button>
+    <div class="pg-head"><span class="pg-k" id="pgKick"></span><h3 id="pgTitle"></h3><p id="pgLead"></p></div>
+    <div class="pg-body">
+      <section class="pg-sec" aria-labelledby="pgExH">
+        <h4 id="pgExH" data-pg="pg_ex_h"></h4>
+        <div class="pg-flow">
+          <figure class="pg-usf"><img src="img/ex/ex_preg_us.jpg" width="640" height="640" loading="lazy" alt="" data-pga="pg_alt_us"><figcaption data-pg="pg_f_us"></figcaption></figure>
+          <div class="pg-arr" aria-hidden="true">+</div>
+          <figure><div class="pg-par"><img src="img/ex/ex_preg_mom.jpg" width="300" height="400" loading="lazy" alt="" data-pga="pg_alt_mom"><img src="img/ex/ex_preg_dad.jpg" width="300" height="400" loading="lazy" alt="" data-pga="pg_alt_dad"></div><figcaption data-pg="pg_f_par"></figcaption></figure>
+          <div class="pg-arr" aria-hidden="true">→</div>
+          <figure><div class="pg-res"><img class="pg-main" src="img/ex/ex_preg_1.jpg" width="900" height="1117" loading="lazy" alt="" data-pga="pg_alt_r1"><div class="pg-side"><img src="img/ex/ex_preg_2.jpg" width="900" height="900" loading="lazy" alt="" data-pga="pg_alt_r2"><div class="pg-vid"><video id="pgVid" src="img/ex/ex_preg_v.mp4" poster="img/ex/ex_preg_v.jpg" muted loop playsinline preload="none" aria-label=""></video><span data-pg="pg_vid"></span></div></div></div><figcaption data-pg="pg_f_res"></figcaption></figure>
+        </div>
+        <p class="pg-cap" data-pg="pg_cap" data-pgh="1"></p>
+      </section>
+      <section class="pg-sec"><h4 data-pg="pg_how_h"></h4><ol class="pg-steps"><li data-pg="pg_s1" data-pgh="1"></li><li data-pg="pg_s2" data-pgh="1"></li><li data-pg="pg_s3" data-pgh="1"></li></ol></section>
+      <section class="pg-two">
+        <div class="pg-box"><h4 data-pg="pg_honest_h"></h4><ul><li data-pg="pg_h1"></li><li data-pg="pg_h2"></li><li data-pg="pg_h3"></li><li data-pg="pg_h4"></li></ul></div>
+        <div class="pg-box"><h4 data-pg="pg_req_h"></h4><ul><li data-pg="pg_r1"></li><li data-pg="pg_r2"></li><li data-pg="pg_r3"></li><li data-pg="pg_r4"></li></ul><p class="pg-note" data-pg="pg_r_note"></p></div>
+      </section>
+      <section class="pg-sec"><h4 data-pg="pg_price_h"></h4>
+        <div class="pg-prices"><div class="pg-price"><b id="pgP1"></b><span data-pg="pg_p1"></span></div><div class="pg-price"><b id="pgP2"></b><span data-pg="pg_p2"></span></div></div>
+        <p class="pg-note" data-pg="pg_p_note"></p></section>
+      <section class="pg-sec" id="pgConsPrev"><h4 data-pg="pg_cons_h"></h4>
+        <div class="pg-cons"><div><i>✍️</i><b data-pg="pg_c1"></b><span data-pg="pg_c1d"></span></div><div><i>🩻</i><b data-pg="pg_c2"></b><span data-pg="pg_c2d"></span></div><div><i>👪</i><b data-pg="pg_c3"></b><span data-pg="pg_c3d"></span></div><div><i>👶</i><b data-pg="pg_c4"></b><span data-pg="pg_c4d"></span></div></div>
+        <p class="pg-note" id="pgConsNote"></p></section>
+      <section class="pg-wl" id="pgWl" aria-labelledby="pgWlH">
+        <h4 id="pgWlH"></h4><p class="pg-note" style="margin:0" data-pg="pg_wl_p"></p>
+        <form id="pgWlForm" novalidate>
+          <div class="pg-row"><div class="pg-f"><label for="pgWlName" data-pg="pg_wl_name"></label><input type="text" id="pgWlName" maxlength="60" autocomplete="given-name"></div>
+            <div class="pg-f"><label for="pgWlContact" data-pg="pg_wl_contact"></label><input type="text" id="pgWlContact" maxlength="120" autocomplete="email" inputmode="email" aria-describedby="pgWlErr"></div></div>
+          <div class="pg-plan" role="radiogroup" aria-labelledby="pgPlanL"><span id="pgPlanL" class="hint" data-pg="pg_wl_plan"></span><label><input type="radio" name="pgplan" value="photo"> <span data-pg="pg_plan_photo"></span></label><label><input type="radio" name="pgplan" value="video"> <span data-pg="pg_plan_video"></span></label></div>
+          <label class="pg-chk"><input type="checkbox" id="pgWlOk"> <span data-pg="pg_wl_consent"></span></label>
+          <div class="pg-act"><button type="submit" class="btn btn-gold" id="pgWlBtn" data-pg="pg_wl_btn"></button></div>
+          <p class="pg-err" id="pgWlErr" role="alert" hidden></p>
+        </form>
+        <p class="pg-ok" id="pgWlDone" role="status" hidden></p>
+        <p style="margin:10px 0 0"><button type="button" class="pg-link" id="pgForgetT" data-pg="pg_forget_t" aria-controls="pgForget"></button></p>
+        <form id="pgForget" hidden novalidate><div class="pg-row"><div class="pg-f" style="grid-column:1/-1"><label for="pgForgetC" data-pg="pg_forget_l"></label><input type="text" id="pgForgetC" maxlength="120"></div></div>
+          <div class="pg-act"><button type="submit" class="btn btn-ghost" data-pg="pg_forget_btn"></button></div><p class="pg-note" id="pgForgetDone" role="status" hidden></p></form>
+      </section>
+      <section class="pg-sec" id="pgLive" hidden></section>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  'use strict';
+  function $(id){ return document.getElementById(id); }
+  var M = $('pregModal'), CFG = {live:false, open_date:'', prices:{preg:990, preg_v:1990}, variant:'A'}, lastFocus = null;
+  Object.assign(I18N.ru, {
+    h4_uzi_t:'Малыш по УЗИ', p_uzi_t:'Малыш по УЗИ', h4_d_uzi:'Портрет новорождённого по снимку 3D/4D УЗИ — в цветах вашей семьи',
+    pg_tag_wl:'Предзапись', pg_tag_new:'Новинка', pg_card_soon:'Скоро — оставьте контакт, сообщим о запуске', pg_card_date:'Приём заказов — с {d}',
+    pg_card_btn:'Пример и предзапись', pg_card_btn_live:'Заказать', pg_card_ex:'Пример на вымышленных данных: снимок и родители созданы ИИ', pg_card_us:'УЗИ', pg_card_from:'Портреты — {a}, с видео — {b}', pg_card_pp:'от {a}',
+    pg_kick_wl:'Новинка · предзапись', pg_kick_live:'Новинка', pg_title:'Малыш по УЗИ — первая встреча',
+    pg_lead:'Портрет по чертам лица с вашего УЗИ — в цветах вашей семьи. Так мог бы выглядеть ваш малыш. Это художественный портрет, а не медицинское заключение и не прогноз внешности: цвет кожи, глаз и волос на УЗИ не виден — мы подбираем его по вашим фото и анкете.',
+    pg_ex_h:'Пример: снимок → портрет', pg_f_us:'Снимок 3D/4D УЗИ', pg_f_par:'+ фото мамы и папы', pg_f_res:'Портреты и видео 5 с', pg_vid:'▶ 5 с',
+    pg_alt_us:'Пример снимка 3D УЗИ, созданный ИИ (не настоящий снимок)', pg_alt_mom:'Вымышленная мама — фото создано ИИ', pg_alt_dad:'Вымышленный папа — фото создано ИИ',
+    pg_alt_r1:'Пример портрета: спящий малыш в вязаной пелёнке', pg_alt_r2:'Пример портрета: малыш крупным планом',
+    pg_cap:'<b>Пример на вымышленных данных: снимок и родители созданы ИИ.</b> Реальных людей и снимков здесь нет. Глаза малыша на портрете закрыты: их цвет установится только к году.',
+    pg_how_h:'Как это работает',
+    pg_s1:'<b>Снимок УЗИ</b>Загрузите снимок 3D/4D, который у вас уже есть. Рамку с вашим именем и названием клиники мы отрежем ещё в браузере — до загрузки.',
+    pg_s2:'<b>Цвета семьи</b>Ваше фото и, по желанию, фото второго родителя — он сам даст согласие по ссылке. Или просто ответьте на 6 вопросов о внешности.',
+    pg_s3:'<b>Предпросмотр и портреты</b>Бесплатный предпросмотр с водяным знаком, затем 3 портрета 2K (и видео 5 с). Каждый портрет перед выдачей проверяет человек.',
+    pg_honest_h:'Честно о результате', pg_h1:'Черты лица (носик, щёчки, губы) — с вашего снимка.', pg_h2:'Цвет — по фото родителей или вашему выбору. Дети одних родителей бывают очень разными.',
+    pg_h3:'Глаза на портрете закрыты: их цвет установится только к году.', pg_h4:'Сходство после рождения мы не обещаем — лицо малыша меняется и до, и после родов.',
+    pg_req_h:'Какой нужен снимок', pg_r1:'3D или 4D (объёмный), не 2D.', pg_r2:'Лучше всего 26–32 недели.', pg_r3:'Лицо анфас или вполоборота.', pg_r4:'Лицо не закрыто ручками или пуповиной.',
+    pg_r_note:'Используйте снимок, который у вас уже есть. Не делайте УЗИ ради портрета — исследование проводится по назначению врача. Если снимок не подойдёт, скажем об этом до оплаты.',
+    pg_price_h:'Цены', pg_p1:'3 портрета 2K: спит в пелёнке, крупный план, на подушке', pg_p2:'3 портрета 2K + видео 5 секунд: малыш дышит во сне',
+    pg_p_note:'Предпросмотр — бесплатно, оплата — только если понравится. Если что-то изменилось — просто напишите «отмена»: вернём деньги полностью и сразу всё удалим. Без вопросов.',
+    pg_cons_h:'Как будет устроен заказ', pg_c1:'Согласие', pg_c1d:'подпись кодом из письма — так закон требует для сведений о беременности', pg_c2:'Снимок', pg_c2d:'обрезаем рамку с именем и клиникой до загрузки',
+    pg_c3:'Фото и анкета', pg_c3d:'ваше фото, второй родитель — по ссылке', pg_c4:'Предпросмотр', pg_c4d:'бесплатно, затем оплата и 3 портрета',
+    pg_cons_soon:'Заказ откроется после запуска — сейчас можно записаться, и мы сообщим.', pg_cons_date:'Заказ откроется {d} — запишитесь, и мы сообщим.',
+    pg_wl_h:'Скоро — оставьте контакт, сообщим о запуске', pg_wl_h_date:'Приём заказов — с {d}. Оставьте контакт — напомним',
+    pg_wl_p:'Пришлём одно сообщение, когда можно будет заказать. Снимок сейчас не нужен.', pg_wl_name:'Имя (по желанию)', pg_wl_contact:'E-mail или телефон',
+    pg_wl_plan:'Что интересно (по желанию):', pg_plan_photo:'Портреты · 990 ₽', pg_plan_video:'Портреты + видео · 1 990 ₽',
+    pg_wl_consent:'Согласен(на) получить одно сообщение о запуске «Малыша по УЗИ» на этот e-mail или телефон. Данные хранятся в России только для этого и удаляются после сообщения о запуске — или раньше, по вашей просьбе.',
+    pg_wl_btn:'Записаться', pg_wl_sending:'Отправляем…', pg_wl_done:'Готово! Сообщим о запуске одним сообщением. Спасибо, что ждёте вместе с нами 💛', pg_wl_dup:'Вы уже в списке — сообщим о запуске.',
+    pg_e_contact:'Укажите e-mail (name@mail.ru) или телефон (+7 999 123-45-67).', pg_e_consent:'Отметьте согласие — без него мы не сможем написать вам о запуске.', pg_e_name:'Имя — без символов < > { }.',
+    pg_e_net:'Не получилось отправить — проверьте интернет и попробуйте ещё раз. Или напишите на info@talemir.com.', pg_e_many:'Слишком много попыток — попробуйте через час.',
+    pg_forget_t:'Удалить мою предзапись', pg_forget_l:'E-mail или телефон, который вы указали', pg_forget_btn:'Удалить', pg_forget_done:'Если этот контакт был в списке — он удалён.',
+    pg_close:'Закрыть'
+  });
+  Object.assign(I18N.en, {
+    h4_uzi_t:'Baby from the scan', p_uzi_t:'Baby from the scan', h4_d_uzi:'A newborn portrait from your 3D/4D ultrasound — in your family’s colours',
+    pg_tag_wl:'Pre-registration', pg_tag_new:'New', pg_card_soon:'Coming soon — leave your contact, we’ll tell you at launch', pg_card_date:'Orders open on {d}',
+    pg_card_btn:'Example & sign-up', pg_card_btn_live:'Order', pg_card_ex:'Example made with fictional data: the scan and the parents are AI-generated', pg_card_us:'Scan', pg_card_from:'Portraits — {a}, with video — {b}', pg_card_pp:'from {a}',
+    pg_kick_wl:'New · pre-registration', pg_kick_live:'New', pg_title:'Baby from the scan — the first meeting',
+    pg_lead:'A portrait based on the facial features from your ultrasound — in your family’s colours. This is how your baby might look. It is an artistic portrait, not a medical report and not a prediction: skin, eye and hair colour can’t be seen on an ultrasound — we choose them from your photos and answers.',
+    pg_ex_h:'Example: scan → portrait', pg_f_us:'3D/4D ultrasound', pg_f_par:'+ photos of mum and dad', pg_f_res:'Portraits and a 5-second video', pg_vid:'▶ 5 s',
+    pg_alt_us:'AI-generated example of a 3D ultrasound (not a real scan)', pg_alt_mom:'Fictional mum — AI-generated photo', pg_alt_dad:'Fictional dad — AI-generated photo',
+    pg_alt_r1:'Example portrait: a sleeping baby in a knitted wrap', pg_alt_r2:'Example portrait: baby’s face close-up',
+    pg_cap:'<b>Example made with fictional data: the scan and the parents are AI-generated.</b> No real people or scans here. The baby’s eyes are closed: eye colour settles only by about one year.',
+    pg_how_h:'How it works',
+    pg_s1:'<b>Your scan</b>Upload a 3D/4D scan you already have. We cut off the frame with your name and the clinic right in your browser — before upload.',
+    pg_s2:'<b>Family colours</b>Your photo and, if you like, the other parent’s photo — they give their own consent via a link. Or just answer 6 questions.',
+    pg_s3:'<b>Preview and portraits</b>A free watermarked preview, then 3 portraits in 2K (and a 5-second video). A person checks every portrait before delivery.',
+    pg_honest_h:'Honestly about the result', pg_h1:'Facial features (nose, cheeks, lips) come from your scan.', pg_h2:'Colours come from the parents’ photos or your choice. Children of the same parents can look very different.',
+    pg_h3:'The eyes are closed: eye colour settles only by about one year.', pg_h4:'We don’t promise likeness after birth — a baby’s face changes before and after birth.',
+    pg_req_h:'Which scan works', pg_r1:'3D or 4D, not 2D.', pg_r2:'Best at 26–32 weeks.', pg_r3:'Face from the front or three-quarter view.', pg_r4:'The face is not covered by hands or the cord.',
+    pg_r_note:'Use a scan you already have. Please don’t get an ultrasound just for a portrait — it is done when a doctor prescribes it. If the scan doesn’t work, we’ll tell you before payment.',
+    pg_price_h:'Prices', pg_p1:'3 portraits in 2K: asleep in a wrap, close-up, on a pillow', pg_p2:'3 portraits in 2K + a 5-second video: the baby breathing in sleep',
+    pg_p_note:'The preview is free; you pay only if you like it. If anything changes, just write “cancel”: we refund in full and delete everything at once. No questions asked.',
+    pg_cons_h:'How ordering will work', pg_c1:'Consent', pg_c1d:'signed with a code from an e-mail — the law requires it for pregnancy data', pg_c2:'Scan', pg_c2d:'the frame with name and clinic is cut off before upload',
+    pg_c3:'Photos and answers', pg_c3d:'your photo; the other parent — via a link', pg_c4:'Preview', pg_c4d:'free, then payment and 3 portraits',
+    pg_cons_soon:'Ordering opens after launch — sign up now and we’ll let you know.', pg_cons_date:'Ordering opens on {d} — sign up and we’ll let you know.',
+    pg_wl_h:'Coming soon — leave your contact, we’ll tell you at launch', pg_wl_h_date:'Orders open on {d}. Leave your contact — we’ll remind you',
+    pg_wl_p:'We’ll send one message when ordering opens. No scan needed now. Orders will be available in Russia first.', pg_wl_name:'Name (optional)', pg_wl_contact:'E-mail or phone',
+    pg_wl_plan:'Interested in (optional):', pg_plan_photo:'Portraits · 990 ₽', pg_plan_video:'Portraits + video · 1,990 ₽',
+    pg_wl_consent:'I agree to receive one message about the launch of “Baby from the scan” at this e-mail or phone. The data is stored in Russia only for this and deleted after the launch message — or earlier, on your request.',
+    pg_wl_btn:'Sign up', pg_wl_sending:'Sending…', pg_wl_done:'Done! We’ll send one message at launch. Thank you for waiting with us 💛', pg_wl_dup:'You are already on the list — we’ll tell you at launch.',
+    pg_e_contact:'Enter an e-mail (name@mail.com) or a phone number (+7 999 123-45-67).', pg_e_consent:'Please tick the consent — without it we can’t message you about the launch.', pg_e_name:'Name — without < > { } characters.',
+    pg_e_net:'Couldn’t send — check your connection and try again. Or write to info@talemir.com.', pg_e_many:'Too many attempts — please try again in an hour.',
+    pg_forget_t:'Delete my sign-up', pg_forget_l:'The e-mail or phone you entered', pg_forget_btn:'Delete', pg_forget_done:'If this contact was on the list, it has been deleted.',
+    pg_close:'Close'
+  });
+  ['kk','hy','ar'].forEach(function(l){ if (I18N[l]) { I18N[l].h4_uzi_t = I18N.en.h4_uzi_t; I18N[l].h4_d_uzi = I18N.en.h4_d_uzi; } });
+  try { EMJ.p_uzi_t = '👶'; } catch(_){}
+
+  function rub(v){ return new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'ru-RU').format(v) + ' ₽'; }   /* продукт пока только для России — цена всегда в рублях */
+  function dateTxt(){ var d = CFG.open_date; if (!d) return ''; try { var x = new Date(d + 'T12:00:00+03:00'); if (!isNaN(x)) return x.toLocaleDateString(lang === 'en' ? 'en-GB' : 'ru-RU', {day:'numeric', month:'long'}); } catch(_){} return d; }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+
+  /* карточка в «Взрослым» (вместо «Скоро» без цены) */
+  window.pregCard = function(){
+    var st = CFG.live ? '' : (CFG.open_date ? t('pg_card_date').replace('{d}', dateTxt()) : t('pg_card_soon'));
+    return '<article class="prod e-preg" id="p-uzi" data-k="uzi" data-aud="' + H4_AUD.uzi + '" data-type="' + (H4_TYP.uzi || '') + '">'
+      + '<div class="media"><img class="pg-main" src="img/ex/ex_preg_1.jpg" alt="' + esc(t('pg_alt_r1')) + '" loading="lazy" width="900" height="1117">'
+      + '<span class="e-tag ' + (CFG.live ? 'e-tag-new' : 'pg-tag') + '">' + t(CFG.live ? 'pg_tag_new' : 'pg_tag_wl') + '</span>'
+      + '<span class="pg-us"><img src="img/ex/ex_preg_us.jpg" alt="' + esc(t('pg_alt_us')) + '" loading="lazy" width="640" height="640"><span>' + t('pg_card_us') + '</span></span></div>'
+      + '<p class="exc" title="' + esc(t('pg_card_ex')) + '">' + t('pg_card_ex') + '</p>'
+      + '<div class="body"><div class="e-txt"><h3>' + t('h4_uzi_t') + '</h3><p>' + t('h4_d_uzi') + '</p><p class="pg-vp">' + t('pg_card_from').replace('{a}', rub(CFG.prices.preg)).replace('{b}', rub(CFG.prices.preg_v)) + '</p>' + (st ? '<p class="e-eta">' + st + '</p>' : '') + '</div>'
+      + '<span class="pp">' + t('pg_card_pp').replace('{a}', rub(CFG.prices.preg)) + '</span>'
+      + '<button type="button" class="btn btn-gold e-act" data-preg="1">' + t(CFG.live ? 'pg_card_btn_live' : 'pg_card_btn') + '</button></div></article>';
+  };
+  var _x = h4Extra; h4Extra = function(){ var h = _x.apply(this, arguments);
+    var i = h.indexOf('<article class="prod e-soon" id="s-uzi"'); if (i < 0) return h + pregCard();
+    var j = h.indexOf('</article>', i) + 10; return h.slice(0, i) + pregCard() + h.slice(j); };
+
+  /* окно продукта */
+  function fill(){
+    M.querySelectorAll('[data-pg]').forEach(function(el){ var v = t(el.dataset.pg); if (el.dataset.pgh) el.innerHTML = v; else el.textContent = v; });
+    M.querySelectorAll('[data-pga]').forEach(function(el){ el.alt = t(el.dataset.pga); });
+    $('pgVid').setAttribute('aria-label', t('pg_alt_r1'));
+    $('pgClose').setAttribute('aria-label', t('pg_close'));
+    $('pgKick').textContent = t(CFG.live ? 'pg_kick_live' : 'pg_kick_wl'); $('pgTitle').textContent = t('pg_title'); $('pgLead').textContent = t('pg_lead');
+    $('pgP1').textContent = rub(CFG.prices.preg); $('pgP2').textContent = rub(CFG.prices.preg_v);
+    $('pgConsNote').textContent = CFG.live ? '' : (CFG.open_date ? t('pg_cons_date').replace('{d}', dateTxt()) : t('pg_cons_soon'));
+    $('pgWlH').textContent = CFG.open_date ? t('pg_wl_h_date').replace('{d}', dateTxt()) : t('pg_wl_h');
+    $('pgWl').hidden = !!CFG.live; $('pgLive').hidden = !CFG.live; $('pgConsPrev').hidden = !!CFG.live;
+    if (CFG.live && window.pregLive) window.pregLive.render($('pgLive'), CFG);
+  }
+  function open(){ lastFocus = document.activeElement; fill(); M.hidden = false; document.body.style.overflow = 'hidden';
+    try { history.replaceState(null, '', '#uzi'); } catch(_){}
+    setTimeout(function(){ try { $('pgClose').focus(); } catch(_){} }, 30);
+    var v = $('pgVid'); if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches) { v.preload = 'auto'; v.play().catch(function(){}); } }
+  function close(){ M.hidden = true; document.body.style.overflow = ''; var v = $('pgVid'); if (v) v.pause();
+    try { if (location.hash === '#uzi') history.replaceState(null, '', location.pathname + location.search); } catch(_){}
+    if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch(_){} }
+  window.pregOpen = open;
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('[data-preg]'); if (b) { e.preventDefault(); open(); return; }
+    if (e.target === M || (e.target.closest && e.target.closest('#pgClose'))) close();
+  });
+  document.addEventListener('keydown', function(e){
+    if (M.hidden) return;
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key === 'Tab') { var f = [].filter.call(M.querySelectorAll('button,input,select,textarea,a[href],video[controls]'), function(x){ return !x.disabled && x.offsetParent !== null; });
+      if (!f.length) return; var a = f[0], z = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === a) { z.focus(); e.preventDefault(); } else if (!e.shiftKey && document.activeElement === z) { a.focus(); e.preventDefault(); } }
+  });
+  $('pgVid').addEventListener('click', function(){ var v = this; if (v.paused) v.play().catch(function(){}); else v.pause(); });
+
+  /* предзапись */
+  var CRE = /^([^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}|\+?[0-9][0-9 ()-]{6,20})$/;
+  function err(id, k){ var el = $(id); el.textContent = k ? t(k) : ''; el.hidden = !k; }
+  $('pgWlForm').addEventListener('submit', function(e){ e.preventDefault();
+    var c = $('pgWlContact').value.trim(), n = $('pgWlName').value.trim(), ok = $('pgWlOk').checked, pl = (M.querySelector('input[name=pgplan]:checked') || {}).value || '';
+    $('pgWlContact').removeAttribute('aria-invalid');
+    if (!CRE.test(c)) { err('pgWlErr', 'pg_e_contact'); $('pgWlContact').setAttribute('aria-invalid', 'true'); $('pgWlContact').focus(); return; }
+    if (/[<>{}\\]/.test(n)) { err('pgWlErr', 'pg_e_name'); $('pgWlName').focus(); return; }
+    if (!ok) { err('pgWlErr', 'pg_e_consent'); $('pgWlOk').focus(); return; }
+    err('pgWlErr', ''); var b = $('pgWlBtn'); b.disabled = true; b.textContent = t('pg_wl_sending');
+    var fd = new FormData(); fd.append('contact', c); fd.append('name', n); fd.append('consent', 'true'); fd.append('lang', lang); fd.append('plan', pl);
+    fetch(API + '/api/preg/waitlist', {method:'POST', body:fd}).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return [r.status, j]; }); })
+      .then(function(x){ var s = x[0], j = x[1];
+        if (s === 200) { $('pgWlForm').hidden = true; var d = $('pgWlDone'); d.textContent = t(j.dup ? 'pg_wl_dup' : 'pg_wl_done'); d.hidden = false; try { d.focus(); } catch(_){} return; }
+        err('pgWlErr', s === 429 ? 'pg_e_many' : j.detail === 'bad_contact' ? 'pg_e_contact' : j.detail === 'consent' ? 'pg_e_consent' : j.detail === 'bad_name' ? 'pg_e_name' : 'pg_e_net'); })
+      .catch(function(){ err('pgWlErr', 'pg_e_net'); })
+      .then(function(){ b.disabled = false; b.textContent = t('pg_wl_btn'); });
+  });
+  $('pgForgetT').addEventListener('click', function(){ var f = $('pgForget'); f.hidden = !f.hidden; if (!f.hidden) $('pgForgetC').focus(); });
+  $('pgForget').addEventListener('submit', function(e){ e.preventDefault(); var c = $('pgForgetC').value.trim(); if (!CRE.test(c)) { $('pgForgetC').setAttribute('aria-invalid', 'true'); return; }
+    var fd = new FormData(); fd.append('contact', c);
+    fetch(API + '/api/preg/waitlist/forget', {method:'POST', body:fd}).then(function(){ var d = $('pgForgetDone'); d.textContent = t('pg_forget_done'); d.hidden = false; }).catch(function(){ var d = $('pgForgetDone'); d.textContent = t('pg_e_net'); d.hidden = false; }); });
+
+  /* сервер решает: предзапись или заказ, дата старта (только после подачи в РКН) */
+  function cfg(){ fetch(API + '/api/preg/config', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      if (!j || typeof j.live !== 'boolean') return;
+      var ch = j.live !== CFG.live || (j.open_date || '') !== CFG.open_date;
+      CFG = {live: j.live && !!window.pregLive, open_date: j.open_date || '', prices: j.prices || CFG.prices, variant: j.variant || 'A'};
+      if (ch) { render(); if (!M.hidden) fill(); } }).catch(function(){}); }
+  var _r = render; render = function(){ var r = _r.apply(this, arguments); if (!M.hidden) fill(); return r; };
+  render(); cfg();
+  if (location.hash === '#uzi') setTimeout(open, 300);
+})();
+</script>
+<script>
+/* 29.10 C6b: конструктор заказа «Малыш по УЗИ» — включается ТОЛЬКО когда сервер ответит live=true (флаг preg_live + финальный текст согласия).
+   Шаг 1 — согласие PREG-1.0 (подпись кодом из письма, вариант A — с паспортом), шаг 2 — снимок (обрезка рамки в браузере), фото, анкета, видео,
+   шаг 3 — ссылка второму родителю (его собственное согласие) -> бесплатный предпросмотр (/api/start) -> оформление и оплата как у всех подарков. */
+window.pregLive = (function(){
+  'use strict';
+  Object.assign(I18N.ru, {
+    pl_s1:'Шаг 1 из 3 · Согласие', pl_s2:'Шаг 2 из 3 · Снимок и цвета семьи', pl_s3:'Шаг 3 из 3 · Второй родитель',
+    pl_why:'Снимок УЗИ — это сведения о беременности, и закон требует письменного согласия с паспортными данными (ст. 9 и 10 закона № 152-ФЗ). Паспорт хранится зашифрованно, не попадает в нейросети и за рубеж.',
+    pl_fio:'Фамилия, имя, отчество', pl_email:'E-mail — пришлём код подтверждения и копию согласия', pl_addr:'Адрес регистрации', pl_ps:'Серия паспорта', pl_pn:'Номер паспорта', pl_pd:'Дата выдачи', pl_pi:'Кем выдан',
+    pl_adult:'Мне есть 18 лет, снимок относится к моей беременности', pl_getcode:'Получить код', pl_doc:'Текст согласия, которое вы подписываете', pl_code:'Код из письма ({e})', pl_sign:'Подписать согласие',
+    pl_us:'Снимок 3D/4D УЗИ', pl_us_h:'Выделите рамкой только лицо малыша — имя, клинику и даты мы отрежем прямо здесь, до загрузки. Используйте снимок, который у вас уже есть.',
+    pl_size:'Размер рамки', pl_heic:'Этот файл не получается показать — сохраните снимок как JPG или сделайте скриншот и загрузите его.',
+    pl_weeks:'Срок на снимке, недель (по желанию)', pl_mom:'Ваше фото (по желанию): анфас, дневной свет, без фильтров', pl_partner:'Фото второго родителя',
+    pl_p_link:'Пригласить по ссылке — он сам даст согласие', pl_p_none:'Без фото второго родителя', pl_q:'Анкета о внешности (по желанию) — подскажет цвет',
+    pl_q1:'Тон кожи — мама (1 — очень светлая, 10 — очень тёмная)', pl_q2:'Цвет волос — мама', pl_q3:'Тон кожи — второй родитель', pl_q4:'Цвет волос — второй родитель',
+    pl_q5:'У бабушек и дедушек были рыжие или светлые волосы?', pl_q6:'Пожелания (например: «пусть будет похож на папу»)', pl_na:'— не указывать —',
+    pl_h_black:'чёрные', pl_h_dark:'тёмно-каштановые', pl_h_brown:'каштановые', pl_h_light_brown:'русые', pl_h_blond:'светлые', pl_h_red:'рыжие',
+    pl_plan:'Что заказать', pl_baby:'Имя малыша (по желанию)', pl_send:'Получить бесплатный предпросмотр', pl_sending:'Загружаем…',
+    pl_link_h:'Отправьте эту ссылку второму родителю — он сам даст согласие и загрузит фото. Без его фото портрет тоже получится.',
+    pl_copy:'Скопировать ссылку', pl_copied:'Скопировано', pl_wait:'Фото второго родителя ещё не загружено.', pl_got:'✓ Фото второго родителя получено.',
+    pl_go:'Продолжить — к предпросмотру', pl_go_q:'Фото второго родителя ещё нет. Продолжить без него? Цвет подберём по вашему фото и анкете.',
+    pl_e_fio:'Укажите фамилию и имя (и отчество, если есть).', pl_e_email:'Проверьте e-mail.', pl_e_pass:'Серия — 4 цифры, номер — 6 цифр.', pl_e_pd:'Проверьте дату выдачи паспорта.',
+    pl_e_addr:'Укажите адрес регистрации полностью.', pl_e_pi:'Укажите, кем выдан паспорт.', pl_e_adult:'Заказ доступен с 18 лет — отметьте, пожалуйста.', pl_e_code:'Неверный код — проверьте письмо.',
+    pl_e_exp:'Код устарел — нажмите «Получить код» ещё раз.', pl_e_us:'Добавьте снимок УЗИ.', pl_e_closed:'Приём заказов временно закрыт — оставьте контакт в предзаписи.', pl_e_net:'Не получилось — попробуйте ещё раз.',
+    pl_e_photo:'Файл не подходит — нужен JPG или PNG.', pl_e_small:'Слишком маленький снимок — нужен файл получше.', pl_e_mail:'Не получилось отправить письмо с кодом — попробуйте через минуту.'
+  });
+  Object.assign(I18N.en, {
+    pl_s1:'Step 1 of 3 · Consent', pl_s2:'Step 2 of 3 · Scan and family colours', pl_s3:'Step 3 of 3 · The other parent',
+    pl_why:'An ultrasound is pregnancy (health) data, and Russian law requires written consent with passport details (Art. 9 and 10 of Law No. 152-FZ). The passport is stored encrypted and never goes to AI services or abroad. The consent document is in Russian.',
+    pl_fio:'Surname, first name, patronymic', pl_email:'E-mail — we’ll send a code and a copy of the consent', pl_addr:'Registration address', pl_ps:'Passport series', pl_pn:'Passport number', pl_pd:'Date of issue', pl_pi:'Issued by',
+    pl_adult:'I am 18 or older and the scan is of my pregnancy', pl_getcode:'Get the code', pl_doc:'The consent you are signing (in Russian)', pl_code:'Code from the e-mail ({e})', pl_sign:'Sign the consent',
+    pl_us:'3D/4D ultrasound', pl_us_h:'Frame only the baby’s face — we cut off names, the clinic and dates right here, before upload. Use a scan you already have.',
+    pl_size:'Frame size', pl_heic:'We can’t show this file — save the scan as JPG or take a screenshot and upload it.',
+    pl_weeks:'Weeks on the scan (optional)', pl_mom:'Your photo (optional): front view, daylight, no filters', pl_partner:'The other parent’s photo',
+    pl_p_link:'Invite via a link — they give their own consent', pl_p_none:'Without the other parent’s photo', pl_q:'Appearance questions (optional) — they help with colours',
+    pl_q1:'Skin tone — mum (1 very light, 10 very dark)', pl_q2:'Hair colour — mum', pl_q3:'Skin tone — other parent', pl_q4:'Hair colour — other parent',
+    pl_q5:'Did grandparents have red or fair hair?', pl_q6:'Wishes (e.g. “let them look like dad”)', pl_na:'— not specified —',
+    pl_h_black:'black', pl_h_dark:'dark brown', pl_h_brown:'brown', pl_h_light_brown:'light brown', pl_h_blond:'blond', pl_h_red:'red',
+    pl_plan:'What to order', pl_baby:'Baby’s name (optional)', pl_send:'Get a free preview', pl_sending:'Uploading…',
+    pl_link_h:'Send this link to the other parent — they give their own consent and upload a photo. The portrait works without it too.',
+    pl_copy:'Copy link', pl_copied:'Copied', pl_wait:'The other parent’s photo is not uploaded yet.', pl_got:'✓ The other parent’s photo is received.',
+    pl_go:'Continue to the preview', pl_go_q:'There is no photo from the other parent yet. Continue without it? We’ll choose colours from your photo and answers.',
+    pl_e_fio:'Enter your surname and first name.', pl_e_email:'Check the e-mail.', pl_e_pass:'Series — 4 digits, number — 6 digits.', pl_e_pd:'Check the date of issue.',
+    pl_e_addr:'Enter the full registration address.', pl_e_pi:'Enter who issued the passport.', pl_e_adult:'Orders are for adults (18+) — please tick.', pl_e_code:'Wrong code — check the e-mail.',
+    pl_e_exp:'The code has expired — tap “Get the code” again.', pl_e_us:'Add the ultrasound scan.', pl_e_closed:'Ordering is temporarily closed — please sign up for the launch.', pl_e_net:'Something went wrong — please try again.',
+    pl_e_photo:'This file doesn’t work — JPG or PNG is needed.', pl_e_small:'The scan is too small — a better file is needed.', pl_e_mail:'Couldn’t send the code e-mail — please try again in a minute.'
+  });
+  var S = {cid:'', ct:'', sent:'', tok:'', start:'', link:'', box:{x:.15, y:.15, s:.7}, img:null, file:null};
+  var ERR = {bad_fio:'pl_e_fio', bad_email:'pl_e_email', bad_passport:'pl_e_pass', bad_pass_date:'pl_e_pd', bad_address:'pl_e_addr', bad_issuer:'pl_e_pi', adult:'pl_e_adult',
+             bad_code:'pl_e_code', code_expired:'pl_e_exp', preg_closed:'pl_e_closed', photo_type:'pl_e_photo', photo_small:'pl_e_small', mail:'pl_e_mail', too_many:'pg_e_many'};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+  function f(id, key, type, extra){ return '<div class="pg-f"><label for="' + id + '">' + t(key) + '</label><input type="' + (type || 'text') + '" id="' + id + '" ' + (extra || '') + '></div>'; }
+  function post(u, fd){ return fetch(API + u, {method:'POST', body:fd}).then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok) { var e = new Error(j.detail || 'net'); e.code = j.detail; throw e; } return j; }); }); }
+  function err(id, e){ var el = $(id); if (!el) return; el.textContent = e ? t(ERR[e && e.code || e] || 'pl_e_net') : ''; el.hidden = !e; }
+  function hairOpts(){ return '<option value="">' + t('pl_na') + '</option>' + ['black','dark','brown','light_brown','blond','red'].map(function(k){ return '<option value="' + k + '">' + t('pl_h_' + k) + '</option>'; }).join(''); }
+  function skinOpts(){ var o = '<option value="">' + t('pl_na') + '</option>'; for (var i = 1; i <= 10; i++) o += '<option value="' + i + '">' + i + '</option>'; return o; }
+  var root, cfg;
+  function step1(){
+    var A = cfg.variant !== 'B';
+    root.innerHTML = '<h4>' + t('pl_s1') + '</h4>' + (A ? '<p class="pg-note">' + t('pl_why') + '</p>' : '')
+      + '<div class="pg-grid2">' + f('plFio', 'pl_fio', 'text', 'maxlength="120" autocomplete="name"') + f('plEmail', 'pl_email', 'email', 'maxlength="120" autocomplete="email"') + '</div>'
+      + (A ? '<div class="pg-f" style="margin-top:10px"><label for="plAddr">' + t('pl_addr') + '</label><input type="text" id="plAddr" maxlength="250" autocomplete="street-address"></div>'
+        + '<div class="pg-grid2" style="margin-top:10px">' + f('plPs', 'pl_ps', 'text', 'inputmode="numeric" maxlength="5"') + f('plPn', 'pl_pn', 'text', 'inputmode="numeric" maxlength="7"') + '</div>'
+        + '<div class="pg-grid2" style="margin-top:10px">' + f('plPd', 'pl_pd', 'date') + f('plPi', 'pl_pi', 'text', 'maxlength="200"') + '</div>' : '')
+      + '<label class="pg-chk"><input type="checkbox" id="plAdult"> <span>' + t('pl_adult') + '</span></label>'
+      + '<div class="pg-act"><button type="button" class="btn btn-gold" id="plGet">' + t('pl_getcode') + '</button></div><p class="pg-err" id="plE1" role="alert" hidden></p>'
+      + '<div id="plSign" hidden><p class="hint" style="margin:14px 0 6px">' + t('pl_doc') + '</p><div class="pg-doc" id="plDoc" tabindex="0"></div>'
+      + '<div class="pg-f" style="margin-top:10px;max-width:260px"><label for="plCode" id="plCodeL"></label><input type="text" id="plCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>'
+      + '<div class="pg-act"><button type="button" class="btn btn-gold" id="plSignB">' + t('pl_sign') + '</button></div><p class="pg-err" id="plE2" role="alert" hidden></p></div>';
+    $('plGet').onclick = function(){ var b = this, fd = new FormData();
+      fd.append('fio', $('plFio').value); fd.append('email', $('plEmail').value.trim()); fd.append('adult', $('plAdult').checked ? 'true' : 'false'); fd.append('lang', lang);
+      if (A) { fd.append('address', $('plAddr').value); fd.append('pass_series', $('plPs').value); fd.append('pass_number', $('plPn').value); fd.append('pass_date', $('plPd').value); fd.append('pass_issuer', $('plPi').value); }
+      err('plE1'); b.disabled = true;
+      post('/api/preg/consent/start', fd).then(function(j){ S.cid = j.cid; S.sent = j.sent_to; $('plDoc').textContent = j.doc; $('plCodeL').textContent = t('pl_code').replace('{e}', j.sent_to); $('plSign').hidden = false; $('plCode').focus(); })
+        .catch(function(e){ err('plE1', e); }).then(function(){ b.disabled = false; }); };
+    $('plSignB').onclick = function(){ var b = this, fd = new FormData(); fd.append('cid', S.cid); fd.append('code', $('plCode').value.trim()); err('plE2'); b.disabled = true;
+      post('/api/preg/consent/confirm', fd).then(function(j){ S.ct = j.ctoken; step2(); }).catch(function(e){ err('plE2', e); }).then(function(){ b.disabled = false; }); };
+  }
+  function step2(){
+    root.innerHTML = '<h4>' + t('pl_s2') + '</h4>'
+      + '<div class="pg-f"><label for="plUs">' + t('pl_us') + '</label><input type="file" id="plUs" accept="image/jpeg,image/png,image/webp"><p class="hint">' + t('pl_us_h') + '</p></div>'
+      + '<div id="plCropW" hidden><div class="pg-crop" id="plCrop"><img id="plUsImg" alt=""><div class="pg-box2" id="plBox"></div></div>'
+      + '<div class="pg-f" style="max-width:420px;margin-top:6px"><label for="plSize">' + t('pl_size') + '</label><input type="range" id="plSize" min="20" max="100" value="70"></div></div><p class="pg-err" id="plE3" role="alert" hidden></p>'
+      + '<div class="pg-grid2" style="margin-top:12px">' + f('plWeeks', 'pl_weeks', 'number', 'min="14" max="42"') + '<div class="pg-f"><label for="plMom">' + t('pl_mom') + '</label><input type="file" id="plMom" accept="image/*"></div></div>'
+      + '<div class="pg-f" style="margin-top:12px"><span class="hint" style="font-weight:700">' + t('pl_partner') + '</span><div class="pg-plan"><label><input type="radio" name="plp" value="link" checked> ' + t('pl_p_link') + '</label><label><input type="radio" name="plp" value="none"> ' + t('pl_p_none') + '</label></div></div>'
+      + '<details style="margin-top:12px"><summary style="font-weight:700;cursor:pointer">' + t('pl_q') + '</summary><div class="pg-grid2" style="margin-top:10px">'
+      + '<div class="pg-f"><label for="plQ1">' + t('pl_q1') + '</label><select id="plQ1">' + skinOpts() + '</select></div><div class="pg-f"><label for="plQ2">' + t('pl_q2') + '</label><select id="plQ2">' + hairOpts() + '</select></div>'
+      + '<div class="pg-f"><label for="plQ3">' + t('pl_q3') + '</label><select id="plQ3">' + skinOpts() + '</select></div><div class="pg-f"><label for="plQ4">' + t('pl_q4') + '</label><select id="plQ4">' + hairOpts() + '</select></div>'
+      + f('plQ5', 'pl_q5', 'text', 'maxlength="200"') + f('plQ6', 'pl_q6', 'text', 'maxlength="300"') + '</div></details>'
+      + '<div class="pg-f" style="margin-top:12px"><span class="hint" style="font-weight:700">' + t('pl_plan') + '</span><div class="pg-plan"><label><input type="radio" name="plplan" value="photo" checked> ' + t('pg_plan_photo').replace('990 ₽', (cfg.prices.preg || 990) + ' ₽') + '</label><label><input type="radio" name="plplan" value="video"> ' + t('pg_plan_video') + '</label></div></div>'
+      + '<div style="max-width:420px;margin-top:12px">' + f('plBaby', 'pl_baby', 'text', 'maxlength="40"') + '</div>'
+      + '<div class="pg-act"><button type="button" class="btn btn-gold" id="plSend">' + t('pl_send') + '</button></div><p class="pg-err" id="plE4" role="alert" hidden></p>';
+    var img = $('plUsImg'), box = $('plBox'), wrap = $('plCrop'), url = null;
+    function place(){ var W = wrap.clientWidth, H = wrap.clientHeight, m = Math.min(W, H), s = S.box.s * m;
+      S.box.x = Math.max(0, Math.min(S.box.x, (W - s) / W)); S.box.y = Math.max(0, Math.min(S.box.y, (H - s) / H));
+      box.style.left = (S.box.x * W) + 'px'; box.style.top = (S.box.y * H) + 'px'; box.style.width = box.style.height = s + 'px'; }
+    $('plUs').onchange = function(){ var fl = this.files[0]; err('plE3'); S.file = fl || null; S.img = null; $('plCropW').hidden = true; if (!fl) return;
+      if (url) URL.revokeObjectURL(url); url = URL.createObjectURL(fl);
+      img.onload = function(){ S.img = img; $('plCropW').hidden = false; S.box = {x:.15, y:.15, s:.7}; $('plSize').value = 70; requestAnimationFrame(place); };
+      img.onerror = function(){ S.file = null; err('plE3', {code:'x'}); $('plE3').textContent = t('pl_heic'); };
+      img.src = url; };
+    $('plSize').oninput = function(){ var W = wrap.clientWidth, H = wrap.clientHeight, m = Math.min(W, H), cx = S.box.x * W + S.box.s * m / 2, cy = S.box.y * H + S.box.s * m / 2;
+      S.box.s = this.value / 100; var s = S.box.s * m; S.box.x = (cx - s / 2) / W; S.box.y = (cy - s / 2) / H; place(); };
+    var drag = null;
+    box.addEventListener('pointerdown', function(e){ drag = {x:e.clientX, y:e.clientY, bx:S.box.x, by:S.box.y}; box.setPointerCapture(e.pointerId); e.preventDefault(); });
+    box.addEventListener('pointermove', function(e){ if (!drag) return; S.box.x = drag.bx + (e.clientX - drag.x) / wrap.clientWidth; S.box.y = drag.by + (e.clientY - drag.y) / wrap.clientHeight; place(); });
+    box.addEventListener('pointerup', function(){ drag = null; });
+    window.addEventListener('resize', function(){ if (S.img) place(); });
+    $('plSend').onclick = function(){ var b = this; err('plE4');
+      if (!S.file || !S.img) { $('plE4').hidden = false; $('plE4').textContent = t('pl_e_us'); return; }
+      var W = wrap.clientWidth, H = wrap.clientHeight, m = Math.min(W, H), sx = img.naturalWidth / W, sy = img.naturalHeight / H;
+      var c = document.createElement('canvas'), cw = Math.round(S.box.s * m * sx), ch = Math.round(S.box.s * m * sy);
+      c.width = Math.min(cw, 2048); c.height = Math.round(ch * c.width / cw);
+      c.getContext('2d').drawImage(img, Math.round(S.box.x * W * sx), Math.round(S.box.y * H * sy), cw, ch, 0, 0, c.width, c.height);
+      b.disabled = true; b.textContent = t('pl_sending');
+      c.toBlob(function(blob){ var fd = new FormData();
+        fd.append('cid', S.cid); fd.append('ctoken', S.ct); fd.append('us', blob, 'scan.jpg'); fd.append('crop_done', '1');
+        var mom = $('plMom').files[0]; if (mom) fd.append('mom', mom);
+        fd.append('plan', (document.querySelector('input[name=plplan]:checked') || {}).value || 'photo'); fd.append('partner', (document.querySelector('input[name=plp]:checked') || {}).value || 'none');
+        fd.append('weeks', $('plWeeks').value); fd.append('baby_name', $('plBaby').value); fd.append('lang', lang);
+        [['q_skin_m','plQ1'],['q_hair_m','plQ2'],['q_skin_f','plQ3'],['q_hair_f','plQ4'],['q_grand','plQ5'],['q_wish','plQ6']].forEach(function(p){ fd.append(p[0], $(p[1]).value); });
+        post('/api/preg/orders', fd).then(function(j){ S.tok = j.token; S.start = API + j.start; S.link = j.partner_link || ''; if (S.link) step3(); else location.href = S.start; })
+          .catch(function(e){ err('plE4', e); b.disabled = false; b.textContent = t('pl_send'); });
+      }, 'image/jpeg', 0.93); };
+  }
+  function step3(){
+    root.innerHTML = '<h4>' + t('pl_s3') + '</h4><p>' + t('pl_link_h') + '</p><div class="pg-act"><input type="text" id="plLink" readonly value="' + esc(S.link) + '" style="flex:1;min-width:200px"><button type="button" class="btn btn-ghost" id="plCopy">' + t('pl_copy') + '</button></div>'
+      + '<p class="hint" id="plPst" role="status">' + t('pl_wait') + '</p><div class="pg-act"><button type="button" class="btn btn-gold" id="plGo">' + t('pl_go') + '</button></div>';
+    $('plCopy').onclick = function(){ var b = this; try { navigator.clipboard.writeText(S.link).then(function(){ b.textContent = t('pl_copied'); }); } catch(_){ $('plLink').select(); } };
+    var done = false;
+    (function poll(){ if (!$('plPst')) return; fetch(API + '/api/preg/orders/' + S.tok + '/partner', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(j){ done = !!j.done; $('plPst').textContent = t(done ? 'pl_got' : 'pl_wait'); }).catch(function(){}).then(function(){ if (!done) setTimeout(poll, 8000); }); })();
+    $('plGo').onclick = function(){ if (!done && !confirm(t('pl_go_q'))) return; location.href = S.start; };
+  }
+  return {render: function(el, c){ cfg = c; if (root === el && root.childElementCount) return; root = el; step1(); }};
+})();
+</script>
 </body>
 </html>
