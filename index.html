@@ -2462,6 +2462,8 @@ var PAYUX = (function(){
 .pg-sheet label{font-weight:700;font-size:.92rem}
 .pg-sheet input[type=text],.pg-sheet input[type=email],.pg-sheet input[type=date],.pg-sheet input[type=number],.pg-sheet select,.pg-sheet textarea{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:.65em .8em;width:100%;font:inherit;font-size:16px;box-sizing:border-box}
 .pg-f{display:flex;flex-direction:column;gap:5px}
+/* 29.10 C6c: на 320 поле файла (снимок/фото) распирало окно на 23 px — поля не шире колонки */
+.pg-f{min-width:0}.pg-sheet input[type=file]{max-width:100%;min-width:0;width:100%;box-sizing:border-box}
 .pg-chk{display:flex;gap:10px;align-items:flex-start;font-weight:600!important;font-size:13.5px!important;line-height:1.45;margin-top:12px}
 .pg-chk input{margin-top:3px;flex:none;width:18px;height:18px}
 .pg-plan{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -2537,7 +2539,9 @@ var PAYUX = (function(){
 (function(){
   'use strict';
   function $(id){ return document.getElementById(id); }
-  var M = $('pregModal'), CFG = {live:false, open_date:'', prices:{preg:990, preg_v:1990}, variant:'A'}, lastFocus = null;
+  var M = $('pregModal'), CFG = {live:false, open_date:'', prices:{preg:990, preg_v:1990}, variant:'B', eta:null}, lastFocus = null;
+  function etaTxt(){ var e = CFG.eta; return e ? (e[lang === 'en' ? 'en' : 'ru'] || e.ru || '') : ''; }   /* 29.10 C6c: «Портреты будут готовы до 20 ноября. Мы сообщим, когда начнём.» */
+  window.pregEta = etaTxt;
   Object.assign(I18N.ru, {
     h4_uzi_t:'Малыш по УЗИ', p_uzi_t:'Малыш по УЗИ', h4_d_uzi:'Портрет новорождённого по снимку 3D/4D УЗИ — в цветах вашей семьи',
     pg_tag_wl:'Предзапись', pg_tag_new:'Новинка', pg_card_soon:'Скоро — оставьте контакт, сообщим о запуске', pg_card_date:'Приём заказов — с {d}',
@@ -2550,16 +2554,16 @@ var PAYUX = (function(){
     pg_cap:'<b>Пример на вымышленных данных: снимок и родители созданы ИИ.</b> Реальных людей и снимков здесь нет. Глаза малыша на портрете закрыты: их цвет установится только к году.',
     pg_how_h:'Как это работает',
     pg_s1:'<b>Снимок УЗИ</b>Загрузите снимок 3D/4D, который у вас уже есть. Рамку с вашим именем и названием клиники мы отрежем ещё в браузере — до загрузки.',
-    pg_s2:'<b>Цвета семьи</b>Ваше фото и, по желанию, фото второго родителя — он сам даст согласие по ссылке. Или просто ответьте на 6 вопросов о внешности.',
-    pg_s3:'<b>Предпросмотр и портреты</b>Бесплатный предпросмотр с водяным знаком, затем 3 портрета 2K (и видео 5 с). Каждый портрет перед выдачей проверяет человек.',
+    pg_s2:'<b>Цвета семьи</b>Ваше фото и, по желанию, фото второго родителя — вы загружаете его сами, с его ведома. Или просто ответьте на 6 вопросов о внешности.',
+    pg_s3:'<b>Оплата и портреты</b>Оплата при оформлении, затем 3 портрета 2K (и видео 5 с). Каждый портрет перед выдачей проверяет человек.',
     pg_honest_h:'Честно о результате', pg_h1:'Черты лица (носик, щёчки, губы) — с вашего снимка.', pg_h2:'Цвет — по фото родителей или вашему выбору. Дети одних родителей бывают очень разными.',
     pg_h3:'Глаза на портрете закрыты: их цвет установится только к году.', pg_h4:'Сходство после рождения мы не обещаем — лицо малыша меняется и до, и после родов.',
     pg_req_h:'Какой нужен снимок', pg_r1:'3D или 4D (объёмный), не 2D.', pg_r2:'Лучше всего 26–32 недели.', pg_r3:'Лицо анфас или вполоборота.', pg_r4:'Лицо не закрыто ручками или пуповиной.',
-    pg_r_note:'Используйте снимок, который у вас уже есть. Не делайте УЗИ ради портрета — исследование проводится по назначению врача. Если снимок не подойдёт, скажем об этом до оплаты.',
+    pg_r_note:'Используйте снимок, который у вас уже есть. Не делайте УЗИ ради портрета — исследование проводится по назначению врача. Если снимок не подойдёт — скажем и вернём деньги полностью.',
     pg_price_h:'Цены', pg_p1:'3 портрета 2K: спит в пелёнке, крупный план, на подушке', pg_p2:'3 портрета 2K + видео 5 секунд: малыш дышит во сне',
-    pg_p_note:'Предпросмотр — бесплатно, оплата — только если понравится. Если что-то изменилось — просто напишите «отмена»: вернём деньги полностью и сразу всё удалим. Без вопросов.',
+    pg_p_note:'Оплата при оформлении. Если что-то изменилось до выдачи — просто напишите «отмена»: вернём деньги полностью и сразу всё удалим. Без вопросов.',
     pg_cons_h:'Как будет устроен заказ', pg_c1:'Согласие', pg_c1d:'подпись кодом из письма — так закон требует для сведений о беременности', pg_c2:'Снимок', pg_c2d:'обрезаем рамку с именем и клиникой до загрузки',
-    pg_c3:'Фото и анкета', pg_c3d:'ваше фото, второй родитель — по ссылке', pg_c4:'Предпросмотр', pg_c4d:'бесплатно, затем оплата и 3 портрета',
+    pg_c3:'Фото и анкета', pg_c3d:'ваше фото и, по желанию, фото второго родителя — с его ведома', pg_c4:'Оплата', pg_c4d:'затем 3 портрета; «отмена» до выдачи — полный возврат',
     pg_cons_soon:'Заказ откроется после запуска — сейчас можно записаться, и мы сообщим.', pg_cons_date:'Заказ откроется {d} — запишитесь, и мы сообщим.',
     pg_wl_h:'Скоро — оставьте контакт, сообщим о запуске', pg_wl_h_date:'Приём заказов — с {d}. Оставьте контакт — напомним',
     pg_wl_p:'Пришлём одно сообщение, когда можно будет заказать. Снимок сейчас не нужен.', pg_wl_name:'Имя (по желанию)', pg_wl_contact:'E-mail или телефон',
@@ -2583,16 +2587,16 @@ var PAYUX = (function(){
     pg_cap:'<b>Example made with fictional data: the scan and the parents are AI-generated.</b> No real people or scans here. The baby’s eyes are closed: eye colour settles only by about one year.',
     pg_how_h:'How it works',
     pg_s1:'<b>Your scan</b>Upload a 3D/4D scan you already have. We cut off the frame with your name and the clinic right in your browser — before upload.',
-    pg_s2:'<b>Family colours</b>Your photo and, if you like, the other parent’s photo — they give their own consent via a link. Or just answer 6 questions.',
-    pg_s3:'<b>Preview and portraits</b>A free watermarked preview, then 3 portraits in 2K (and a 5-second video). A person checks every portrait before delivery.',
+    pg_s2:'<b>Family colours</b>Your photo and, if you like, the other parent’s photo — you upload it yourself, with their knowledge. Or just answer 6 questions.',
+    pg_s3:'<b>Payment and portraits</b>You pay when ordering, then get 3 portraits in 2K (and a 5-second video). A person checks every portrait before delivery.',
     pg_honest_h:'Honestly about the result', pg_h1:'Facial features (nose, cheeks, lips) come from your scan.', pg_h2:'Colours come from the parents’ photos or your choice. Children of the same parents can look very different.',
     pg_h3:'The eyes are closed: eye colour settles only by about one year.', pg_h4:'We don’t promise likeness after birth — a baby’s face changes before and after birth.',
     pg_req_h:'Which scan works', pg_r1:'3D or 4D, not 2D.', pg_r2:'Best at 26–32 weeks.', pg_r3:'Face from the front or three-quarter view.', pg_r4:'The face is not covered by hands or the cord.',
-    pg_r_note:'Use a scan you already have. Please don’t get an ultrasound just for a portrait — it is done when a doctor prescribes it. If the scan doesn’t work, we’ll tell you before payment.',
+    pg_r_note:'Use a scan you already have. Please don’t get an ultrasound just for a portrait — it is done when a doctor prescribes it. If the scan doesn’t work, we’ll tell you and refund in full.',
     pg_price_h:'Prices', pg_p1:'3 portraits in 2K: asleep in a wrap, close-up, on a pillow', pg_p2:'3 portraits in 2K + a 5-second video: the baby breathing in sleep',
-    pg_p_note:'The preview is free; you pay only if you like it. If anything changes, just write “cancel”: we refund in full and delete everything at once. No questions asked.',
+    pg_p_note:'You pay when ordering. If anything changes before delivery, just write “cancel”: we refund in full and delete everything at once. No questions asked.',
     pg_cons_h:'How ordering will work', pg_c1:'Consent', pg_c1d:'signed with a code from an e-mail — the law requires it for pregnancy data', pg_c2:'Scan', pg_c2d:'the frame with name and clinic is cut off before upload',
-    pg_c3:'Photos and answers', pg_c3d:'your photo; the other parent — via a link', pg_c4:'Preview', pg_c4d:'free, then payment and 3 portraits',
+    pg_c3:'Photos and answers', pg_c3d:'your photo and, if you like, the other parent’s — with their knowledge', pg_c4:'Payment', pg_c4d:'then 3 portraits; “cancel” before delivery — full refund',
     pg_cons_soon:'Ordering opens after launch — sign up now and we’ll let you know.', pg_cons_date:'Ordering opens on {d} — sign up and we’ll let you know.',
     pg_wl_h:'Coming soon — leave your contact, we’ll tell you at launch', pg_wl_h_date:'Orders open on {d}. Leave your contact — we’ll remind you',
     pg_wl_p:'We’ll send one message when ordering opens. No scan needed now. Orders will be available in Russia first.', pg_wl_name:'Name (optional)', pg_wl_contact:'E-mail or phone',
@@ -2613,7 +2617,7 @@ var PAYUX = (function(){
 
   /* карточка в «Взрослым» (вместо «Скоро» без цены) */
   window.pregCard = function(){
-    var st = CFG.live ? '' : (CFG.open_date ? t('pg_card_date').replace('{d}', dateTxt()) : t('pg_card_soon'));
+    var st = CFG.live ? etaTxt() : (CFG.open_date ? t('pg_card_date').replace('{d}', dateTxt()) : t('pg_card_soon'));
     return '<article class="prod e-preg" id="p-uzi" data-k="uzi" data-aud="' + H4_AUD.uzi + '" data-type="' + (H4_TYP.uzi || '') + '">'
       + '<div class="media"><img class="pg-main" src="img/ex/ex_preg_1.jpg" alt="' + esc(t('pg_alt_r1')) + '" loading="lazy" width="900" height="1117">'
       + '<span class="e-tag ' + (CFG.live ? 'e-tag-new' : 'pg-tag') + '">' + t(CFG.live ? 'pg_tag_new' : 'pg_tag_wl') + '</span>'
@@ -2687,8 +2691,8 @@ var PAYUX = (function(){
   /* сервер решает: предзапись или заказ, дата старта (только после подачи в РКН) */
   function cfg(){ fetch(API + '/api/preg/config', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
       if (!j || typeof j.live !== 'boolean') return;
-      var ch = j.live !== CFG.live || (j.open_date || '') !== CFG.open_date;
-      CFG = {live: j.live && !!window.pregLive, open_date: j.open_date || '', prices: j.prices || CFG.prices, variant: j.variant || 'A'};
+      var ch = j.live !== CFG.live || (j.open_date || '') !== CFG.open_date || JSON.stringify(j.eta || null) !== JSON.stringify(CFG.eta);
+      CFG = {live: j.live && !!window.pregLive, open_date: j.open_date || '', prices: j.prices || CFG.prices, variant: 'B', eta: j.eta || null};
       if (ch) { render(); if (!M.hidden) fill(); } }).catch(function(){}); }
   var _r = render; render = function(){ var r = _r.apply(this, arguments); if (!M.hidden) fill(); return r; };
   render(); cfg();
@@ -2697,13 +2701,18 @@ var PAYUX = (function(){
 </script>
 <script>
 /* 29.10 C6b: конструктор заказа «Малыш по УЗИ» — включается ТОЛЬКО когда сервер ответит live=true (флаг preg_live + финальный текст согласия).
-   Шаг 1 — согласие PREG-1.0 (подпись кодом из письма, вариант A — с паспортом), шаг 2 — снимок (обрезка рамки в браузере), фото, анкета, видео,
-   шаг 3 — ссылка второму родителю (его собственное согласие) -> бесплатный предпросмотр (/api/start) -> оформление и оплата как у всех подарков. */
+   29.10 C6c (решения собственника): шаг 1 — согласие PREG-1.0 вариант Б (ФИО + e-mail, подпись кодом из письма, БЕЗ паспорта и адреса) и отметка
+   «Фото второго родителя загружаю с его ведома»; шаг 2 — снимок (обрезка рамки в браузере), фото мамы и второго родителя, анкета, видео ->
+   оформление и оплата как у всех подарков (/api/start). Бесплатного предпросмотра и ссылки второму родителю больше нет.
+   Срок до оплаты: «Портреты будут готовы до 20 ноября. Мы сообщим, когда начнём.» (с сервера, /api/preg/config eta). */
 window.pregLive = (function(){
   'use strict';
   Object.assign(I18N.ru, {
-    pl_s1:'Шаг 1 из 3 · Согласие', pl_s2:'Шаг 2 из 3 · Снимок и цвета семьи', pl_s3:'Шаг 3 из 3 · Второй родитель',
-    pl_why:'Снимок УЗИ — это сведения о беременности, и закон требует письменного согласия с паспортными данными (ст. 9 и 10 закона № 152-ФЗ). Паспорт хранится зашифрованно, не попадает в нейросети и за рубеж.',
+    pl_s1:'Шаг 1 из 2 · Согласие', pl_s2:'Шаг 2 из 2 · Снимок, цвета семьи и оплата',
+    pl_why:'Снимок УЗИ — это сведения о беременности, поэтому закон требует письменного согласия (ст. 9 и 10 закона № 152-ФЗ). Вы подпишете его кодом из письма — паспорт не нужен.',
+    pl_doclink:'Полный текст согласия', pl_pok:'Фото второго родителя загружаю с его ведома', pl_pok_h:'Отметьте, если хотите добавить фото второго родителя. Без него портрет тоже получится.',
+    pl_dad:'Фото второго родителя (по желанию): анфас, дневной свет, без фильтров', pl_nodad:'Фото второго родителя не добавляется: в согласии не отмечено «загружаю с его ведома». Цвет подберём по вашему фото и анкете.',
+    pl_refund:'Если что-то изменится до выдачи — напишите «отмена», вернём деньги полностью.', pl_e_partner:'Фото второго родителя можно добавить, только если в согласии отмечено «загружаю с его ведома».',
     pl_fio:'Фамилия, имя, отчество', pl_email:'E-mail — пришлём код подтверждения и копию согласия', pl_addr:'Адрес регистрации', pl_ps:'Серия паспорта', pl_pn:'Номер паспорта', pl_pd:'Дата выдачи', pl_pi:'Кем выдан',
     pl_adult:'Мне есть 18 лет, снимок относится к моей беременности', pl_getcode:'Получить код', pl_doc:'Текст согласия, которое вы подписываете', pl_code:'Код из письма ({e})', pl_sign:'Подписать согласие',
     pl_us:'Снимок 3D/4D УЗИ', pl_us_h:'Выделите рамкой только лицо малыша — имя, клинику и даты мы отрежем прямо здесь, до загрузки. Используйте снимок, который у вас уже есть.',
@@ -2713,7 +2722,7 @@ window.pregLive = (function(){
     pl_q1:'Тон кожи — мама (1 — очень светлая, 10 — очень тёмная)', pl_q2:'Цвет волос — мама', pl_q3:'Тон кожи — второй родитель', pl_q4:'Цвет волос — второй родитель',
     pl_q5:'У бабушек и дедушек были рыжие или светлые волосы?', pl_q6:'Пожелания (например: «пусть будет похож на папу»)', pl_na:'— не указывать —',
     pl_h_black:'чёрные', pl_h_dark:'тёмно-каштановые', pl_h_brown:'каштановые', pl_h_light_brown:'русые', pl_h_blond:'светлые', pl_h_red:'рыжие',
-    pl_plan:'Что заказать', pl_baby:'Имя малыша (по желанию)', pl_send:'Получить бесплатный предпросмотр', pl_sending:'Загружаем…',
+    pl_plan:'Что заказать', pl_baby:'Имя малыша (по желанию)', pl_send:'Перейти к оплате', pl_sending:'Загружаем…',
     pl_link_h:'Отправьте эту ссылку второму родителю — он сам даст согласие и загрузит фото. Без его фото портрет тоже получится.',
     pl_copy:'Скопировать ссылку', pl_copied:'Скопировано', pl_wait:'Фото второго родителя ещё не загружено.', pl_got:'✓ Фото второго родителя получено.',
     pl_go:'Продолжить — к предпросмотру', pl_go_q:'Фото второго родителя ещё нет. Продолжить без него? Цвет подберём по вашему фото и анкете.',
@@ -2723,8 +2732,11 @@ window.pregLive = (function(){
     pl_e_photo:'Файл не подходит — нужен JPG или PNG.', pl_e_small:'Слишком маленький снимок — нужен файл получше.', pl_e_mail:'Не получилось отправить письмо с кодом — попробуйте через минуту.'
   });
   Object.assign(I18N.en, {
-    pl_s1:'Step 1 of 3 · Consent', pl_s2:'Step 2 of 3 · Scan and family colours', pl_s3:'Step 3 of 3 · The other parent',
-    pl_why:'An ultrasound is pregnancy (health) data, and Russian law requires written consent with passport details (Art. 9 and 10 of Law No. 152-FZ). The passport is stored encrypted and never goes to AI services or abroad. The consent document is in Russian.',
+    pl_s1:'Step 1 of 2 · Consent', pl_s2:'Step 2 of 2 · Scan, family colours and payment',
+    pl_why:'An ultrasound is pregnancy (health) data, so Russian law requires written consent (Art. 9 and 10 of Law No. 152-FZ). You sign it with a code from an e-mail — no passport needed. The consent document is in Russian.',
+    pl_doclink:'Full text of the consent (in Russian)', pl_pok:'I upload the other parent’s photo with their knowledge', pl_pok_h:'Tick this if you want to add the other parent’s photo. The portrait works without it too.',
+    pl_dad:'The other parent’s photo (optional): front view, daylight, no filters', pl_nodad:'The other parent’s photo isn’t added: the consent doesn’t say you upload it with their knowledge. We’ll choose colours from your photo and answers.',
+    pl_refund:'If anything changes before delivery, write “cancel” — we refund in full.', pl_e_partner:'The other parent’s photo can be added only if the consent says you upload it with their knowledge.',
     pl_fio:'Surname, first name, patronymic', pl_email:'E-mail — we’ll send a code and a copy of the consent', pl_addr:'Registration address', pl_ps:'Passport series', pl_pn:'Passport number', pl_pd:'Date of issue', pl_pi:'Issued by',
     pl_adult:'I am 18 or older and the scan is of my pregnancy', pl_getcode:'Get the code', pl_doc:'The consent you are signing (in Russian)', pl_code:'Code from the e-mail ({e})', pl_sign:'Sign the consent',
     pl_us:'3D/4D ultrasound', pl_us_h:'Frame only the baby’s face — we cut off names, the clinic and dates right here, before upload. Use a scan you already have.',
@@ -2734,7 +2746,7 @@ window.pregLive = (function(){
     pl_q1:'Skin tone — mum (1 very light, 10 very dark)', pl_q2:'Hair colour — mum', pl_q3:'Skin tone — other parent', pl_q4:'Hair colour — other parent',
     pl_q5:'Did grandparents have red or fair hair?', pl_q6:'Wishes (e.g. “let them look like dad”)', pl_na:'— not specified —',
     pl_h_black:'black', pl_h_dark:'dark brown', pl_h_brown:'brown', pl_h_light_brown:'light brown', pl_h_blond:'blond', pl_h_red:'red',
-    pl_plan:'What to order', pl_baby:'Baby’s name (optional)', pl_send:'Get a free preview', pl_sending:'Uploading…',
+    pl_plan:'What to order', pl_baby:'Baby’s name (optional)', pl_send:'Go to payment', pl_sending:'Uploading…',
     pl_link_h:'Send this link to the other parent — they give their own consent and upload a photo. The portrait works without it too.',
     pl_copy:'Copy link', pl_copied:'Copied', pl_wait:'The other parent’s photo is not uploaded yet.', pl_got:'✓ The other parent’s photo is received.',
     pl_go:'Continue to the preview', pl_go_q:'There is no photo from the other parent yet. Continue without it? We’ll choose colours from your photo and answers.',
@@ -2743,9 +2755,10 @@ window.pregLive = (function(){
     pl_e_exp:'The code has expired — tap “Get the code” again.', pl_e_us:'Add the ultrasound scan.', pl_e_closed:'Ordering is temporarily closed — please sign up for the launch.', pl_e_net:'Something went wrong — please try again.',
     pl_e_photo:'This file doesn’t work — JPG or PNG is needed.', pl_e_small:'The scan is too small — a better file is needed.', pl_e_mail:'Couldn’t send the code e-mail — please try again in a minute.'
   });
-  var S = {cid:'', ct:'', sent:'', tok:'', start:'', link:'', box:{x:.15, y:.15, s:.7}, img:null, file:null};
+  var S = {cid:'', ct:'', sent:'', tok:'', start:'', pok:false, box:{x:.15, y:.15, s:.7}, img:null, file:null};
   var ERR = {bad_fio:'pl_e_fio', bad_email:'pl_e_email', bad_passport:'pl_e_pass', bad_pass_date:'pl_e_pd', bad_address:'pl_e_addr', bad_issuer:'pl_e_pi', adult:'pl_e_adult',
-             bad_code:'pl_e_code', code_expired:'pl_e_exp', preg_closed:'pl_e_closed', photo_type:'pl_e_photo', photo_small:'pl_e_small', mail:'pl_e_mail', too_many:'pg_e_many'};
+             bad_code:'pl_e_code', code_expired:'pl_e_exp', preg_closed:'pl_e_closed', photo_type:'pl_e_photo', photo_small:'pl_e_small', mail:'pl_e_mail', too_many:'pg_e_many', partner_consent:'pl_e_partner'};
+  function etaNote(){ var e = window.pregEta ? window.pregEta() : ''; return '<p class="pg-note pl-eta" style="font-weight:700;color:var(--ink)">' + esc(e) + '</p>'; }
   function $(id){ return document.getElementById(id); }
   function esc(s){ return String(s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
   function f(id, key, type, extra){ return '<div class="pg-f"><label for="' + id + '">' + t(key) + '</label><input type="' + (type || 'text') + '" id="' + id + '" ' + (extra || '') + '></div>'; }
@@ -2755,25 +2768,22 @@ window.pregLive = (function(){
   function skinOpts(){ var o = '<option value="">' + t('pl_na') + '</option>'; for (var i = 1; i <= 10; i++) o += '<option value="' + i + '">' + i + '</option>'; return o; }
   var root, cfg;
   function step1(){
-    var A = cfg.variant !== 'B';
-    root.innerHTML = '<h4>' + t('pl_s1') + '</h4>' + (A ? '<p class="pg-note">' + t('pl_why') + '</p>' : '')
+    root.innerHTML = '<h4>' + t('pl_s1') + '</h4>' + etaNote() + '<p class="pg-note">' + t('pl_why') + ' <a href="/preg-consent.html" target="_blank" rel="noopener">' + t('pl_doclink') + '</a></p>'
       + '<div class="pg-grid2">' + f('plFio', 'pl_fio', 'text', 'maxlength="120" autocomplete="name"') + f('plEmail', 'pl_email', 'email', 'maxlength="120" autocomplete="email"') + '</div>'
-      + (A ? '<div class="pg-f" style="margin-top:10px"><label for="plAddr">' + t('pl_addr') + '</label><input type="text" id="plAddr" maxlength="250" autocomplete="street-address"></div>'
-        + '<div class="pg-grid2" style="margin-top:10px">' + f('plPs', 'pl_ps', 'text', 'inputmode="numeric" maxlength="5"') + f('plPn', 'pl_pn', 'text', 'inputmode="numeric" maxlength="7"') + '</div>'
-        + '<div class="pg-grid2" style="margin-top:10px">' + f('plPd', 'pl_pd', 'date') + f('plPi', 'pl_pi', 'text', 'maxlength="200"') + '</div>' : '')
       + '<label class="pg-chk"><input type="checkbox" id="plAdult"> <span>' + t('pl_adult') + '</span></label>'
+      + '<label class="pg-chk"><input type="checkbox" id="plPok"> <span>' + t('pl_pok') + '</span></label><p class="hint" style="margin:4px 0 0 28px">' + t('pl_pok_h') + '</p>'
       + '<div class="pg-act"><button type="button" class="btn btn-gold" id="plGet">' + t('pl_getcode') + '</button></div><p class="pg-err" id="plE1" role="alert" hidden></p>'
       + '<div id="plSign" hidden><p class="hint" style="margin:14px 0 6px">' + t('pl_doc') + '</p><div class="pg-doc" id="plDoc" tabindex="0"></div>'
       + '<div class="pg-f" style="margin-top:10px;max-width:260px"><label for="plCode" id="plCodeL"></label><input type="text" id="plCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>'
       + '<div class="pg-act"><button type="button" class="btn btn-gold" id="plSignB">' + t('pl_sign') + '</button></div><p class="pg-err" id="plE2" role="alert" hidden></p></div>';
     $('plGet').onclick = function(){ var b = this, fd = new FormData();
       fd.append('fio', $('plFio').value); fd.append('email', $('plEmail').value.trim()); fd.append('adult', $('plAdult').checked ? 'true' : 'false'); fd.append('lang', lang);
-      if (A) { fd.append('address', $('plAddr').value); fd.append('pass_series', $('plPs').value); fd.append('pass_number', $('plPn').value); fd.append('pass_date', $('plPd').value); fd.append('pass_issuer', $('plPi').value); }
+      fd.append('partner_ok', $('plPok').checked ? 'true' : 'false');
       err('plE1'); b.disabled = true;
       post('/api/preg/consent/start', fd).then(function(j){ S.cid = j.cid; S.sent = j.sent_to; $('plDoc').textContent = j.doc; $('plCodeL').textContent = t('pl_code').replace('{e}', j.sent_to); $('plSign').hidden = false; $('plCode').focus(); })
         .catch(function(e){ err('plE1', e); }).then(function(){ b.disabled = false; }); };
     $('plSignB').onclick = function(){ var b = this, fd = new FormData(); fd.append('cid', S.cid); fd.append('code', $('plCode').value.trim()); err('plE2'); b.disabled = true;
-      post('/api/preg/consent/confirm', fd).then(function(j){ S.ct = j.ctoken; step2(); }).catch(function(e){ err('plE2', e); }).then(function(){ b.disabled = false; }); };
+      post('/api/preg/consent/confirm', fd).then(function(j){ S.ct = j.ctoken; S.pok = !!j.partner_ok; step2(); }).catch(function(e){ err('plE2', e); }).then(function(){ b.disabled = false; }); };
   }
   function step2(){
     root.innerHTML = '<h4>' + t('pl_s2') + '</h4>'
@@ -2781,13 +2791,15 @@ window.pregLive = (function(){
       + '<div id="plCropW" hidden><div class="pg-crop" id="plCrop"><img id="plUsImg" alt=""><div class="pg-box2" id="plBox"></div></div>'
       + '<div class="pg-f" style="max-width:420px;margin-top:6px"><label for="plSize">' + t('pl_size') + '</label><input type="range" id="plSize" min="20" max="100" value="70"></div></div><p class="pg-err" id="plE3" role="alert" hidden></p>'
       + '<div class="pg-grid2" style="margin-top:12px">' + f('plWeeks', 'pl_weeks', 'number', 'min="14" max="42"') + '<div class="pg-f"><label for="plMom">' + t('pl_mom') + '</label><input type="file" id="plMom" accept="image/*"></div></div>'
-      + '<div class="pg-f" style="margin-top:12px"><span class="hint" style="font-weight:700">' + t('pl_partner') + '</span><div class="pg-plan"><label><input type="radio" name="plp" value="link" checked> ' + t('pl_p_link') + '</label><label><input type="radio" name="plp" value="none"> ' + t('pl_p_none') + '</label></div></div>'
+      + (S.pok ? '<div class="pg-f" style="margin-top:12px"><label for="plDad">' + t('pl_dad') + '</label><input type="file" id="plDad" accept="image/*"></div>'
+               : '<p class="hint" style="margin-top:12px">' + t('pl_nodad') + '</p>')
       + '<details style="margin-top:12px"><summary style="font-weight:700;cursor:pointer">' + t('pl_q') + '</summary><div class="pg-grid2" style="margin-top:10px">'
       + '<div class="pg-f"><label for="plQ1">' + t('pl_q1') + '</label><select id="plQ1">' + skinOpts() + '</select></div><div class="pg-f"><label for="plQ2">' + t('pl_q2') + '</label><select id="plQ2">' + hairOpts() + '</select></div>'
       + '<div class="pg-f"><label for="plQ3">' + t('pl_q3') + '</label><select id="plQ3">' + skinOpts() + '</select></div><div class="pg-f"><label for="plQ4">' + t('pl_q4') + '</label><select id="plQ4">' + hairOpts() + '</select></div>'
       + f('plQ5', 'pl_q5', 'text', 'maxlength="200"') + f('plQ6', 'pl_q6', 'text', 'maxlength="300"') + '</div></details>'
       + '<div class="pg-f" style="margin-top:12px"><span class="hint" style="font-weight:700">' + t('pl_plan') + '</span><div class="pg-plan"><label><input type="radio" name="plplan" value="photo" checked> ' + t('pg_plan_photo').replace('990 ₽', (cfg.prices.preg || 990) + ' ₽') + '</label><label><input type="radio" name="plplan" value="video"> ' + t('pg_plan_video') + '</label></div></div>'
       + '<div style="max-width:420px;margin-top:12px">' + f('plBaby', 'pl_baby', 'text', 'maxlength="40"') + '</div>'
+      + etaNote() + '<p class="pg-note" style="margin-top:4px">' + t('pl_refund') + '</p>'
       + '<div class="pg-act"><button type="button" class="btn btn-gold" id="plSend">' + t('pl_send') + '</button></div><p class="pg-err" id="plE4" role="alert" hidden></p>';
     var img = $('plUsImg'), box = $('plBox'), wrap = $('plCrop'), url = null;
     function place(){ var W = wrap.clientWidth, H = wrap.clientHeight, m = Math.min(W, H), s = S.box.s * m;
@@ -2815,20 +2827,13 @@ window.pregLive = (function(){
       c.toBlob(function(blob){ var fd = new FormData();
         fd.append('cid', S.cid); fd.append('ctoken', S.ct); fd.append('us', blob, 'scan.jpg'); fd.append('crop_done', '1');
         var mom = $('plMom').files[0]; if (mom) fd.append('mom', mom);
-        fd.append('plan', (document.querySelector('input[name=plplan]:checked') || {}).value || 'photo'); fd.append('partner', (document.querySelector('input[name=plp]:checked') || {}).value || 'none');
+        var dad = S.pok && $('plDad') ? $('plDad').files[0] : null; if (dad) fd.append('dad', dad);
+        fd.append('plan', (document.querySelector('input[name=plplan]:checked') || {}).value || 'photo');
         fd.append('weeks', $('plWeeks').value); fd.append('baby_name', $('plBaby').value); fd.append('lang', lang);
         [['q_skin_m','plQ1'],['q_hair_m','plQ2'],['q_skin_f','plQ3'],['q_hair_f','plQ4'],['q_grand','plQ5'],['q_wish','plQ6']].forEach(function(p){ fd.append(p[0], $(p[1]).value); });
-        post('/api/preg/orders', fd).then(function(j){ S.tok = j.token; S.start = API + j.start; S.link = j.partner_link || ''; if (S.link) step3(); else location.href = S.start; })
+        post('/api/preg/orders', fd).then(function(j){ S.tok = j.token; S.start = API + j.start; location.href = S.start; })
           .catch(function(e){ err('plE4', e); b.disabled = false; b.textContent = t('pl_send'); });
       }, 'image/jpeg', 0.93); };
-  }
-  function step3(){
-    root.innerHTML = '<h4>' + t('pl_s3') + '</h4><p>' + t('pl_link_h') + '</p><div class="pg-act"><input type="text" id="plLink" readonly value="' + esc(S.link) + '" style="flex:1;min-width:200px"><button type="button" class="btn btn-ghost" id="plCopy">' + t('pl_copy') + '</button></div>'
-      + '<p class="hint" id="plPst" role="status">' + t('pl_wait') + '</p><div class="pg-act"><button type="button" class="btn btn-gold" id="plGo">' + t('pl_go') + '</button></div>';
-    $('plCopy').onclick = function(){ var b = this; try { navigator.clipboard.writeText(S.link).then(function(){ b.textContent = t('pl_copied'); }); } catch(_){ $('plLink').select(); } };
-    var done = false;
-    (function poll(){ if (!$('plPst')) return; fetch(API + '/api/preg/orders/' + S.tok + '/partner', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(j){ done = !!j.done; $('plPst').textContent = t(done ? 'pl_got' : 'pl_wait'); }).catch(function(){}).then(function(){ if (!done) setTimeout(poll, 8000); }); })();
-    $('plGo').onclick = function(){ if (!done && !confirm(t('pl_go_q'))) return; location.href = S.start; };
   }
   return {render: function(el, c){ cfg = c; if (root === el && root.childElementCount) return; root = el; step1(); }};
 })();
