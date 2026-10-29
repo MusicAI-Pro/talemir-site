@@ -198,9 +198,22 @@ body.web.detail .webbtn{display:block}
             short:"Человек на фото поёт песню с именем",
             get:"Ваше фото поёт песню с именем: губы и мимика — в такт словам. Видео MP4 до 30 секунд + полная песня MP3 в подарок. В углу видео — пометка «ИИ-анимация, голос синтезирован»",
             need:"1 фото (лицо крупно) и имя",
-            media:{type:"video", src:EX+"ex_sing.mp4", poster:EX+"ex_sing.jpg", alt:"Пример: Амелия, 5 лет, поёт «Мне сегодня ровно пять»"} }
+            media:{type:"video", src:EX+"ex_sing.mp4", poster:EX+"ex_sing.jpg", alt:"Пример: Амелия, 5 лет, поёт «Мне сегодня ровно пять»"} },
+    /* 29.10 C6a: подарки питомцам (только кошки и собаки), = chain.PRICE / ETA_RU */
+    pet_live: { emoji:"🐾", title:"Живое фото питомца", price:"390 ₽",
+            short:"Фото кошки или собаки оживает",
+            get:"Фото вашей кошки или собаки оживает: дыхание, моргание, ушки, хвост. Видео MP4, около 5 секунд",
+            need:"1 фото кошки или собаки (морда видна, дневной свет) и кличка",
+            ready:"обычно ~5 минут, затем проверяем качество вручную",
+            media:{type:"video", src:EX+"ex_pet_live.mp4", poster:EX+"ex_pet_live.jpg", alt:"Пример: корги на живом фото"} },
+    pet_sing: { emoji:"🎤", title:"Поющий питомец", price:"590 ₽",
+            short:"Питомец поёт песню со своей кличкой",
+            get:"Кошка или собака на фото «поёт» песню со своей кличкой. Видео MP4 8–15 секунд + песня MP3. В углу видео — пометка «ИИ-анимация, голос синтезирован»",
+            need:"1 фото: один питомец, морда крупно; кличка",
+            ready:"обычно ~15 минут, в часы пик — до 40 минут; затем проверяем качество вручную",
+            media:{type:"video", src:EX+"ex_pet_sing.mp4", poster:EX+"ex_pet_sing.jpg", alt:"Пример: кот Барсик поёт песню"} }
   };
-  var ORDER = ["book","song","clip","live","sing"];
+  var ORDER = ["book","song","clip","live","sing","pet_live","pet_sing"];
   var STYLES = [
     ["st_3d","Объёмная анимация"],["st_water","Акварель"],["st_pencil","Цветные карандаши"],["st_paper","Бумажная аппликация"],
     ["st_clay","Пластилин"],["st_khokh","Хохлома"],["st_gzhel","Гжель"],["st_palekh","Палехская миниатюра"],["st_lubok","Лубок"],
@@ -307,7 +320,7 @@ body.web.detail .webbtn{display:block}
     document.getElementById("dTitle").textContent = p.emoji + " " + p.title;
     document.getElementById("dPrice").innerHTML = '<span class="price">'+esc(p.price)+'</span>' + (p.priceNote ? '<span class="until">'+esc(p.priceNote)+'</span>' : "");
     document.getElementById("dFacts").innerHTML =
-      fact(ICONS.get,"Что получите",p.get) + fact(ICONS.need,"Что понадобится",p.need) + fact(ICONS.time,"Когда будет готово",READY);
+      fact(ICONS.get,"Что получите",p.get) + fact(ICONS.need,"Что понадобится",p.need) + fact(ICONS.time,"Когда будет готово",p.ready || READY);
 
     var extra = document.getElementById("dExtra"); extra.innerHTML = "";
     if (p.preview) extra.appendChild(el("div",{class:"note"}, ICONS.eye + "<span>"+esc(p.preview)+"</span>"));

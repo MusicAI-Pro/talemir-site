@@ -777,7 +777,7 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
 <section class="e-sheetw" id="products" aria-labelledby="eSlogan"><div class="wrap e-wide"><div class="e-sheet">
     <div class="e-shead">
       <h2 class="e-slogan" id="eSlogan"><span class="e-br" data-i="h4_slogan_b">Talemir —</span> <span data-i="h4_slogan">подарки, в которых живёт любовь</span></h2>
-      <div class="e-seg" id="eAud" role="group" aria-label="Для кого подарок"><button type="button" data-aud="all" aria-pressed="true" data-i="h4_aud_all">Все</button><button type="button" data-aud="kids" aria-pressed="false" data-i="h4_aud_kids">Детям</button><button type="button" data-aud="adult" aria-pressed="false" data-i="h4_aud_adult">Взрослым</button><button type="button" class="e-pets" data-aud="pets" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg><span data-i="h4_aud_pets">Питомцам</span><small data-i="h4_soon">скоро</small></button></div>
+      <div class="e-seg" id="eAud" role="group" aria-label="Для кого подарок"><button type="button" data-aud="all" aria-pressed="true" data-i="h4_aud_all">Все</button><button type="button" data-aud="kids" aria-pressed="false" data-i="h4_aud_kids">Детям</button><button type="button" data-aud="adult" aria-pressed="false" data-i="h4_aud_adult">Взрослым</button><button type="button" class="e-pets" data-aud="pets" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg><span data-i="h4_aud_pets">Питомцам</span></button></div>
     </div>
     <div class="e-chips" id="eChips" role="group" aria-label="Тип подарка"></div>
     <div class="e-sgrid">
@@ -910,24 +910,32 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
     <div id="formBody" style="display:flex;flex-direction:column;gap:14px">
       <h3 id="fTitle"></h3>
       <div class="row"><label for="fProd" data-i="f_prod"></label><select id="fProd"></select></div>
+      <div class="row" data-for="pet_live pet_sing" id="petKindRow"><label id="fPetKindL" data-i="pk_l"></label><!-- 29.10 C6a: только кошки и собаки (PET2) -->
+        <div class="petkind" id="fPetKind" role="radiogroup" aria-labelledby="fPetKindL">
+          <label><input type="radio" name="petkind" value="cat"><span aria-hidden="true">🐱</span> <span data-i="pk_cat"></span></label>
+          <label><input type="radio" name="petkind" value="dog"><span aria-hidden="true">🐶</span> <span data-i="pk_dog"></span></label>
+          <label><input type="radio" name="petkind" value="other"><span aria-hidden="true">🐾</span> <span data-i="pk_other"></span></label>
+        </div>
+        <p class="petwhy" id="fPetWhy" role="alert" hidden data-i="pk_other_why"></p>
+      </div>
       <div class="row2">
         <div class="row"><label for="fName" id="fNameL" data-i="f_name"></label><input type="text" id="fName" autocomplete="off" data-ph="ph_name"><span class="hint" data-i="h_name"></span></div>
         <div class="row" data-for="book song sing"><label for="fAge" data-i="f_age"></label><input type="number" id="fAge" min="0" max="14" value="5"><span class="hint" data-i="h_age"></span></div>
         <div class="row" data-for="ny"><label for="fGender" data-i="f_gender"></label><select id="fGender"></select></div>
       </div>
-      <div class="row" data-for="song clip live sing ny cartoon" id="stressRow" hidden><label id="fStressL" data-i="f_stress_l"></label><div class="stress" id="fStress" role="radiogroup" aria-labelledby="fStressL"></div><span class="hint" id="stressHint"></span></div>
+      <div class="row" data-for="song clip live sing ny cartoon pet_sing" id="stressRow" hidden><label id="fStressL" data-i="f_stress_l"></label><div class="stress" id="fStress" role="radiogroup" aria-labelledby="fStressL"></div><span class="hint" id="stressHint"></span></div>
       <div class="row" data-for="book"><label for="fFamily" data-i="f_family"></label><input type="text" id="fFamily" autocomplete="off" maxlength="200" data-ph="ph_family"><span class="hint" data-i="h_family"></span></div>
       <div class="row" data-for="book"><label for="fDedic" data-i="f_dedic"></label><input type="text" id="fDedic" autocomplete="off" maxlength="200" data-ph="ph_dedic"><span class="hint" data-i="h_dedic"></span></div>
-      <div class="row2 sel" data-for="song clip sing cartoon">
+      <div class="row2 sel" data-for="song clip sing cartoon pet_sing">
         <div class="row"><label for="fOcc" data-i="f_occ"></label><select id="fOcc"></select><input type="text" id="fOccOwn" maxlength="60" autocomplete="off" hidden style="margin-top:8px"></div>
-        <div class="row"><label for="fGenre" data-i="f_genre"></label><select id="fGenre"></select></div>
+        <div class="row" data-for="song clip sing cartoon"><label for="fGenre" data-i="f_genre"></label><select id="fGenre"></select></div>
       </div>
       <div class="row" data-for="cartoon" id="cartMusicRow"><label for="fCartMusic">Музыка в мультфильме</label><select id="fCartMusic"><option value="song" selected>🎵 Песня с вашими именами</option><option value="instrumental">🎻 Красивая музыка без слов</option></select><span class="hint">Песня входит в цену</span></div>
       <div class="row2 sel" data-for="song sing">
         <div class="row"><label for="fStyle2" data-i="f_style2"></label><select id="fStyle2"></select></div>
         <div class="row"><label for="fVoice" data-i="f_voice"></label><select id="fVoice"></select></div>
       </div>
-      <div class="row2 sel" data-for="song sing">
+      <div class="row2 sel" data-for="song sing pet_sing">
         <div class="row"><label for="fMood" data-i="f_mood"></label><select id="fMood"></select></div>
         <div class="row" data-for="song"><label for="fLen" data-i="f_len"></label><select id="fLen"></select></div>
       </div>
@@ -935,12 +943,18 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
       <div class="row2" data-for="ny"><div class="row"><label for="fPet" data-i="f_pet_ny"></label><input type="text" id="fPet" autocomplete="off" maxlength="80" data-ph="ph_pet_ny"><span class="hint" data-i="h_pet_ny"></span></div><div class="row"><label for="fFrom" data-i="f_from_ny"></label><input type="text" id="fFrom" autocomplete="off" maxlength="80" data-ph="ph_from_ny"><span class="hint" data-i="h_from_ny"></span></div></div>
       <div class="row" data-for="ny"><label data-i="f_gift"></label><div class="giftopts" id="fGift" role="radiogroup"><label><input type="radio" name="gift" value="g1" checked><span aria-hidden="true">🎄</span> <span data-i="gift_g1"></span></label><label><input type="radio" name="gift" value="g2"><span aria-hidden="true">🌅</span> <span data-i="gift_g2"></span></label><label><input type="radio" name="gift" value="g3"><span aria-hidden="true">📦</span> <span data-i="gift_g3"></span></label><label><input type="radio" name="gift" value="g0"><span aria-hidden="true">🙅</span> <span data-i="gift_g0"></span></label></div><span class="hint" data-i="h_gift"></span></div>
       <div class="row nyplan" data-for="ny"><b data-i="ny_plan_h"></b><ol><li data-i="ny_plan_1"></li><li data-i="ny_plan_2"></li><li data-i="ny_plan_3"></li><li data-i="ny_plan_4"></li><li data-i="ny_plan_5"></li></ol></div>
-      <div class="row2" data-for="book song sing clip live">
+      <div class="row2" data-for="book song sing clip live pet_sing">
         <div class="row"><label for="fLang" id="fLangL" data-i="f_lang"></label><select id="fLang"></select></div>
       </div>
       <p class="hint" id="fLangNote" role="note" hidden style="margin:-4px 0 12px;padding:10px 12px;border-radius:10px;background:#fff4e0;color:#6b4a00"></p>
       <div class="row" data-for="book"><label id="fStyleL" data-i="f_style"></label><select id="fStyle" hidden></select><div class="stygrid" id="fStyGrid" role="radiogroup" aria-labelledby="fStyleL"></div><div class="stypv" id="fStyPv" aria-live="polite"></div></div>
-      <div class="row" data-for="book clip live sing ny"><label for="fPhotos" id="fPhotosL" data-i="f_photos"></label><input type="file" id="fPhotos" class="vh" accept="image/*" multiple><label for="fPhotos" class="btn btn-ghost filebtn" data-i="f_pick"></label><span class="hint" data-i="f_hint"></span><span class="hint" id="fSel"></span><div class="thumbs" id="thumbs"></div></div>
+      <div class="row petcheck" data-for="pet_live pet_sing" id="petCheck"><!-- 29.10 C6a: требования к фото питомца (PET2 §6) -->
+        <b data-i="pc_h"></b>
+        <ul><li data-i="pc_1"></li><li data-i="pc_2"></li><li data-i="pc_3"></li><li id="pcSing" data-i="pc_4"></li><li data-i="pc_5"></li></ul>
+        <p class="hint petmc" id="petMc" data-i="pc_mc"></p>
+      </div>
+      <div class="row" data-for="book clip live sing ny pet_live pet_sing"><label for="fPhotos" id="fPhotosL" data-i="f_photos"></label><input type="file" id="fPhotos" class="vh" accept="image/*" multiple><label for="fPhotos" class="btn btn-ghost filebtn" data-i="f_pick"></label><span class="hint" data-i="f_hint"></span><span class="hint" id="fSel"></span><div class="thumbs" id="thumbs"></div>
+        <div class="petpv" id="petPv" hidden><img id="petPvImg" alt="" width="110" height="110"><div><div id="petPvNote" class="hint" aria-live="polite"></div><button type="button" class="btn btn-ghost petrm" id="petPvRm" data-i="pv_rm"></button></div></div></div>
       <div class="row invadd" id="invAddRow" hidden>
         <label class="consent" style="margin:0"><input type="checkbox" id="fInvAdd"><span>🎉 <b>Добавить приглашение на праздник — 145 ₽</b> <s style="opacity:.6">290 ₽</s>. 3 варианта PNG + PDF с именем, датой и местом праздника</span></label>
         <div id="invAddBox" hidden style="display:grid;gap:10px;margin-top:10px">
@@ -1033,7 +1047,7 @@ function curSet(){ try { const b = bundleFor(curProd).filter(k => k !== 'inv' &&
 function photoMax(){ const S = curSet(); return S.length === 1 && S[0] === 'ny' ? 4 : S.length === 1 && S[0] === 'sing' ? 1 : 8; }
 function consentKind(){ return curSet().every(k => k === 'clip' || k === 'live') ? 'universal' : 'parent'; }   /* = варианты 1.1 и 1.3 согласия 1.5 */
 const SUP = SUP_ALL.filter(l => LANGS_ON.includes(l));
-const PRICES = { RUB:{cartoon:5990,pdf:990,print:2990,gift:3990,song:490,clip:790,live:1990,sing:1490,ny:490}, KZT:{pdf:7990,print:24990,gift:32990,song:2990,clip:4490,live:11990,sing:8990,ny:2290}, AED:{pdf:65,print:179,gift:249,song:22,clip:35,live:89,sing:69,ny:19}, SAR:{pdf:65,print:185,gift:259,song:22,clip:35,live:89,sing:69,ny:19}, AMD:{pdf:6900,print:18900,gift:26900,song:2490,clip:3490,live:9490,sing:7490,ny:1990}, USD:{pdf:17,print:49,gift:69,song:6,clip:9,live:24,sing:19,ny:5} };
+const PRICES = { RUB:{cartoon:5990,pdf:990,print:2990,gift:3990,song:490,clip:790,live:1990,sing:1490,ny:490,pet_live:390,pet_sing:590}, KZT:{pdf:7990,print:24990,gift:32990,song:2990,clip:4490,live:11990,sing:8990,ny:2290,pet_live:2390,pet_sing:3590}, AED:{pdf:65,print:179,gift:249,song:22,clip:35,live:89,sing:69,ny:19,pet_live:18,pet_sing:27}, SAR:{pdf:65,print:185,gift:259,song:22,clip:35,live:89,sing:69,ny:19,pet_live:18,pet_sing:27}, AMD:{pdf:6900,print:18900,gift:26900,song:2490,clip:3490,live:9490,sing:7490,ny:1990,pet_live:1990,pet_sing:2990}, USD:{pdf:17,print:49,gift:69,song:6,clip:9,live:24,sing:19,ny:5,pet_live:5,pet_sing:7} };   /* 29.10 C6a: питомцы — 390/590 ₽ (PET1, утверждено 29.10); другие валюты — только показ, оплата в рублях */
 const LOCALE = {ru:'ru-RU',kk:'kk-KZ',hy:'hy-AM',ar:'ar-AE-u-nu-latn',en:'en-GB'};
 const TZ = {'Asia/Almaty':'KZ','Asia/Qostanay':'KZ','Asia/Aqtobe':'KZ','Asia/Aqtau':'KZ','Asia/Atyrau':'KZ','Asia/Oral':'KZ','Asia/Qyzylorda':'KZ',
   'Asia/Dubai':'AE','Asia/Muscat':'OM','Asia/Riyadh':'SA','Asia/Qatar':'QA','Asia/Kuwait':'KW','Asia/Bahrain':'BH','Asia/Yerevan':'AM',
@@ -1062,7 +1076,7 @@ function t(k){ return (I18N[lang] && I18N[lang][k]) ?? I18N.en[k] ?? I18N.ru[k] 
 
 const STYLES = [["st_3d", "st_3d"], ["st_water", "st_water"], ["st_pencil", "st_pencil"], ["st_paper", "st_paper"], ["st_clay", "st_clay"], ["st_khokh", "st_khokh"], ["st_gzhel", "st_gzhel"], ["st_palekh", "st_palekh"], ["st_lubok", "st_lubok"], ["st_film", "st_film"], ["st_kaz", "st_kaz"], ["st_minia", "st_minia"], ["st_arab", "st_arab"]];
 
-const PRODS = [['cartoon','cartoon'],['book','pdf'],['song','song'],['clip','clip'],['live','live'],['sing','sing'],['ny','ny']];
+const PRODS = [['cartoon','cartoon'],['book','pdf'],['song','song'],['clip','clip'],['live','live'],['sing','sing'],['ny','ny'],['pet_live','pet_live'],['pet_sing','pet_sing']];   /* 29.10 C6a: + питомцы */
 const cartOn = () => cur === 'RUB' && lang === 'ru';   /* 28.10 MULT1: мультфильм — только RU/RUB */
 function syncCartHero(){   /* 29.10 HOME4: главный экран — мультфильм (RU/RUB) или общий ролик; видео грузится после обложки */
   const h = document.getElementById('eCine'); if (!h) return;
@@ -1075,13 +1089,13 @@ function syncCartHero(){   /* 29.10 HOME4: главный экран — мул�
   if (v.dataset.src !== src) { v.dataset.src = src; try { v.pause(); } catch(_){} v.muted = true; if (rm) v.removeAttribute('src'); else v.setAttribute('src', src); }
   if (!rm && v.paused && v.muted && v.getAttribute('src')) { const pr = v.play(); if (pr && pr.catch) pr.catch(()=>{}); }
 }
-const GRID = () => PRODS.filter(([k]) => k !== 'ny' && (k !== 'cartoon' || cartOn()));   /* 24.10.2026 указ владельца: Дед Мороз — не в списке, а акционным баннером */
+const GRID = () => PRODS.filter(([k]) => k !== 'ny' && !k.startsWith('pet_') && (k !== 'cartoon' || cartOn()));   /* 24.10.2026 указ владельца: Дед Мороз — не в списке, а акционным баннером */
 const ICONS = {"cartoon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M7 5v4M12 5v4M17 5v4M7 15v4M12 15v4M17 15v4\"/></svg>", "book": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z\"/><path d=\"M4 19V5\"/></svg>", "song": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M9 18V5l11-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"17\" cy=\"16\" r=\"3\"/></svg>", "clip": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M10 9l5 3-5 3z\"/></svg>", "live": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z\"/><path d=\"M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z\"/></svg>", "sing": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"11\" rx=\"3\"/><path d=\"M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8\"/></svg>", "ny": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 2v20M4.9 6l14.2 12M19.1 6L4.9 18\"/><path d=\"M9 3.5l3 2 3-2M9 20.5l3-2 3 2\"/></svg>"};
 function media(k){
   if (k==='book') return `<div class="media"><img src="img/ex/ex_book.jpg" alt="${t('ex_book')}" loading="lazy" width="1056" height="592" style="object-position:72% 50%"><span class="e-tag">${t('h4_tag_pv')}</span></div>`;   /* 29.10 HOME4: стили книги — в разделе «Стили» и в конструкторе */
   if (k==='song') return `<div class="media pm"><img class="pm-poster" src="img/ex/ex_song.jpg" alt="${t('ex_song')}" loading="lazy" width="1056" height="589"><audio preload="none" src="img/ex/ex_song.mp3"></audio><button type="button" class="play" data-play aria-label="${t('p_song_t')}">${PM_IC.play}</button><span class="pm-dur">${PM_IC.note}${PM_D.song}</span>${pmBar(false)}</div>`;
-  const v = {cartoon:['ex_cartoon.mp4','ex_cartoon.jpg'], clip:['ex_clip.mp4','ex_clip.jpg'], live:['ex_live2.mp4','ex_live2.jpg'], sing:['ex_sing.mp4','ex_sing.jpg'], ny:['ex_ny_v6.mp4','ex_ny_v6.jpg']}[k];
-  return `<div class="media pm"><video playsinline preload="none" poster="img/ex/${v[1]}" src="img/ex/${v[0]}" ${k==='live'?'loop':''}></video><button type="button" class="play" data-play aria-label="${t('p_'+k+'_t')}">${PM_IC.play}</button><span class="pm-dur">${PM_IC.play}${PM_D[k]}</span>${pmBar(true)}</div>`;
+  const v = {cartoon:['ex_cartoon.mp4','ex_cartoon.jpg'], clip:['ex_clip.mp4','ex_clip.jpg'], live:['ex_live2.mp4','ex_live2.jpg'], sing:['ex_sing.mp4','ex_sing.jpg'], ny:['ex_ny_v6.mp4','ex_ny_v6.jpg'], pet_live:['ex_pet_live.mp4','ex_pet_live.jpg'], pet_sing:['ex_pet_sing.mp4','ex_pet_sing.jpg']}[k];   /* 29.10 C6a: примеры — ролики пилота PET2 (синтетические фото) */
+  return `<div class="media pm"><video playsinline preload="none" poster="img/ex/${v[1]}" src="img/ex/${v[0]}" ${k==='live'||k==='pet_live'?'loop':''}></video><button type="button" class="play" data-play aria-label="${t('p_'+k+'_t')}">${PM_IC.play}</button><span class="pm-dur">${PM_IC.play}${PM_D[k]}</span>${pmBar(true)}</div>`;
 }
 /* 29.10 HOME4: карточки по макету E. Классы .prod/.body/.pp и кнопка [data-open] прямо в .body — как раньше (комплект, недоступность, ?order=) */
 const H4_AUD = {cartoon:'adult', book:'kids', song:'kids adult', clip:'kids adult', live:'adult', sing:'kids adult', invite:'kids', uzi:'adult', pet_live:'pets', pet_sing:'pets'};
@@ -1089,14 +1103,14 @@ const H4_TYP = {cartoon:'video', book:'books', song:'music', clip:'video', live:
 const H4_IC = {uzi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.5-9-9.5C1.6 8 3.6 4.5 7 4.5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.4 0 5.4 3.5 4 7-2 5-9 9.5-9 9.5z"/><circle cx="12" cy="11.5" r="2.2"/></svg>',
   pet_live:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg>',
   pet_sing:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>'};
-function h4Price(k, p){ return ['ny','song','sing','cartoon'].includes(k) ? money(PRICES[cur][p]) : t('p_from').replace('{p}', money(PRICES[cur][p])); }
+function h4Price(k, p){ return ['ny','song','sing','cartoon','pet_live','pet_sing'].includes(k) ? money(PRICES[cur][p]) : t('p_from').replace('{p}', money(PRICES[cur][p])); }
 function h4Card(k, p){ return `<article class="prod${k==='cartoon' ? ' e-off' : ''}" id="p-${k}" data-k="${k}" data-aud="${H4_AUD[k]||''}" data-type="${H4_TYP[k]||''}">${media(k)}<p class="exc" title="${t('ex_'+k)}">${t('ex_'+k)}</p><div class="body"><div class="e-txt"><h3>${t('p_'+k+'_t')}</h3><p>${t('h4_d_'+k)}</p>${k==='book' ? `<a class="pvlink" href="/preview.html">${t('p_book_pv')}</a>` : ''}<p class="e-eta" data-eta="${k}"></p></div><span class="pp">${h4Price(k, p)}</span><button type="button" class="btn btn-gold" data-open="${k}">${t('p_order')}</button></div></article>`; }
 function h4Extra(){   /* приглашение (как раньше: только при INVITE_LIVE и на русском) и подарки «Скоро» — без цены и без кнопки */
   const soon = k => `<article class="prod e-soon" id="s-${k}" data-k="${k}" data-aud="${H4_AUD[k]}" data-type="${H4_TYP[k]}"><div class="media e-ph" role="img" aria-label="${t('h4_'+k+'_t')}">${H4_IC[k]}<span class="e-tag e-tag-soon">${t('h4_soon_b')}</span></div><div class="body"><div class="e-txt"><h3>${t('h4_'+k+'_t')}</h3><p>${t('h4_d_'+k)}</p></div><span class="e-soonn">${t('h4_soon_n')}</span></div></article>`;
   return `<article class="prod e-inv" id="invite" data-k="invite" data-aud="kids" data-type="hol"${INVITE_LIVE && lang === 'ru' ? '' : ' hidden'}><a class="media" href="/invite.html" tabindex="-1" aria-hidden="true"><img src="img/st_water.jpg" alt="" loading="lazy" width="600" height="600"><span class="e-tag e-tag-new">${t('h4_new')}</span></a><p class="exc">${t('h4_ex_inv')}</p><div class="body"><div class="e-txt"><h3>${t('p_inv_t')}</h3><p>${t('h4_d_inv')}</p><p class="e-eta" data-eta="inv"></p></div><span class="pp">${t('h4_inv_pp')}</span><a class="btn btn-gold e-act" href="/invite.html">${t('h4_inv_btn')}</a></div></article>`
-    + soon('uzi') + soon('pet_live') + soon('pet_sing'); }
+    + soon('uzi') + h4Card('pet_live', 'pet_live') + h4Card('pet_sing', 'pet_sing'); }   /* 29.10 C6a: питомцы — в продаже (было «Скоро») */
 const PM_IC = {play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>', pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>', fs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>', note:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17V5l11-2v12a3 3 0 1 1-2-2.8V6.3L11 7.6V17a3 3 0 1 1-2-2.8z"/></svg>'};
-const PM_D = {cartoon:'0:58', song:'0:38', clip:'0:38', live:'0:08', sing:'0:19', ny:'1:53'};
+const PM_D = {cartoon:'0:58', song:'0:38', clip:'0:38', live:'0:08', sing:'0:19', ny:'1:53', pet_live:'0:05', pet_sing:'0:09'};
 function pmBar(video){ return `<div class="pm-bar"><button type="button" class="pm-pp" aria-label="${t('pm_pause')}">${PM_IC.pause}</button><div class="pm-track" aria-hidden="true"><i></i></div><span class="pm-time">0:00</span>${video ? `<button type="button" class="pm-fs" aria-label="${t('pm_full')}">${PM_IC.fs}</button>` : ''}</div>`; }
 const pmFmt = x => { x = Math.floor(x || 0); return Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0'); };
 
@@ -1122,7 +1136,7 @@ const tE = k => (EMJ[k] ? EMJ[k] + ' ' : '') + t(k);
 function fillStyles(){ const g = document.getElementById('fGenre').value || 'g_kids', st = document.getElementById('fStyle2'); const keep = st.value; st.innerHTML = GENRES[g].map(s => `<option value="${s}">${tE(s)}</option>`).join(''); if (GENRES[g].includes(keep)) st.value = keep; }
 const NSD = {"александр":5,"михаил":4,"максим":4,"артем":3,"иван":2,"дмитрий":2,"матвей":4,"даниил":4,"тимофей":5,"роман":3,"илья":3,"кирилл":3,"андрей":4,"егор":2,"арсений":3,"никита":3,"федор":1,"ярослав":5,"владимир":4,"алексей":5,"константин":8,"мирон":3,"павел":1,"сергей":4,"макар":3,"степан":4,"владислав":7,"георгий":2,"григорий":4,"николай":5,"евгений":3,"денис":3,"захар":3,"савелий":3,"демид":3,"платон":4,"виктор":1,"артур":3,"данил":3,"игорь":0,"антон":3,"вячеслав":6,"руслан":4,"святослав":7,"семен":3,"елисей":4,"олег":2,"юрий":0,"василий":3,"вадим":3,"гордей":4,"борис":3,"станислав":7,"анатолий":4,"филипп":3,"родион":4,"прохор":2,"назар":3,"леонид":4,"дамир":3,"ростислав":7,"тихон":1,"марат":3,"валерий":3,"геннадий":4,"аркадий":3,"анна":0,"мария":3,"ева":0,"виктория":4,"полина":3,"алиса":2,"варвара":4,"василиса":5,"александра":5,"елизавета":6,"ксения":2,"арина":2,"дарья":1,"анастасия":7,"милана":3,"вероника":5,"кира":1,"валерия":3,"екатерина":6,"ульяна":3,"есения":2,"аделина":4,"маргарита":6,"таисия":2,"алена":2,"кристина":5,"ольга":0,"камила":3,"злата":2,"агата":2,"амелия":2,"майя":1,"юлия":0,"диана":2,"наталья":3,"светлана":5,"евгения":3,"вера":1,"надежда":3,"любовь":3,"татьяна":4,"ирина":2,"елена":2,"марина":3,"оксана":3,"мирослава":6,"ярослава":5,"ника":1,"аврора":3,"лидия":1,"ангелина":5,"карина":3,"снежана":4,"алина":2,"яна":0,"инна":0,"галина":3,"валентина":6,"людмила":4,"нина":1,"лариса":3,"алла":0,"зоя":1,"тамара":3,"раиса":2,"саша":1,"миша":1,"тема":1,"ваня":1,"дима":1,"мотя":1,"даня":1,"тима":1,"рома":1,"илюша":2,"кирюша":3,"андрюша":4,"федя":1,"ярик":0,"вова":1,"леша":1,"костя":1,"паша":1,"сережа":3,"стёпа":2,"гоша":1,"гриша":2,"коля":1,"женя":1,"дениска":3,"сава":1,"витя":1,"гарик":1,"антоша":3,"слава":2,"сёма":1,"сева":1,"олежка":2,"юра":0,"петя":1,"вася":1,"вадик":1,"боря":1,"толя":1,"филя":1,"родя":1,"лёня":1,"валера":3,"гена":1,"соня":1,"маша":1,"вика":1,"поля":1,"варя":1,"лиза":1,"ксюша":2,"даша":1,"настя":1,"лера":1,"катя":1,"уля":0,"рита":1,"тая":1,"оля":0,"юля":0,"наташа":3,"света":2,"люба":1,"таня":1,"ира":0,"лена":1,"мира":1,"стеша":2,"геля":1,"снежа":2,"аля":0,"иннуся":3,"галя":1,"валя":1,"люда":1,"лара":1,"зоенька":1,"тома":1,"рая":1,"алихан":4,"айсултан":6,"нурислам":6,"алдияр":4,"амир":2,"алинур":4,"ерасыл":4,"санжар":4,"рамазан":5,"мирас":3,"айбын":3,"нурсултан":7,"ислам":3,"динмухаммед":9,"асылжан":5,"алишер":4,"ибрагим":5,"таир":2,"кайрат":4,"талгат":4,"ерлан":3,"нурлан":4,"аскар":3,"бауыржан":3,"даурен":2,"ержан":3,"мейрам":4,"рустем":4,"самат":3,"болат":3,"жандос":4,"канат":3,"мурат":3,"рашид":3,"азамат":4,"ернар":3,"дастан":4,"куаныш":4,"темирлан":6,"данияр":4,"бекзат":4,"абылай":4,"айдар":3,"тимурлан":6,"асылым":4,"айым":2,"айару":4,"каусар":2,"айзере":5,"аружан":4,"айгуль":3,"ботагоз":5,"гульжан":5,"жулдыз":4,"камшат":4,"меруерт":4,"назгуль":4,"салтанат":6,"шолпан":4,"жанар":3,"каракат":5,"макпал":4,"нургуль":4,"перизат":5,"тогжан":4,"улжан":3,"баян":2,"гаухар":2,"дильназ":5,"еркежан":5,"жансая":5,"инкар":3,"куралай":5,"ляззат":4,"орынгуль":5,"раушан":2,"сымбат":4,"таншолпан":7,"ханшайым":6,"шахназ":4,"амирхан":5,"султан":4,"радмир":4,"ринат":3,"ильдар":4,"рустам":4,"рамиль":3,"азат":2,"ильназ":4,"алмаз":3,"булат":3,"фарид":3,"тагир":3,"ильяс":3,"анвар":3,"ренат":3,"айрат":3,"ильнур":4,"чулпан":4,"лилия":1,"гульназ":5,"айсылу":5,"лейсан":4,"ильсияр":5,"сирануш":5,"гоар":2,"татевик":5,"шушан":3,"ануш":2,"аревик":4,"астхик":4,"вардуи":5,"заруи":4,"кнарик":4,"сатеник":5,"тагуи":4,"тигран":4,"арам":2,"микаэл":4,"даниэль":4,"арман":3,"армен":3,"геворг":3,"левон":3,"ованес":4,"саргис":4,"севак":3,"сурен":3,"тарон":3,"акоп":2,"артак":3,"ашот":2,"баграт":4,"ваагн":2,"вазген":4,"вардан":4,"гарник":4,"гурген":4,"корюн":3,"мхитар":4,"норайр":3,"паруйр":3,"саак":2,"тиран":3,"хорен":3,"шаварш":3};
 let stressAt = -1, stressAuto = false, stressName = '', stressMode = 'ask', stressUnk = false;
-const STRESS_P = ['song','clip','live','sing','ny','cartoon'];       /* 25.10: поющее фото тоже спрашивает ударение (как бот и data-for) */
+const STRESS_P = ['song','clip','live','sing','ny','cartoon','pet_sing'];       /* 25.10: поющее фото тоже спрашивает ударение (как бот и data-for) */
 const stressVar = (ch, i) => ch.slice(0, i + 1).join('') + '́' + ch.slice(i + 1).join('');
 const stressEsc = x => String(x).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderStress(){
@@ -1385,7 +1399,7 @@ function whyBlocked(){
     if (!document.getElementById('fCartP1').files.length) return ['fCartP1', 'Добавьте хотя бы одно фото первого героя (Герой 1) — нажмите «Выбрать фото».'];
     for (const id of ['fCartP1','fCartP2','fCartP3']) { const w = photoWhy(document.getElementById(id).files); if (w) return [id, w]; }
   }
-  const needPh = S.some(k => ['book','clip','live','sing'].includes(k));
+  const needPh = S.some(k => ['book','clip','live','sing','pet_live','pet_sing'].includes(k));
   if (needPh && !fPhotos.files.length) return ['fPhotos', S.includes('sing') ? 'Добавьте одно фото, где хорошо видно лицо, — нажмите «Выбрать фото».' : 'Добавьте хотя бы одно фото, где хорошо видно лицо, — нажмите «Выбрать фото».'];
   { const w = photoWhy(fPhotos.files); if (w) return ['fPhotos', w]; }
   if (typeof invOn === 'function' && invOn()) {
@@ -1426,7 +1440,7 @@ function srvErr(d, status){ if (status === 413) d = 'photo_too_large'; if (/^pho
 let SEND_NOW = false;
 document.getElementById('form').addEventListener('submit', async e => {
   e.preventDefault();
-  const needPh = curSet().some(k => ['book','clip','live','sing'].includes(k));
+  const needPh = curSet().some(k => ['book','clip','live','sing','pet_live','pet_sing'].includes(k));
   const needSt = curSet().some(k => k === 'song' || k === 'sing' || k === 'cartoon') && !document.getElementById('stressRow').hidden && stressAt < 0 && !stressUnk;
   const contact = document.getElementById('fContact').value.trim();
   const consentOk = document.getElementById('fConsent').checked;
@@ -1443,7 +1457,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   fd.append('book_lang', v('fLang')); fd.append('style', v('fStyle') || v('fStyle2'));
   fd.append('family', v('fFamily')); fd.append('dedication', v('fDedic')); fd.append('title', v('fTitle'));
   fd.append('occasion', occValue()); fd.append('occasion_id', v('fOcc')); fd.append('genre', v('fGenre')); fd.append('voice', v('fVoice')); fd.append('mood', v('fMood'));
-  fd.append('length', v('fLen')); fd.append('pet', v('fPet')); fd.append('from_whom', v('fFrom')); fd.append('wish', v('fWish')); fd.append('stress', typeof stressAt !== 'undefined' ? String(stressAt) : ''); fd.append('stress_auto', stressAuto ? '1' : '0'); { const gf = document.querySelector('#fGift input:checked'); fd.append('gift', gf ? gf.value : 'g1'); }
+  fd.append('length', v('fLen')); if (typeof petKind === 'function' && petKind()) fd.append('pet_kind', petKind());   /* 29.10 C6a */ fd.append('pet', v('fPet')); fd.append('from_whom', v('fFrom')); fd.append('wish', v('fWish')); fd.append('stress', typeof stressAt !== 'undefined' ? String(stressAt) : ''); fd.append('stress_auto', stressAuto ? '1' : '0'); { const gf = document.querySelector('#fGift input:checked'); fd.append('gift', gf ? gf.value : 'g1'); }
   fd.append('contact', contact); fd.append('consent', document.getElementById('fConsent').checked ? 'true' : 'false'); fd.append('consent_teen', document.getElementById('teenRow').hidden ? 'n/a' : (document.getElementById('fTeen').checked ? 'true' : 'false')); fd.append('consent_ver', '1.5/26.10.2026'); fd.append('consent_kind', consentKind()); fd.append('site_lang', lang);
   if (needPh || curSet().includes('ny')) [...fPhotos.files].slice(0, photoMax()).forEach(f => fd.append('photos', f, f.name));
   if (curProd === 'cartoon') {   /* 28.10 MULT1: герои, история, стиль, фото по героям (по 3) */
@@ -1529,7 +1543,7 @@ function bundleCalc(items){
 <script>
 /* Конструктор комплекта (без скидок до утверждения Прии/владельца) */
 var BUNDLE=[];
-var KORDER=['book','clip','live','sing','song','ny'];
+var KORDER=['book','clip','live','sing','song','ny','pet_sing','pet_live'];   /* 29.10 C6a: поющий питомец первым — в форме спрашиваем ударение клички */
 function bundleFor(p){ return (BUNDLE.length && BUNDLE.indexOf(p)>=0) ? KORDER.filter(function(k){return BUNDLE.indexOf(k)>=0;}) : [p]; }
 function kPrice(k){ var pk=(PRODS.find(function(x){return x[0]===k;})||[k,k])[1]; return PRICES[cur][pk]; }
 function applyBundle(){
@@ -1847,10 +1861,12 @@ t.addEventListener('input',u);u();})();</script>
    Те же числа — chain.py ETA_MIN (страница оплаты /checkout, страница заказа, чат) и client.py ETA_MIN (бот): меняете здесь — поменяйте и там.
    Комплект делается по очереди: срок = сумма, округлённая вверх до 5 минут; потолок — 2 часа. */
 var TIME1 = (function(){
-  const ETA_MIN = {song:5, inv:2, invkit:2, clip:10, ny:10, book:15, cartoon:15, live:20, sing:35}, ETA_MAX = 120;
+  const ETA_MIN = {song:5, inv:2, invkit:2, clip:10, ny:10, book:15, cartoon:15, live:20, sing:35, pet_live:5, pet_sing:40}, ETA_MAX = 120;   /* 29.10 C6a: питомцы — пилот PET2 (поющий: обычно ~15, в пик до 40) */
   const RU1 = {song:'Песня обычно готова за ~{m}.', clip:'Клип обычно готов за ~{m}.', live:'«Живые фото» обычно готовы за ~{m}.', sing:'«Поющее фото» обычно готово за ~{m}.',
     book:'Книга обычно готова за ~{m}.', ny:'Поздравление Деда Мороза обычно готово за ~{m}.', inv:'Приглашение обычно готово за ~{m}.', invkit:'Набор приглашений обычно готов за ~{m}.',
-    cartoon:'Мультфильм обычно готов за ~{m}.'};
+    cartoon:'Мультфильм обычно готов за ~{m}.', pet_live:'«Живое фото питомца» обычно готово за ~{m}, затем мы вручную проверяем качество.',
+    pet_sing:'«Поющий питомец» обычно готов за ~15 минут, в часы пик — до 40 минут; затем мы вручную проверяем качество.'};
+  const EN1 = {pet_live:'Usually ready in about 5 minutes, then we check the quality by hand.', pet_sing:'Usually ready in about 15 minutes, up to 40 minutes at peak times; then we check the quality by hand.'};
   const TX = {
     ru:{one:'', many:'Все подарки вместе — до 2 часов, обычно до {m}.', many90:'Все подарки вместе — до 2 часов, обычно до полутора часов.', many60:'Все подарки вместе — до 2 часов, обычно до часа.', manyMax:'Все подарки вместе — до 2 часов.', none:'Обычно — от нескольких минут до 2 часов, в зависимости от подарка.'},
     en:{one:'Usually ready in about {m}.', many:'All the gifts together take up to 2 hours — usually no more than {m}.', many90:'All the gifts together take up to 2 hours — usually no more than an hour and a half.', many60:'All the gifts together take up to 2 hours — usually no more than an hour.', manyMax:'All the gifts together take up to 2 hours.', none:'Usually from a few minutes to 2 hours, depending on the gift.'},
@@ -1868,7 +1884,7 @@ var TIME1 = (function(){
     return Math.min(ETA_MAX, Math.ceil(ks.reduce((a, k) => a + ETA_MIN[k], 0) / 5) * 5); }
   function text(keys, L){ L = L || (typeof lang !== 'undefined' ? lang : 'ru'); const X = TX[L] || TX.en; const ks = (keys || []).filter(k => ETA_MIN[k]);
     if (!ks.length) return X.none;
-    if (ks.length === 1) return (L === 'ru' ? RU1[ks[0]] : X.one).replace('{m}', mins(ETA_MIN[ks[0]], L, false));
+    if (ks.length === 1) return (L === 'ru' ? RU1[ks[0]] : (L === 'en' && EN1[ks[0]]) ? EN1[ks[0]] : X.one).replace('{m}', mins(ETA_MIN[ks[0]], L, false));
     const m = total(ks); if (m > 90) return X.manyMax; if (m > 60) return X.many90; if (m === 60) return X.many60;
     return X.many.replace('{m}', mins(m, L, true)); }
   function payAfter(keys){ return t('pay_after').replace('{eta}', text(keys)); }
@@ -1986,7 +2002,7 @@ var PAYUX = (function(){
   const EM_RE = /^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$/;          /* = chain.py /api/pay */
   const TG_RE = /^@?[A-Za-z0-9_]{5,32}$/;                              /* = checkout_page.html */
   const RS_OK = {friend:1, promo_ok:1, own_better:1, owner:1}, RS_BAD = {new_only:1, inactive:1, not_found:1, own_code:1, used:1, bound_other:1, expired_own:1, expired:1, not_for_product:1};
-  const RUB = {cartoon:5990, book:990, song:490, clip:790, live:1990, sing:1490, ny:490, inv:290, invkit:590};   /* = chain.py PRICE (только для строки «было …»; цену считает сервер) */
+  const RUB = {cartoon:5990, book:990, song:490, clip:790, live:1990, sing:1490, ny:490, inv:290, invkit:590, pet_live:390, pet_sing:590};   /* = chain.py PRICE (только для строки «было …»; цену считает сервер) */
   const S = {tok:'', keys:[], sig:'', last:null, base:null, q:0, busy:false, timer:0, w:null};   /* w — ответ /api/wallet/offer (С4) */
   const CRED = {credentials:'include'};   /* С4: cookie кабинета ru.api (тот же сайт talemir.com) — бонусы/пакет/карта вошедшего клиента */
   function fmtN(n){ return fmt(n).replace(/ ₽$/, '\u00a0₽'); }   /* С4: «350 ₽» не разрывается на две строки */
@@ -2210,6 +2226,176 @@ var PAYUX = (function(){
   } catch(e){}
   window.H4 = {state: S, sync: sync, filter: filter};   /* для проверки в консоли */
   sync(); try { syncCartHero(); } catch(e){}
+})();
+</script>
+<style>
+/* 29.10 C6a: подарки питомцам — вид питомца, требования к фото, предпросмотр */
+.petkind{display:flex;flex-wrap:wrap;gap:8px}
+.petkind label{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600;min-height:44px;background:var(--card);color:var(--ink)}
+.petkind label:has(input:checked){border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,var(--card))}
+.petkind input{width:20px;height:20px;margin:0;flex:none}
+.petwhy{margin:8px 0 0;padding:10px 12px;border-radius:10px;background:#fff4e0;color:#6b4a00;font-size:14px;line-height:1.45}
+.petwhy[hidden],.petpv[hidden],.petmc[hidden]{display:none}
+.petcheck{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:color-mix(in srgb,var(--gold) 6%,var(--card))}
+.petcheck ul{margin:6px 0 0;padding-left:20px;display:grid;gap:4px;font-size:14px;line-height:1.45}
+.petmc{margin:8px 0 0 !important;font-size:13.5px}
+.petpv{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:start;margin-top:10px}
+.petpv img{width:110px;height:110px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--paper)}
+.petpv p{margin:0 0 6px;font-size:14px;line-height:1.45}
+.petpv .ok{color:#2e7d4f;font-weight:600}.petpv .warn{color:#8a5a00;font-weight:600}
+@media (prefers-color-scheme: dark){.petpv .ok{color:#7fd3a0}.petpv .warn{color:#f0c674}}
+@media (max-width:380px){.petpv{grid-template-columns:84px 1fr}.petpv img{width:84px;height:84px}}
+.petrm{margin-top:4px;padding:6px 12px;min-height:0;font-size:14px}
+.pet-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:min(92vw,520px);background:#2a1a4a;color:#fff;padding:14px 18px;border-radius:14px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.25);font-size:15px;line-height:1.4}
+</style>
+<script>
+/* 29.10 C6a (София — продукт, Арман — сайт, Елена — тексты, Айрис — QA): подарки питомцам — «Живое фото питомца» 390 ₽ и «Поющий питомец» 590 ₽.
+   Только кошки и собаки (пилот PET2: другие животные — брак), 1 фото, отдельным заказом: детские подарки и подарки питомцам в одну корзину не кладём,
+   причину показываем сразу (правило №140). Та же форма, «Ваш заказ», оплата в одном окне (PAYUX1); сервер проверяет то же (site_api: pet_mix/pet_kind/photo_count). */
+(function(){
+  var PK = ['pet_live', 'pet_sing'];
+  function isPet(k){ return PK.indexOf(k) >= 0; }
+  function $(id){ return document.getElementById(id); }
+  window.petSet = function(){ try { return curSet().some(isPet); } catch(_) { return isPet(curProd); } };
+  window.petKind = function(){ var r = document.querySelector('#fPetKind input:checked'); return r ? r.value : ''; };
+  function sing(){ try { return curSet().indexOf('pet_sing') >= 0; } catch(_) { return curProd === 'pet_sing'; } }
+
+  Object.assign(I18N.ru, {p_pet_live_t:'Живое фото питомца', p_pet_sing_t:'Поющий питомец', c_pet_live:'Живое фото питомца', c_pet_sing:'Поющий питомец',
+    ex_pet_live:'Пример: живое фото корги — дыхание, моргание, ушки', ex_pet_sing:'Пример: кот Барсик поёт песню со своей кличкой',
+    h4_g_pets:'Подарки питомцам', h4_g_sub_pets:'Оба подарка вместе — скидка 10%', h4_eta_ps:'Обычно ~15 минут, в пик до 40',
+    pk_l:'Кто на фото', pk_cat:'Кошка / кот', pk_dog:'Собака', pk_other:'Другое животное', pk_err:'Выберите, кто на фото: кошка или собака.',
+    pk_other_why:'Пока мы оживляем только кошек и собак: на других животных (кролики, птицы, грызуны) нейросеть в нашем тесте ошибалась — появлялись лишние детали, смазывались крылья. Как только научимся — добавим. Если на фото кошка или собака — выберите её выше.',
+    f_pet_name:'Кличка питомца', ph_pet_name:'Например: Барсик', h_pet_name:'Так кличка прозвучит в песне — ниже уточним ударение.', h_pet_name_l:'Кличка — для названия ролика.',
+    f_stress_l_pet:'Ударение в кличке', f_photos_pet:'Фото питомца — 1 снимок', h_photos_pet:'Требования к фото — в списке выше. После выбора покажем фото и подскажем, подходит ли оно.',
+    pc_h:'Каким должно быть фото', pc_1:'Кошка или собака; морда видна целиком, глаза открыты.', pc_2:'Дневной свет или яркая лампа; тёмный питомец — на светлом фоне.',
+    pc_3:'Питомец целиком в кадре, хвост не обрезан краем; без поводка и посторонних людей.',
+    pc_4:'Для «Поющего питомца»: один питомец, морда крупно (голова и плечи), рот не закрыт игрушкой или рукой. Тёмную морду мы осветлим сами.',
+    pc_4b:'Для «Живого фото»: можно двух питомцев или руку хозяина в кадре.', pc_5:'Чёткое фото без фильтров и масок, от 1000 пикселей по короткой стороне.',
+    pc_mc:'🐈 Мейн-кун или другая порода с кисточками на ушах? Кисточки могут двигаться неестественно — такие ролики мы проверяем особенно внимательно.',
+    pv_ok:'✓ Фото {w}×{h} — подходит по размеру и свету. Остальное проверим перед созданием ролика.',
+    pv_small:'Фото небольшое ({w}×{h}): лучше от 1000 пикселей по короткой стороне — иначе ролик может выйти нечётким.',
+    pv_dark_sing:'Фото тёмное — для «Поющего питомца» мы осветлим его автоматически. Лучше всего — снимок при дневном свете.',
+    pv_dark_live:'Фото тёмное — лучше снимок при дневном свете: так ролик получится живее.', pv_rm:'✕ Убрать фото', pv_na:'Предпросмотр недоступен для этого формата (например, HEIC) — фото проверим на сервере.',
+    pet_name_err:'Укажите кличку питомца — так она прозвучит в песне.', pet_name_err_l:'Укажите кличку питомца.', pet_name_long:'Кличка — не длиннее 40 знаков.',
+    pet_photo_err:'Добавьте одно фото питомца — нажмите «Выбрать фото».', pet_photo_cnt:'Для подарка питомцу нужно ровно одно фото и отметка согласия.',
+    pet_mix:'Подарки для питомцев оформляются отдельным заказом. Сначала оформите выбранные подарки или уберите их из корзины — и добавьте подарок питомцу.',
+    pet_mix2:'В корзине подарок для питомца — он оформляется отдельным заказом. Сначала оформите его или уберите из корзины.',
+    f_consent_p:'Подтверждаю, что имею право использовать это фото питомца (снял(а) сам(а) или с разрешения автора), а если на фото есть человек (например, рука) — с его согласия, и даю согласие на обработку моих данных для выполнения заказа',
+    pay_pet:'Питомец:'});
+  Object.assign(I18N.en, {p_pet_live_t:'Living pet photo', p_pet_sing_t:'Singing pet', c_pet_live:'Living pet photo', c_pet_sing:'Singing pet',
+    ex_pet_live:'Example: a living photo of a corgi — breathing, blinking, ears', ex_pet_sing:'Example: Barsik the cat sings a song with his name',
+    h4_g_pets:'Gifts for pets', h4_g_sub_pets:'Both gifts together — 10% off', h4_eta_ps:'Usually ~15 min, up to 40 at peak',
+    pk_l:'Who is in the photo', pk_cat:'Cat', pk_dog:'Dog', pk_other:'Another animal', pk_err:'Choose who is in the photo: a cat or a dog.',
+    pk_other_why:'For now we animate only cats and dogs: with other animals (rabbits, birds, rodents) the AI made mistakes in our test — extra details, blurred wings. We will add them as soon as it works well. If it is a cat or a dog, choose it above.',
+    f_pet_name:'Pet’s name', ph_pet_name:'For example: Barsik', h_pet_name:'This is how the name will sound in the song — we will check the stress below.', h_pet_name_l:'The name is used for the video title.',
+    f_stress_l_pet:'Stress in the pet’s name', f_photos_pet:'Pet photo — 1 picture', h_photos_pet:'Photo requirements are listed above. After you choose a photo, we will show it and tell you if it fits.',
+    pc_h:'What the photo should be like', pc_1:'A cat or a dog; the whole face is visible, eyes open.', pc_2:'Daylight or a bright lamp; a dark pet on a light background.',
+    pc_3:'The whole pet is in the frame, the tail is not cut off; no leash and no other people.',
+    pc_4:'For the Singing pet: one pet, face close-up (head and shoulders), the mouth not covered by a toy or a hand. We brighten a dark face ourselves.',
+    pc_4b:'For the Living photo: two pets or the owner’s hand in the frame are fine.', pc_5:'A sharp photo without filters or masks, at least 1000 pixels on the short side.',
+    pc_mc:'🐈 A Maine Coon or another breed with ear tufts? The tufts may move unnaturally — we check such videos especially carefully.',
+    pv_ok:'✓ Photo {w}×{h} — the size and light are fine. We will check the rest before making the video.',
+    pv_small:'The photo is small ({w}×{h}): at least 1000 pixels on the short side is better — otherwise the video may look blurry.',
+    pv_dark_sing:'The photo is dark — for the Singing pet we will brighten it automatically. A daylight photo works best.',
+    pv_dark_live:'The photo is dark — a daylight photo will make the video livelier.', pv_rm:'✕ Remove photo', pv_na:'No preview for this format (e.g. HEIC) — we will check the photo on the server.',
+    pet_name_err:'Enter your pet’s name — it will sound in the song.', pet_name_err_l:'Enter your pet’s name.', pet_name_long:'The name can be up to 40 characters.',
+    pet_photo_err:'Add one photo of your pet — tap “Choose photo”.', pet_photo_cnt:'A pet gift needs exactly one photo and the consent tick.',
+    pet_mix:'Gifts for pets are ordered separately. Please place your current order first or remove those gifts from the cart — then add the pet gift.',
+    pet_mix2:'There is a pet gift in the cart — it is ordered separately. Please place it first or remove it from the cart.',
+    f_consent_p:'I confirm that I have the right to use this photo of my pet (I took it myself or with the author’s permission), and if a person is in the photo (for example, a hand) — with their consent, and I consent to the processing of my data to fulfil the order',
+    pay_pet:'Pet:'});
+  ['kk','hy','ar'].forEach(function(l){ if (I18N[l]) I18N[l].h4_g_pets = I18N.en.h4_g_pets; });   /* языки выключены (LANGS_ON), но без «скоро» */
+  try { Object.assign(MODTX.ru, {nopet:'На фото №{n} не видно кошки или собаки. Для этого подарка нужно фото вашего питомца, где хорошо видна морда.',
+    notcatdog:'На фото №{n}, похоже, не кошка и не собака. Пока мы оживляем только кошек и собак: на других животных нейросеть в нашем тесте ошибалась.',
+    manypets:'На фото №{n} несколько питомцев. Для «Поющего питомца» нужен один питомец, морда крупным планом.'});
+    Object.assign(MODTX.en, {nopet:'Photo #{n} shows no cat or dog. This gift needs a photo of your pet with its face clearly visible.',
+    notcatdog:'Photo #{n} does not seem to show a cat or a dog. For now we animate only cats and dogs: with other animals the AI made mistakes in our test.',
+    manypets:'Photo #{n} shows several pets. The Singing pet needs one pet, face close-up.'}); } catch(_){}
+  try { Object.assign(SRV_ERR, {pet_kind:['fPetKind', I18N.ru.pk_err], pet_mix:['fProd', I18N.ru.pet_mix], pet_name:['fName', I18N.ru.pet_name_long]}); } catch(_){}
+  try { EMJ.p_pet_live_t = '🐾'; EMJ.p_pet_sing_t = '🎤'; } catch(_){}
+
+  function toast(msg){ var d = $('petToast'); if (!d){ d = document.createElement('div'); d.id = 'petToast'; d.className = 'pet-toast'; d.setAttribute('role', 'alert'); document.body.appendChild(d); }
+    d.textContent = msg; d.hidden = false; clearTimeout(d._t); d._t = setTimeout(function(){ d.hidden = true; }, 9000); }
+  /* корзина: питомцы и детские подарки — разными заказами (причина сразу, №140) */
+  window.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('#prods .body > [data-open], #dmAdd'); if (!b || typeof BUNDLE === 'undefined') return;
+    var k = b.id === 'dmAdd' ? 'ny' : b.dataset.open; if (!k || k === 'cartoon' || BUNDLE.indexOf(k) >= 0) return;   /* убрать из корзины можно всегда */
+    var hasPet = BUNDLE.some(isPet), hasKid = BUNDLE.some(function(x){ return !isPet(x) && x !== 'inv' && x !== 'invkit'; });
+    if ((isPet(k) && hasKid) || (!isPet(k) && hasPet)) { e.preventDefault(); e.stopImmediatePropagation(); toast(t(isPet(k) ? 'pet_mix' : 'pet_mix2')); }
+  }, true);
+
+  function prodOpts(){ var fp = $('fProd'); if (!fp) return; var pet = isPet(curProd);
+    var want = PRODS.filter(function(x){ return isPet(x[0]) === pet && (x[0] !== 'cartoon' || cartOn() || curProd === 'cartoon'); }).map(function(x){ return x[0]; });
+    if ([].map.call(fp.options, function(o){ return o.value; }).join() !== want.join()) fp.innerHTML = want.map(function(k){ return '<option value="' + k + '">' + tE('p_' + k + '_t') + '</option>'; }).join('');
+    fp.value = curProd; }
+  function setI(el, key){ if (!el) return; el.dataset.i = key; el.textContent = t(key); }
+  function mcSync(){ var m = $('petMc'); if (m) m.hidden = petKind() === 'dog'; var w = $('fPetWhy'); if (w) w.hidden = petKind() !== 'other'; }
+  var pvURL = null;
+  function petPv(){ var box = $('petPv'); if (!box) return; var pet = petSet(), f = pet && typeof PHOTOS !== 'undefined' && PHOTOS[0];
+    ['thumbs', 'fSel'].forEach(function(id){ var el = $(id); if (el) el.hidden = pet; });   /* у питомца одно фото — крупный предпросмотр вместо миниатюры */
+    if (!f) { box.hidden = true; return; }
+    if (pvURL) { try { URL.revokeObjectURL(pvURL); } catch(_){} } pvURL = URL.createObjectURL(f);
+    var im = $('petPvImg'), note = $('petPvNote'); box.hidden = false; note.textContent = '…';
+    im.onload = function(){ var w = im.naturalWidth, h = im.naturalHeight, msgs = [], dark = false;
+      try { var c = document.createElement('canvas'), W = 64, H = Math.max(2, Math.round(64 * h / w)); c.width = W; c.height = H; var x = c.getContext('2d'); x.drawImage(im, 0, 0, W, H);
+        var d = x.getImageData(Math.round(W * .25), Math.round(H * .15), Math.max(1, Math.round(W * .5)), Math.max(1, Math.round(H * .5))).data, s = 0;
+        for (var i = 0; i < d.length; i += 4) s += .299 * d[i] + .587 * d[i + 1] + .114 * d[i + 2];
+        dark = s / (d.length / 4) < 75; } catch(_){}                       /* та же область и порог, что на сервере (app/pets.py: DARK_Y = 75) */
+      if (Math.min(w, h) < 1000) msgs.push(['warn', t('pv_small').replace('{w}', w).replace('{h}', h)]);
+      if (dark) msgs.push(['warn', t(sing() ? 'pv_dark_sing' : 'pv_dark_live')]);
+      if (!msgs.length) msgs.push(['ok', t('pv_ok').replace('{w}', w).replace('{h}', h)]);
+      note.textContent = ''; msgs.forEach(function(m){ var p = document.createElement('p'); p.className = m[0]; p.textContent = m[1]; note.appendChild(p); }); };
+    im.onerror = function(){ note.textContent = t('pv_na'); };
+    im.alt = t('f_photos_pet'); im.src = pvURL; }
+
+  var _sf = syncForm; syncForm = function(){
+    prodOpts();
+    var r = _sf.apply(this, arguments);
+    var pet = petSet(), nm = $('fName'), nh = nm && nm.parentElement.querySelector('.hint[data-i]');
+    if (pet) {
+      setI($('fNameL'), 'f_pet_name'); if (nh) setI(nh, sing() ? 'h_pet_name' : 'h_pet_name_l');
+      if (nm) { nm.dataset.ph = 'ph_pet_name'; nm.placeholder = t('ph_pet_name'); }
+      var pl = $('fPhotosL'); setI(pl, 'f_photos_pet'); var ph = pl && pl.parentElement.querySelector('.hint[data-i]'); if (ph) setI(ph, 'h_photos_pet');
+      setI($('fLangL'), 'f_lang_song'); setI($('fStressL'), 'f_stress_l_pet'); setI($('pcSing'), sing() ? 'pc_4' : 'pc_4b');
+      var ct = $('fConsentT'); setI(ct, 'f_consent_p');
+      var g = $('fGenre'); if (g && g.parentElement) g.parentElement.hidden = true;     /* cartMusicSync открывает жанр — у питомцев песня детская (как в пилоте) */
+    } else {
+      if (nh && /^h_pet/.test(nh.dataset.i || '')) setI(nh, 'h_name');
+      if (nm && nm.dataset.ph === 'ph_pet_name') { nm.dataset.ph = 'ph_name'; nm.placeholder = t('ph_name'); }
+      var sl = $('fStressL'); if (sl && sl.dataset.i === 'f_stress_l_pet') setI(sl, 'f_stress_l');
+    }
+    mcSync(); petPv();
+    return r; };
+  var _pm = photoMax; photoMax = function(){ return petSet() ? 1 : _pm.apply(this, arguments); };
+  var _ck = consentKind; consentKind = function(){ return petSet() ? 'pet' : _ck.apply(this, arguments); };
+  var _wb = whyBlocked; whyBlocked = function(){
+    if (!petSet()) return _wb.apply(this, arguments);
+    var k = petKind(); if (!k) return ['fPetKind', t('pk_err')]; if (k === 'other') return ['fPetKind', t('pk_other_why')];
+    var n = ($('fName').value || '').trim(); if (!n) return ['fName', t(sing() ? 'pet_name_err' : 'pet_name_err_l')]; if (n.length > 40) return ['fName', t('pet_name_long')];
+    var sr = $('stressRow'); if (sing() && sr && !sr.hidden && stressAt < 0 && !stressUnk) return ['fStress', t('f_stress')];
+    if (!fPhotos.files.length) return ['fPhotos', t('pet_photo_err')];
+    return _wb.apply(this, arguments); };
+  var _se = srvErr; srvErr = function(d, status){ if (petSet() && (d === 'photo_count' || d === 'pet_kind' || d === 'pet_mix')) {
+      fieldErr(d === 'photo_count' ? 'fPhotos' : d === 'pet_kind' ? 'fPetKind' : 'fProd', t(d === 'photo_count' ? 'pet_photo_cnt' : d === 'pet_kind' ? 'pk_err' : 'pet_mix')); return; }
+    return _se.apply(this, arguments); };
+  var _sp = syncPhotos; syncPhotos = function(){ var r = _sp.apply(this, arguments);
+    if (petSet()) { var pb = document.querySelector('label.filebtn[for="fPhotos"]'); if (pb) pb.hidden = PHOTOS.length >= 1; }
+    petPv(); return r; };
+  document.addEventListener('click', function(e){ if (e.target && e.target.id === 'petPvRm') { PHOTOS = []; syncPhotos(); var pb = document.querySelector('label.filebtn[for="fPhotos"]'); if (pb) try { pb.focus(); } catch(_){} } });
+  /* корзина только с подарками питомцам: цены фиксированные — итог без «от» */
+  function fixFrom(){ if (typeof BUNDLE === 'undefined' || !BUNDLE.length || !BUNDLE.every(isPet)) return;
+    var bc = bundleCalc(KORDER.filter(function(k){ return BUNDLE.indexOf(k) >= 0; })), tot = money(bc.total), old = bc.total < bc.full ? money(bc.full) : '';
+    var ks = $('kSum'); if (ks) ks.innerHTML = (old ? '<s style="opacity:.6;font-weight:600;font-size:.85em">' + old + '</s> ' : '') + tot;
+    var es = $('eBagSum'); if (es) es.innerHTML = (old ? '<s>' + old + '</s> ' : '') + '<strong>' + tot + '</strong>'; }
+  var _ab = applyBundle; applyBundle = function(){ var r = _ab.apply(this, arguments); fixFrom(); return r; };
+  document.addEventListener('change', function(e){ if (e.target && e.target.name === 'petkind') { mcSync(); var row = $('petKindRow'); if (row) row.querySelectorAll('.ferr').forEach(function(x){ x.remove(); }); } });
+  function subSync(){ var el = document.querySelector('[data-i="h4_g_sub"], [data-i="h4_g_sub_pets"]'); if (!el || !window.H4) return;
+    var k = H4.state.aud === 'pets' ? 'h4_g_sub_pets' : 'h4_g_sub'; if (el.dataset.i !== k || el.textContent !== t(k)) setI(el, k); }
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('#eAud [data-aud], #eShowAll')) subSync(); });
+  var _r = render; render = function(){ var r = _r.apply(this, arguments); subSync(); var e = document.querySelector('#prods [data-eta="pet_sing"]'); if (e) { e.textContent = '⏱ ' + t('h4_eta_ps'); e.title = TIME1.text(['pet_sing']); } return r; };
+  if (window.PAYUX) { var _af = PAYUX.after; PAYUX.after = function(tok, keys){ var r = _af.apply(this, arguments);
+    try { var lab = document.querySelector('#payHeroRow [data-i]'); if (lab) lab.textContent = t((keys || []).some(isPet) ? 'pay_pet' : 'pay_hero'); } catch(_){} return r; }; }
+  render();
 })();
 </script>
 </body>
