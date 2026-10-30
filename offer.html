@@ -334,5 +334,7 @@ header.site .brand{color:#EDB250}
     <p>© 2026 Talemir. ИП Селезнева Светлана Тюговна, ИНН 231703925221</p>
   </div>
 </footer>
+<!-- MASCOT1: мультяшки (Амелия). Грузится только после load + idle; уважает prefers-reduced-motion. -->
+<script>(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}function go(){var s=document.createElement('script');s.src='mascot/mascot.js?v=2';s.setAttribute('data-set','family');s.async=true;document.body.appendChild(s)}function idle(){(window.requestIdleCallback||function(f){setTimeout(f,1200)})(go,{timeout:5000})}if(document.readyState==='complete')idle();else addEventListener('load',idle)})();</script>
 </body>
 </html>
