@@ -119,6 +119,36 @@ input::placeholder{color:#857a9a}
 .pick img{width:84px;height:104px;object-fit:cover;border-radius:12px;background:var(--card2)}
 .upl{display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--line);border-radius:14px;padding:16px;font-weight:800;color:var(--muted);min-height:56px;width:100%}
 .tips{font-size:13px;color:var(--muted);margin-top:8px}
+/* PS2 30.10: зона загрузки фото — перетаскивание, несколько фото, превью с удалением */
+.dz{border:2px dashed var(--line);border-radius:16px;padding:10px;transition:border-color .15s,background-color .15s,box-shadow .15s}
+.dz.drag{border-color:var(--gold);background:rgba(237,178,80,.10);box-shadow:0 0 0 4px rgba(237,178,80,.18)}
+.dz .upl{border:0;flex-direction:column;min-height:132px;padding:18px 12px;gap:6px;color:var(--ink)}
+.dz .upl .ic{font-size:30px;line-height:1}
+.dz .upl small{font-weight:600;font-size:13px;color:var(--muted);line-height:1.35;max-width:280px}
+.dz.drag .upl small{color:var(--gold)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.th{position:relative;aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:var(--card2);margin:0;cursor:pointer}
+.th img{width:100%;height:100%;object-fit:cover}
+.th.main{box-shadow:0 0 0 2px var(--gold) inset}
+.th.main img{border-radius:12px;padding:2px}
+.th .mk{position:absolute;left:4px;bottom:4px;background:var(--gold);color:var(--gold-ink);font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px}
+.th .rm{position:absolute;right:4px;top:4px;width:32px;height:32px;border-radius:50%;background:rgba(20,16,29,.88);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.th.add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px dashed var(--line);color:var(--muted);font-weight:800;font-size:12px;line-height:1.25;text-align:center;padding:6px;background:transparent}
+.th.add .ic{font-size:26px;line-height:1;color:var(--gold)}
+.dzn{margin-top:8px}
+/* PS2 30.10: значок «Подарок готовится» над нижним меню (как на сайте) */
+.gbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 12px + var(--sab));z-index:30;display:flex;align-items:center;gap:10px;width:max-content;max-width:min(528px,calc(100% - 32px));background:linear-gradient(135deg,#2E1F4F,#231839);border:1px solid var(--gold);color:var(--ink);border-radius:999px;padding:9px 18px 9px 14px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.45);font-size:15px;line-height:1.2}
+.gbar b{display:block;font-weight:800}
+.gbar small{display:block;font-weight:600;color:var(--muted);font-size:12px;margin-top:2px}
+.gbar .gi{font-size:22px;flex:0 0 auto;animation:gb 1.6s ease-in-out infinite}
+.gbar .dd::after{content:"";display:inline-block;width:1.2em;text-align:left;animation:gd 1.5s steps(4,end) infinite}
+.gbar.ready{background:#1f7a4d;border-color:#7FD1A1}
+.gbar.ready small{color:#d6f5e3}
+.gbar.ready .gi{animation:none}
+@keyframes gb{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes gd{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+body.has-gbar .app{padding-bottom:calc(var(--nav-h) + 96px + var(--sab))}
+body.has-gbar .toast{bottom:calc(var(--nav-h) + 80px + var(--sab))}
 .tips b{color:var(--ok)}
 .tips i{color:var(--bad);font-style:normal;font-weight:700}
 .msg{border-radius:12px;padding:10px 12px;font-size:14px;margin-top:10px}
@@ -219,7 +249,7 @@ input::placeholder{color:#857a9a}
     <div class="card">
       <h3 data-i="o_photo">1. Фото</h3>
       <div id="oPick" style="margin-top:10px"></div>
-      <input type="file" id="oFile" accept="image/*" hidden>
+      <input type="file" id="oFile" accept="image/*,.heic,.heif" multiple hidden>
       <div class="tips" id="oTips"></div>
       <div id="oRoyal" hidden><label class="f" data-i="o_royal">Кем будет ребёнок?</label><div class="seg" id="oRoyalSeg"><button type="button" data-g="f" aria-pressed="true" data-i="o_princess">Принцесса</button><button type="button" data-g="m" aria-pressed="false" data-i="o_prince">Принц</button></div></div>
     </div>
@@ -304,6 +334,7 @@ input::placeholder{color:#857a9a}
   <button type="button" data-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span data-i="n_profile">Профиль</span></button>
 </div></nav>
 <div class="toast" id="toast" hidden role="status"></div>
+<a class="gbar" id="gBar" hidden href="#" aria-live="polite"></a><!-- PS2 30.10: «Подарок готовится» -->
 
 <script>
 (function(){
@@ -355,7 +386,7 @@ var I = {ru:{
  pp_ok:"Это моё фото (или фото человека, который согласен). Согласен(на) на хранение в Фотопрофиле Talemir в России до 90 дней с последнего использования.", pp_ask_login:"Фотопрофиль доступен, когда Talemir открыт из Telegram.",
  bon_h:"Бонусные рубли", bon_bal:"Баланс", bon_note:"Бонусами можно оплатить часть подарка на странице оплаты.",
  ref_h:"Приведи друга", ref_txt:"Друг получает скидку {d}%, а вы — подарки за его покупки.", ref_share:"Поделиться ссылкой", ref_copy:"Скопировать", ref_copied:"Ссылка скопирована", ref_login:"Ссылка появится, когда Talemir открыт из Telegram.",
- more_h:"Ещё", ln_help:"💬 Поддержка", ln_offer:"📄 Оферта", ln_priv:"🔒 Конфиденциальность", ln_site:"🌐 Сайт talemir.com",
+ more_h:"Ещё", ln_help:"💬 Поддержка", ln_help_go:"Открываем чат поддержки… Можно и на почту support@talemir.com", ln_offer:"📄 Оферта", ln_priv:"🔒 Конфиденциальность", ln_site:"🌐 Сайт talemir.com",
  n_home:"Главная", n_photo:"Фотосессии", n_orders:"Заказы", n_profile:"Профиль",
  plus_txt:"Подписка на кредиты: 1 кредит = 1 фотосессия (6 фото). Кредиты не сгорают, неиспользованные — возвращаем деньгами по заявлению.", plus_buy:"Оформить · {p}", plus_intro:"Первым −50% на первый период — без таймеров и уловок.", plus_renew:"Продление — по напоминанию в один клик. Автосписаний нет.", plus_terms:"Условия — в оферте, раздел «Talemir Plus».", plus_ok:"Согласен(на) с условиями Talemir Plus",
  share_text:"Talemir — подарки, в которых живёт любовь 💛"},
@@ -396,11 +427,22 @@ en:{
  pp_ok:"This is my photo (or the person agreed). I agree to keep it in the Talemir Photo Profile in Russia for up to 90 days after last use.", pp_ask_login:"The Photo Profile works when Talemir is opened from Telegram.",
  bon_h:"Bonus roubles", bon_bal:"Balance", bon_note:"Bonuses can pay part of a gift on the payment page.",
  ref_h:"Invite a friend", ref_txt:"Your friend gets {d}% off, and you get rewards for their purchases.", ref_share:"Share the link", ref_copy:"Copy", ref_copied:"Link copied", ref_login:"The link appears when Talemir is opened from Telegram.",
- more_h:"More", ln_help:"💬 Support", ln_offer:"📄 Terms", ln_priv:"🔒 Privacy", ln_site:"🌐 Website talemir.com",
+ more_h:"More", ln_help:"💬 Support", ln_help_go:"Opening the support chat… Or e-mail support@talemir.com", ln_offer:"📄 Terms", ln_priv:"🔒 Privacy", ln_site:"🌐 Website talemir.com",
  n_home:"Home", n_photo:"Photo", n_orders:"Orders", n_profile:"Profile",
  plus_txt:"Credit plan: 1 credit = 1 photo session (6 photos). Credits never expire; unused credits are refunded on request.", plus_buy:"Get it · {p}", plus_intro:"First period −50% for new customers — no timers, no tricks.", plus_renew:"Renewal by a one-click reminder. No automatic charges.", plus_terms:"Terms: see the offer, section “Talemir Plus”.", plus_ok:"I agree to the Talemir Plus terms",
  share_text:"Talemir — gifts full of love 💛"}};
 var lang = "ru";
+/* PS2 30.10: тексты загрузки нескольких фото и значка «Подарок готовится» */
+Object.assign(I.ru, {o_drop:"Перетащите фото сюда или нажмите, чтобы выбрать", o_drop_many:"Перетащите фото сюда или нажмите — можно сразу несколько (до {m})",
+ o_add:"Добавить ещё", o_main:"главное", o_rm:"Удалить фото", o_ph_n:"Фото {n}", o_cnt:"Загружено {n} из {m}. Главное фото — первое; нажмите на другое, чтобы сделать его главным. Больше ракурсов — выше сходство.",
+ o_one:"Нажмите «Заменить» или перетащите другое фото сюда.", e_ph_type:"«{f}» — не фото. Подойдут JPG, PNG, HEIC или WEBP.", e_ph_big:"«{f}» больше 15 МБ — пришлите файл поменьше.",
+ e_ph_max:"Можно не больше {m} фото — лишние не добавлены.", e_ph_count:"Сейчас можно отправить не больше {m} фото — уберите лишние.", e_ph_num:"Фото {n}: ",
+ gw_work:"Подарок готовится", gw_ready:"Подарок готов — открыть", gw_num:"Заказ №{n} · нажмите, чтобы открыть", gw_q:"Заказ №{n} · проверяем качество", gw_nr:"Заказ №{n}"});
+Object.assign(I.en, {o_drop:"Drag a photo here or tap to choose", o_drop_many:"Drag photos here or tap — several at once (up to {m})",
+ o_add:"Add more", o_main:"main", o_rm:"Remove photo", o_ph_n:"Photo {n}", o_cnt:"{n} of {m} uploaded. The first photo is the main one; tap another to make it main. More angles — better likeness.",
+ o_one:"Tap “Replace” or drag another photo here.", e_ph_type:"“{f}” is not a photo. JPG, PNG, HEIC or WEBP will do.", e_ph_big:"“{f}” is over 15 MB — please send a smaller file.",
+ e_ph_max:"Up to {m} photos — the extra ones were not added.", e_ph_count:"You can send up to {m} photos right now — please remove the extra ones.", e_ph_num:"Photo {n}: ",
+ gw_work:"Your gift is being made", gw_ready:"Your gift is ready — open", gw_num:"Order #{n} · tap to open", gw_q:"Order #{n} · quality check", gw_nr:"Order #{n}"});
 (function(){
   var q = ""; try { q = (new URLSearchParams(location.search).get("lang") || "").toLowerCase(); } catch(e){}
   var s = null; try { s = localStorage.getItem("tm_app_lang"); } catch(e){}
@@ -444,7 +486,7 @@ var PROD = {
 var DIRS = [["photo","📸"],["kids","🧸"],["adult","💛"],["pets","🐾"],["cart","🎬"]];
 
 /* ---------------- состояние ---------------- */
-var S = {tab:"home", stack:[], token:null, user:null, flags:{photoshoot:false, plus:false}, pp:null, ppUrl:null, pack:null, file:null, fileUrl:null, usePP:false, tok:null, payUrl:null, gender:"f", dir:"photo", wallet:null, ref:null, plus:null, plusSel:null};
+var S = {tab:"home", stack:[], token:null, user:null, flags:{photoshoot:false, plus:false}, pp:null, ppUrl:null, pack:null, files:[], psMax:1, usePP:false, tok:null, payUrl:null, gender:"f", dir:"photo", wallet:null, ref:null, plus:null, plusSel:null};
 try { S.token = sessionStorage.getItem("tm_app_tok"); } catch(e){}
 
 function toast(m){ var e = $("toast"); e.textContent = m; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ e.hidden = true; }, 2600); }
@@ -463,10 +505,12 @@ function api(path, opt){
 async function apiJ(path, opt){ var r = await api(path, opt); var j = null; try { j = await r.json(); } catch(e){} return {ok: r.ok, status: r.status, j: j || {}}; }
 
 /* ---------------- вход (initData -> токен) ---------------- */
+function hashInit(){ try { var h = new URLSearchParams(location.hash.slice(1)).get("tgWebAppData"); return h && h.length > 20 ? h : ""; } catch(e){ return ""; } }
 async function auth(){
-  if (!inTG) { try { var c = await apiJ("/api/miniapp/config"); if (c.ok && c.j.flags) S.flags = c.j.flags; } catch(e){} return false; }
+  var raw = inTG ? tg.initData : hashInit();      /* QA1 30.10: SDK telegram.org мог не загрузиться (сеть/VPN) — initData Telegram всё равно кладёт в #tgWebAppData */
+  if (!raw) { try { var c = await apiJ("/api/miniapp/config"); if (c.ok && c.j.flags) S.flags = c.j.flags; } catch(e){} return false; }
   try {
-    var r = await apiJ("/api/miniapp/auth", {method:"POST", json:{init_data: tg.initData}});
+    var r = await apiJ("/api/miniapp/auth", {method:"POST", json:{init_data: raw}});
     if (r.ok && r.j.token) { S.token = r.j.token; S.user = r.j.user; S.flags = r.j.flags || S.flags; try { sessionStorage.setItem("tm_app_tok", S.token); } catch(e){} return r.j; }
   } catch(e){}
   return false;
@@ -569,7 +613,7 @@ function needKid(p){ return p && (p.who === "child" || p.who === "family" || p.w
 function openOrder(){
   var p = S.pack; $("oH").textContent = p.icon + " " + pkTitle(p);
   S.usePP = !!(S.pp && S.pp.has && S.ppUrl && ppFits(p));
-  S.file = null; if (S.fileUrl) { URL.revokeObjectURL(S.fileUrl); S.fileUrl = null; }
+  clearFiles(); $("oFile").multiple = psMax() > 1;
   $("oRoyal").hidden = p.id !== "kids_fairy";
   $("oKidRow").hidden = !needKid(p); $("oKid").checked = false;
   $("oKidRow").querySelector("span").textContent = t(p.who === "any" ? "o_kid_any" : "o_kid");
@@ -583,16 +627,65 @@ function openOrder(){
   show("order", true);
 }
 function ppFits(p){ var w = S.pp && S.pp.who; if (!w) return false; if (p.who === "adult") return w === "adult"; if (p.who === "child") return w === "child"; if (p.who === "couple") return w === "couple"; if (p.who === "family") return true; return w === "adult" || w === "child"; }
-function renderPick(){
-  var b = $("oPick");
-  if (S.usePP) b.innerHTML = '<div class="pick"><img src="' + S.ppUrl + '" alt=""><div><b>' + esc(t("o_use_pp")) + '</b><p class="small muted">' + esc(t("o_use_pp2")) + '</p><button type="button" class="btn btn-ghost" id="oOther" style="margin-top:8px;min-height:40px;padding:8px 12px">' + esc(t("o_other")) + '</button></div></div>';
-  else if (S.file) b.innerHTML = '<div class="pick"><img src="' + S.fileUrl + '" alt=""><div><b>' + esc(S.file.name.slice(0, 40)) + '</b><button type="button" class="btn btn-ghost" id="oUp" style="margin-top:8px;min-height:40px;padding:8px 12px;display:flex">' + esc(t("o_change")) + '</button></div></div>';
-  else b.innerHTML = '<button type="button" class="upl" id="oUp">' + esc(t("o_upload")) + '</button>';
-  var u = $("oUp"); if (u) u.addEventListener("click", function(){ $("oFile").click(); });
-  var o = $("oOther"); if (o) o.addEventListener("click", function(){ S.usePP = false; renderPick(); $("oFile").click(); });
+/* PS2 30.10: несколько фото (до S.psMax — лимит из /api/miniapp/config, по умолчанию 1), перетаскивание, превью с удалением */
+function psMax(){ var m = parseInt(S.psMax, 10); return m >= 1 && m <= 10 ? m : 1; }
+function clearFiles(){ (S.files || []).forEach(function(x){ try { URL.revokeObjectURL(x.url); } catch(e){} }); S.files = []; }
+function isImg(f){ return /^image\//.test(f.type || "") || /\.(jpe?g|png|heic|heif|webp)$/i.test(f.name || ""); }
+function photosChanged(){ S.tok = null; S.quoted = false; $("oGo").textContent = t("o_next"); $("oErr").hidden = true; }
+function addFiles(list){
+  var max = psMax(), arr = Array.prototype.slice.call(list || []), bad = [], over = 0, added = 0;
+  if (!arr.length) return;
+  if (max === 1) { var f1 = arr.filter(isImg)[0]; if (f1 && f1.size <= 15e6) clearFiles(); }
+  arr.forEach(function(f){
+    var nm = String(f.name || "").slice(0, 40);
+    if (!isImg(f)) { bad.push(t("e_ph_type").replace("{f}", nm)); return; }
+    if (f.size > 15e6) { bad.push(t("e_ph_big").replace("{f}", nm)); return; }
+    if (S.files.some(function(x){ return x.f.name === f.name && x.f.size === f.size && x.f.lastModified === f.lastModified; })) return;
+    if (S.files.length >= max) { over++; return; }
+    S.files.push({f: f, url: URL.createObjectURL(f)}); added++;
+  });
+  if (over) bad.push(t("e_ph_max").replace("{m}", max));
+  if (added) { S.usePP = false; photosChanged(); haptic(); }
+  renderPick(bad.join(" "));
+}
+function renderPick(msg){
+  var b = $("oPick"), max = psMax(), h;
+  if (S.usePP) h = '<div class="dz" id="oDz"><div class="pick"><img src="' + S.ppUrl + '" alt=""><div><b>' + esc(t("o_use_pp")) + '</b><p class="small muted">' + esc(t("o_use_pp2")) + '</p><button type="button" class="btn btn-ghost" id="oOther" style="margin-top:8px;min-height:40px;padding:8px 12px">' + esc(t("o_other")) + '</button></div></div></div>';
+  else if (S.files.length) {
+    h = '<div class="dz has" id="oDz"><div class="thumbs">' + S.files.map(function(x, i){
+      var main = i === 0 && S.files.length > 1;
+      return '<figure class="th' + (main ? ' main' : '') + '"' + (i > 0 ? ' data-main="' + i + '" title="' + esc(t("o_main")) + '"' : '') + '><img src="' + x.url + '" alt="' + esc(t("o_ph_n").replace("{n}", i + 1)) + '">'
+        + (main ? '<span class="mk">' + esc(t("o_main")) + '</span>' : '')
+        + '<button type="button" class="rm" data-rm="' + i + '" aria-label="' + esc(t("o_rm") + " " + (i + 1)) + '">✕</button></figure>';
+    }).join("");
+    if (max === 1) h += '<button type="button" class="th add" id="oAdd"><span class="ic" aria-hidden="true">⟳</span>' + esc(t("o_change")) + '</button>';
+    else if (S.files.length < max) h += '<button type="button" class="th add" id="oAdd"><span class="ic" aria-hidden="true">＋</span>' + esc(t("o_add")) + '</button>';
+    h += '</div><p class="small muted dzn">' + esc(max > 1 ? t("o_cnt").replace("{n}", S.files.length).replace("{m}", max) : t("o_one")) + '</p></div>';
+  }
+  else h = '<div class="dz" id="oDz"><button type="button" class="upl" id="oUp"><span class="ic" aria-hidden="true">📷</span><span>' + esc(t("o_upload").replace(/^📷\s*/, "")) + '</span><small>' + esc((max > 1 ? t("o_drop_many") : t("o_drop")).replace("{m}", max)) + '</small></button></div>';
+  b.innerHTML = h + '<div class="msg bad" id="oPhErr" role="alert"' + (msg ? '' : ' hidden') + '>' + esc(msg || "") + '</div>';
   $("oSaveRow").hidden = S.usePP || !inTG || !S.token;
 }
-$("oFile").addEventListener("change", function(){ var f = this.files && this.files[0]; if (!f) return; S.file = f; if (S.fileUrl) URL.revokeObjectURL(S.fileUrl); S.fileUrl = URL.createObjectURL(f); S.usePP = false; S.tok = null; renderPick(); $("oErr").hidden = true; });
+$("oPick").addEventListener("click", function(e){
+  var rm = e.target.closest("[data-rm]");
+  if (rm) { e.stopPropagation(); var i = +rm.getAttribute("data-rm"), x = S.files.splice(i, 1)[0]; if (x) { try { URL.revokeObjectURL(x.url); } catch(_){} } photosChanged(); haptic(); return renderPick(); }
+  var mn = e.target.closest("[data-main]");
+  if (mn) { var j = +mn.getAttribute("data-main"), y = S.files.splice(j, 1)[0]; if (y) S.files.unshift(y); photosChanged(); haptic(); return renderPick(); }
+  if (e.target.closest("#oOther")) { S.usePP = false; photosChanged(); renderPick(); return $("oFile").click(); }
+  if (e.target.closest("#oUp") || e.target.closest("#oAdd")) return $("oFile").click();
+});
+(function(){
+  var zone = $("oPick"), depth = 0;
+  function hasFiles(e){ try { var ty = e.dataTransfer && e.dataTransfer.types; return !!ty && Array.prototype.indexOf.call(ty, "Files") >= 0; } catch(_){ return false; } }
+  function hl(on){ var d = $("oDz"); if (d) d.classList.toggle("drag", on); }
+  zone.addEventListener("dragenter", function(e){ if (!hasFiles(e)) return; e.preventDefault(); depth++; hl(true); });
+  zone.addEventListener("dragover", function(e){ if (!hasFiles(e)) return; e.preventDefault(); try { e.dataTransfer.dropEffect = "copy"; } catch(_){} hl(true); });
+  zone.addEventListener("dragleave", function(e){ if (!hasFiles(e)) return; depth = Math.max(0, depth - 1); if (!depth) hl(false); });
+  zone.addEventListener("drop", function(e){ e.preventDefault(); e.stopPropagation(); depth = 0; hl(false); addFiles(e.dataTransfer && e.dataTransfer.files); });
+  /* файл, брошенный мимо зоны, браузер не открывает вместо приложения */
+  ["dragover", "drop"].forEach(function(ev){ window.addEventListener(ev, function(e){ if (hasFiles(e) && !zone.contains(e.target)) e.preventDefault(); }); });
+})();
+$("oFile").addEventListener("change", function(){ addFiles(this.files); try { this.value = ""; } catch(e){} });
 $("oRoyalSeg").addEventListener("click", function(e){ var b = e.target.closest("[data-g]"); if (!b) return; S.gender = b.getAttribute("data-g"); this.querySelectorAll("[data-g]").forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); }); S.tok = null; });
 $("s-order").addEventListener("change", function(){ $("oErr").hidden = true; });
 ["oEmail","oCode"].forEach(function(id){ $(id).addEventListener("input", function(){ if (S.tok) { $("oGo").textContent = t("o_next"); S.quoted = false; } }); });
@@ -600,16 +693,16 @@ var EM_RE = /^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$/;
 function oErr(m){ var e = $("oErr"); e.textContent = m; e.hidden = false; haptic("err"); try { e.scrollIntoView({block:"center", behavior:"smooth"}); } catch(_){} }
 function reasonOf(detail, status){
   var d = String(detail || "");
-  if (d.indexOf("photo_mod:") === 0) { var c = d.split(":")[1]; return t("pm_" + c) !== "pm_" + c ? t("pm_" + c) : t("pm_unsafe"); }
+  if (d.indexOf("photo_mod:") === 0) { var pp_ = d.split(":"), c = pp_[1], no = parseInt(pp_[2], 10), pre = (S.files.length > 1 && no >= 1) ? t("e_ph_num").replace("{n}", no) : ""; return pre + (t("pm_" + c) !== "pm_" + c ? t("pm_" + c) : t("pm_unsafe")); }
   if (status === 429) return t("e_429");
   if (t("e_" + d) !== "e_" + d) return t("e_" + d);
-  if (d === "photo_count") return t("e_photo");
+  if (d === "photo_count") return S.files.length > 1 ? t("e_ph_count").replace("{m}", psMax()) : t("e_photo");
   if (d === "bad_contact" || d === "bad_email") return t("e_email");
   return t("e_http").replace("{c}", status || "?");
 }
 async function photoBlob(){
   if (S.usePP) { var r = await api("/api/miniapp/profile/photo"); if (!r.ok) throw new Error("pp"); var b = await r.blob(); return new File([b], "profile.jpg", {type:"image/jpeg"}); }
-  return S.file;
+  return null;
 }
 async function createOrder(){
   var p = S.pack, em = $("oEmail").value.trim();
@@ -619,14 +712,15 @@ async function createOrder(){
   fd.append("child_name", (S.user && S.user.name ? S.user.name : (lang === "en" ? "Photo session" : "Фотосессия")).slice(0, 40));
   fd.append("contact", em); fd.append("consent", "true"); fd.append("site_lang", lang); fd.append("src", "miniapp");
   if (needKid(p)) fd.append("consent_child", $("oKid").checked ? "true" : "false");
-  fd.append("photos", ph, "photo.jpg");
-  var r; try { r = await fetch(API + "/api/orders", {method:"POST", body:fd, cache:"no-store"}); } catch(e){ throw {msg: t("e_net")}; }
+  if (S.usePP) fd.append("photos", ph, "photo.jpg");
+  else S.files.forEach(function(x, i){ fd.append("photos", x.f, "photo" + (i + 1) + ".jpg"); });     /* PS2: все фото, первое — главное */
+  var r; try { r = await api("/api/orders", {method:"POST", body:fd}); }   /* QA1: с Authorization — заказ сразу виден в «Заказах» (site_api 0003) */ catch(e){ throw {msg: t("e_net")}; }
   var j = {}; try { j = await r.json(); } catch(e){}
   if (!r.ok) throw {msg: reasonOf(j.detail, r.status)};
-  S.tok = j.token;
+  S.tok = j.token; myAdd(S.tok);                                  /* PS2: заказ этого устройства — для значка «Подарок готовится» */
   if (S.token) { try { await api("/api/miniapp/link/" + S.tok, {method:"POST"}); } catch(e){} }
-  if ($("oSave").checked && !S.usePP && S.file && S.token) {
-    var f2 = new FormData(); f2.append("photo", S.file); f2.append("who", p.who === "child" ? "child" : p.who === "couple" ? "couple" : p.who === "family" ? "family" : "adult"); f2.append("consent", "true"); f2.append("consent_child", needKid(p) && $("oKid").checked ? "true" : "false");
+  if ($("oSave").checked && !S.usePP && S.files.length && S.token) {
+    var f2 = new FormData(); f2.append("photo", S.files[0].f); f2.append("who", p.who === "child" ? "child" : p.who === "couple" ? "couple" : p.who === "family" ? "family" : "adult"); f2.append("consent", "true"); f2.append("consent_child", needKid(p) && $("oKid").checked ? "true" : "false");
     try { var rp = await api("/api/miniapp/profile", {method:"POST", body:f2}); if (rp.ok) { await loadPP(); toast(t("pp_saved")); } } catch(e){}
   }
   if (S.usePP && S.token) { try { api("/api/miniapp/profile/used", {method:"POST"}); } catch(e){} }
@@ -646,7 +740,7 @@ async function quote(){
 $("oGo").addEventListener("click", async function(){
   var b = this; if (b.disabled) return; $("oErr").hidden = true;
   var p = S.pack, em = $("oEmail").value.trim();
-  if (!S.usePP && !S.file) return oErr(t("e_photo"));
+  if (!S.usePP && !S.files.length) return oErr(t("e_photo"));
   if (!EM_RE.test(em)) return oErr(t("e_email"));
   if (!$("oOk").checked) return oErr(t("e_ok"));
   if (needKid(p) && !$("oKidRow").hidden && !$("oKid").checked && (p.who === "child" || p.who === "family")) return oErr(t("e_kid"));
@@ -672,11 +766,64 @@ async function checkPaid(manual){
   if (!S.tok) return false;
   var r = await apiJ("/api/orders/" + encodeURIComponent(S.tok) + "/state");
   var st = r.j && r.j.status;
-  if (st && st !== "awaiting_payment" && st !== "in_review") { $("wH").textContent = "✅"; $("wTxt").textContent = t("w_paid"); $("wPay").hidden = true; return true; }
+  if (st && st !== "awaiting_payment" && st !== "in_review") { $("wH").textContent = "✅"; $("wTxt").textContent = t("w_paid"); $("wPay").hidden = true; giftRefresh(); return true; }
   if (manual) toast(t("w_not"));
   return false;
 }
 function pollPaid(n){ if (n > 60 || $("s-wait").hidden) return; setTimeout(async function(){ if (!(await checkPaid(false))) pollPaid(n + 1); }, 5000); }
+
+/* ---------------- PS2 30.10: значок «Подарок готовится» ----------------
+   Раньше значок был только на главной сайта и видел заказ лишь по cookie, которую ставит возврат с ЮKassa (/r/) или страница заказа.
+   Оплатил в другой вкладке / в приложении банка (СБП) и не нажал «Вернуться в магазин» — значка нет; в Mini App значка не было вовсе.
+   Теперь номер заказа запоминается на этом устройстве (localStorage talemir.com, общий у сайта и /app/, только номер заказа — не ПДн),
+   а этап берётся из открытого /api/orders/<номер>/state. Неоплаченные старше 3 ч не опрашиваем, записи живут до 14 дней. */
+var MY_K = "tm_my_orders", MY_H = 3600e3, MY_UNPAID = {awaiting_payment:1, in_review:1, preview_ready:1, preview_wait:1}, MY_DEAD = {canceled:1, expired:1, gone:1};
+function myGet(){ try { var a = JSON.parse(localStorage.getItem(MY_K) || "[]"); return Array.isArray(a) ? a.filter(function(e){ return e && /^[0-9a-f]{16}$/.test(e.t); }) : []; } catch(e){ return []; } }
+function mySave(list, drop){ try { var cur = myGet().filter(function(e){ return !drop[e.t]; }); list.forEach(function(e){ for (var i = 0; i < cur.length; i++) if (cur[i].t === e.t) cur[i] = e; }); localStorage.setItem(MY_K, JSON.stringify(cur.slice(-10))); } catch(e){} }
+function myAdd(tok){ if (!/^[0-9a-f]{16}$/.test(tok || "")) return; try { var a = myGet().filter(function(e){ return e.t !== tok; }); a.push({t: tok, at: Date.now()}); localStorage.setItem(MY_K, JSON.stringify(a.slice(-10))); } catch(e){} }
+function myOrders(){
+  var now = Date.now(), all = myGet(), drop = {}, keep = all.filter(function(e){
+    var dead = now - e.at > 14 * 24 * MY_H || MY_DEAD[e.s] || (MY_UNPAID[e.s || "in_review"] && now - e.at > 24 * MY_H);
+    if (dead) drop[e.t] = 1; return !dead; });
+  return Promise.all(keep.map(function(e){
+    if (e.s === "ready" || (MY_UNPAID[e.s || "in_review"] && now - e.at > 3 * MY_H)) return Promise.resolve(e);
+    return fetch(API + "/api/orders/" + e.t + "/state", {cache: "no-store"}).then(function(r){
+      if (r.status === 404) { e.s = "gone"; return e; }
+      return r.ok ? r.json().then(function(j){ e.s = j.status; e.g = j.stage; if (j.status === "ready" && !e.r) e.r = now; return e; }) : e;
+    }).catch(function(){ return e; });
+  })).then(function(list){
+    mySave(list, drop);
+    return list.filter(function(e){ return e.s && !MY_UNPAID[e.s] && !MY_DEAD[e.s] && e.g && e.g !== "wait" && e.g !== "queued" && e.g !== "wish_fix" && !(e.s === "ready" && now - (e.r || e.at) > 7 * 24 * MY_H); })
+      .map(function(e){ return {num: e.t.slice(0, 8).toUpperCase(), stage: e.s === "ready" ? "ready" : e.g, link: API + "/order/" + e.t}; }).reverse();
+  });
+}
+function lsArr(k){ try { var a = JSON.parse(localStorage.getItem(k) || "[]"); return Array.isArray(a) ? a : []; } catch(e){ return []; } }
+function lsPush(k, v){ try { var a = lsArr(k); if (a.indexOf(v) < 0) { a.push(v); localStorage.setItem(k, JSON.stringify(a.slice(-50))); } } catch(e){} }
+var GB = {timer: 0};
+function giftRefresh(){
+  clearTimeout(GB.timer);
+  return myOrders().then(function(os){
+    var seen = lsArr("tm_seen"), b = $("gBar");
+    var work = os.filter(function(o){ return o.stage !== "ready"; })[0];
+    var ready = os.filter(function(o){ return o.stage === "ready" && seen.indexOf(o.num) < 0; })[0];
+    var o = work || ready;
+    if (!o) { b.hidden = true; document.body.classList.remove("has-gbar"); return null; }
+    b.className = "gbar" + (work ? "" : " ready");
+    b.innerHTML = '<span class="gi" aria-hidden="true">' + (work ? "🎁" : "✅") + '</span><span><b' + (work ? ' class="dd"' : '') + '>' + esc(t(work ? "gw_work" : "gw_ready")) + '</b><small>' + esc(t(!work ? "gw_nr" : o.stage === "quality" ? "gw_q" : "gw_num").replace("{n}", o.num)) + '</small></span>';
+    b.href = o.link; b.setAttribute("data-num", o.num); b.setAttribute("data-ready", work ? "" : "1");
+    b.hidden = false; document.body.classList.add("has-gbar");
+    if (work) GB.timer = setTimeout(giftRefresh, 20000);
+    return o;
+  }).catch(function(){ return null; });
+}
+window.tmGift = {refresh: giftRefresh, add: myAdd};   /* для проверки */
+$("gBar").addEventListener("click", function(e){
+  e.preventDefault(); haptic();
+  var num = this.getAttribute("data-num"), rd = this.getAttribute("data-ready") === "1", href = this.getAttribute("href");
+  if (rd) { lsPush("tm_seen", num); this.hidden = true; document.body.classList.remove("has-gbar"); }
+  if (S.token) show("orders"); else openExt(href);
+});
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) giftRefresh(); });
 
 /* ---------------- карточка подарка ---------------- */
 function openProd(k){
@@ -699,20 +846,37 @@ $("prGo").addEventListener("click", function(){
 /* ---------------- заказы ---------------- */
 var PICON = {photoshoot:"📸", book:"📖", song:"🎵", clip:"🎬", live:"✨", sing:"🎤", ny:"🎅", cartoon:"🎞", pet_live:"🐾", pet_sing:"🐾", inv:"💌", invkit:"🎉", preg:"👶", preg_v:"👶"};
 var PNAME = {photoshoot:["Фотосессия","Photo session"], book:["Книга-сказка","Fairy-tale book"], song:["Песня с именем","Song with a name"], clip:["Клип из фото","Photo clip"], live:["Живые фото","Living photos"], sing:["Поющее фото","Singing photo"], ny:["Дед Мороз","Ded Moroz"], cartoon:["Мультфильм","Cartoon"], pet_live:["Живое фото питомца","Living pet photo"], pet_sing:["Поющий питомец","Singing pet"], inv:["Приглашение","Invitation"], invkit:["Набор праздника","Party kit"], preg:["Малыш по УЗИ","Baby from ultrasound"], preg_v:["Малыш по УЗИ","Baby from ultrasound"]};
+/* QA1 30.10: заказы этого устройства (номера из tm_my_orders, этап — из открытого /api/orders/<номер>/state). Нужен, когда заказ
+   создан без входа (Mini App открыт не из Telegram / initData не пришёл) — раньше такой оплаченный заказ в «Заказах» не появлялся вовсе. */
+async function devOrders(known){
+  var out = [];
+  await Promise.all(myGet().filter(function(e){ return known.indexOf(e.t.slice(0, 8).toUpperCase()) < 0; }).map(function(e){
+    return fetch(API + "/api/orders/" + e.t + "/state", {cache: "no-store"}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      if (!j || !j.status || MY_UNPAID[j.status] || MY_DEAD[j.status]) return;
+      if (S.token) { try { api("/api/miniapp/link/" + e.t, {method:"POST"}); } catch(_){} }   /* сервер 0003 разрешает привязать свой оплаченный заказ без чата */
+      out.push({product: j.product || "photoshoot", hero: j.product === "photoshoot" ? "" : (j.name || ""), num: e.t.slice(0, 8).toUpperCase(), date: new Date(e.at).toISOString().slice(0, 10),
+                status: j.status === "ready" ? "ready" : j.status === "rework" ? "rework" : "in_work", link: "/order/" + e.t, files: []});
+    }).catch(function(){});
+  }));
+  return out;
+}
 async function loadOrders(){
   var L = $("orList");
+  if (!S.token) { var dv = await devOrders([]); if (dv.length) { L.innerHTML = dv.map(ordCard).join("") + '<p class="small muted" style="margin-top:8px">' + esc(t("or_login")) + '</p>'; return; } }   /* QA1 */
   if (!S.token) { L.innerHTML = '<div class="empty"><div class="e">📦</div><p>' + esc(t("or_login")) + '</p><button class="btn btn-ghost" style="margin-top:12px" type="button" id="orCab">' + esc(t("or_cab")) + '</button></div>'; $("orCab").addEventListener("click", function(){ openExt(API + "/cabinet"); }); return; }
   L.innerHTML = '<div class="empty"><span class="spin"></span></div>';
   var r = await apiJ("/api/me/orders");
   if (r.status === 401) { S.token = null; return loadOrders(); }
   var a = Array.isArray(r.j) ? r.j : [];
+  a = a.concat(await devOrders(a.map(function(o){ return o.num; })));   /* QA1: оплаченный заказ этого устройства, не привязанный к Telegram, тоже показываем */
   if (!a.length) { L.innerHTML = '<div class="empty"><div class="e">🎁</div><h3>' + esc(t("or_empty")) + '</h3><p>' + esc(t("or_empty2")) + '</p><button class="btn btn-gold" style="margin-top:12px" type="button" data-go="photo">' + esc(t("hero_cta")) + '</button></div>'; return; }
-  L.innerHTML = a.map(function(o){
+  L.innerHTML = a.map(ordCard).join("");
+}
+function ordCard(o){
     var nm = PNAME[o.product] ? PNAME[o.product][lang === "en" ? 1 : 0] : o.product;
     var st = o.status === "ready" ? "ready" : o.status === "rework" ? "rework" : "in_work";
     var files = (o.files || []).slice(0, 8).map(function(f, i){ return '<button type="button" class="btn btn-ghost" data-url="' + esc(API + f) + '">⬇ ' + esc(t("or_dl")) + ' ' + (i + 1) + '</button>'; }).join("");
     return '<div class="ord"><div class="ic" aria-hidden="true">' + (PICON[o.product] || "🎁") + '</div><div><b>' + esc(nm) + (o.hero ? ' · ' + esc(o.hero) : '') + '</b><div class="small muted">№ ' + esc(o.num) + ' · ' + esc(fmtD(o.date)) + (st !== "ready" && o.eta ? ' · ' + esc(o.eta) : '') + '</div><span class="st ' + st + '">' + esc(t("st_" + st)) + '</span></div><div class="acts"><button type="button" class="btn btn-gold" data-url="' + esc(API + o.link) + '">' + esc(t("or_open")) + '</button>' + files + '</div></div>';
-  }).join("");
 }
 document.addEventListener("click", function(e){ var u = e.target.closest("[data-url]"); if (u) { e.preventDefault(); openExt(u.getAttribute("data-url")); } });
 
@@ -794,7 +958,11 @@ function renderPlus(){
     openExt(r.j.confirmation_url);
   });
 }
-$("lnHelp").addEventListener("click", function(){ openTg(BOT); });
+$("lnHelp").addEventListener("click", function(){   /* QA1 30.10: openTelegramLink на чат, поверх которого открыт Mini App, ничего не показывает — открываем «💬 Помощь» в чате и закрываем Mini App */
+  haptic("ok"); toast(t("ln_help_go"));
+  if (inTG) { openTg(BOT + "?start=help"); setTimeout(function(){ try { tg.close(); } catch(e){} }, 400); return; }
+  openExt(BOT + "?start=help");
+});
 $("lnOffer").addEventListener("click", function(){ openExt(SITE + "/offer.html"); });
 $("lnPriv").addEventListener("click", function(){ openExt(SITE + "/privacy.html"); });
 $("lnSite").addEventListener("click", function(){ openExt(SITE + "/" + (lang === "en" ? "?lang=en" : "")); });
@@ -821,7 +989,8 @@ async function boot(){
   }
   applyI18n();
   var a = await auth();
-  try { var c = await apiJ("/api/miniapp/config"); if (c.ok) { S.flags = c.j.flags || S.flags; S.plus = c.j.plus || null; } } catch(e){}
+  try { var c = await apiJ("/api/miniapp/config"); if (c.ok) { S.flags = c.j.flags || S.flags; S.plus = c.j.plus || null; S.psMax = c.j.ps_max || 1; } } catch(e){}   /* PS2: ps_max — сколько фото принимает сервер */
+  giftRefresh();
   if (S.token) {
     await loadPP(); renderPPMini();
     apiJ("/api/me/wallet").then(function(r){ if (r.ok && r.j.flags && r.j.flags.bonus && r.j.bonus && r.j.bonus.balance > 0) { $("balChip").hidden = false; $("balTxt").textContent = money(r.j.bonus.balance); } });

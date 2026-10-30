@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow">
+<title>Добрые подарки — Talemir</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="«Добрые подарки» Talemir: часть каждого оплаченного заказа мы откладываем на помощь детскому дому. Честный счётчик, правила и отчёты.">
+<link rel="canonical" href="https://talemir.com/charity.html">
+<meta name="talemir-api" content="https://ru.api.talemir.com">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&amp;family=Montserrat:wght@600;700;800&amp;family=Nunito:wght@400;600;700&amp;display=swap">
+<!-- CHAR3 30.10.2026: страница программы «💛 Добрые подарки» (концепция CHAR1). Учреждение не называем, фото детей нет — до письменного соглашения. -->
+<style>
+:root{--paper:#F7F4FB;--card:#FFFFFF;--ink:#23173A;--muted:#62577A;--line:#E2DAEE;--cloth:#2E1F4F;--cloth-ink:#F5EFFF;--gold:#E2A23A;--gold-ink:#3A2606;--link:#5B3FA0;--warm:#FFF6E6;--ok:#1D6B4A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#14101D;--card:#1D1729;--ink:#F1ECF8;--muted:#B0A6C4;--line:#33294A;--cloth:#231839;--gold:#EDB250;--gold-ink:#2A1A02;--link:#C9B5F2;--warm:#2A2034;--ok:#5FC59A}}
+:root[data-theme="dark"]{--paper:#14101D;--card:#1D1729;--ink:#F1ECF8;--muted:#B0A6C4;--line:#33294A;--cloth:#231839;--gold:#EDB250;--gold-ink:#2A1A02;--link:#C9B5F2;--warm:#2A2034;--ok:#5FC59A}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+header.site{background:#2E1F4F;color:#F5EFFF}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px}
+header.site img{display:block;height:40px;width:auto}
+header.site a{color:#F5EFFF;text-decoration:none;font-weight:700;font-size:.95rem}
+header.site a:hover{color:#EDB250}
+h1,h2,h3{font-family:"Montserrat",system-ui,sans-serif;color:var(--ink);line-height:1.22;margin:0}
+p{margin:0 0 10px}
+a{color:var(--link);text-underline-offset:2px}
+a:hover{color:var(--gold)}
+.hero{background:linear-gradient(180deg,#2E1F4F 0%,#3B2866 100%);color:#F5EFFF;padding:40px 0 56px}
+.hero .kicker{display:inline-block;background:rgba(237,178,80,.16);color:#EDB250;border:1px solid rgba(237,178,80,.4);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.9rem;margin-bottom:14px}
+.hero h1{color:#fff;font-size:clamp(1.7rem,4.6vw,2.6rem);font-weight:800;margin-bottom:14px;text-wrap:balance}
+.hero p{color:#E6DCF7;font-size:1.08rem;max-width:640px}
+.hero .heart{color:#EDB250}
+main{padding:0 0 48px}
+.counter{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 22px 18px;margin:-34px 0 8px;box-shadow:0 18px 50px rgba(35,23,58,.14);position:relative}
+.counter h2{font-size:1.05rem;color:var(--muted);font-weight:700;margin-bottom:6px}
+.big{font-family:"Montserrat",system-ui,sans-serif;font-weight:800;font-size:clamp(2rem,7vw,2.8rem);line-height:1.1;font-variant-numeric:tabular-nums}
+.big small{font-size:.45em;color:var(--muted);font-weight:700}
+.bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden;margin:14px 0 8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#E2A23A,#EDB250);border-radius:99px;transition:width .8s ease}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--paper);border-radius:14px;padding:10px 12px}
+.stat b{display:block;font-family:"Montserrat",system-ui,sans-serif;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.86rem;color:var(--muted)}
+.cnote{font-size:.9rem;color:var(--muted);margin:12px 0 0}
+.status{display:flex;gap:10px;align-items:flex-start;background:var(--warm);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:12px 16px;margin:18px 0}
+.status p{margin:0}
+section{margin-top:40px}
+section>h2{font-size:clamp(1.3rem,3.4vw,1.7rem);margin-bottom:14px}
+.steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+.steps li{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--gold-ink);font-family:"Montserrat",sans-serif;font-weight:800;margin-bottom:10px}
+.steps h3{font-size:1.02rem;margin-bottom:6px}
+.steps p{margin:0;color:var(--muted);font-size:.97rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:12px 0}
+.card p:last-child,.card ul:last-child{margin-bottom:0}
+.goal{display:flex;gap:16px;align-items:center}
+.goal .ico{flex:none;width:56px;height:56px;border-radius:16px;background:var(--warm);display:grid;place-items:center;color:var(--gold)}
+.goal h3{font-size:1.08rem;margin-bottom:4px}
+.goal p{margin:0;color:var(--muted);font-size:.95rem}
+ul.clean{padding-left:22px;margin:0 0 10px}
+ul.clean li{margin:0 0 6px}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{font-family:"Montserrat",system-ui,sans-serif;font-weight:700;font-size:.85rem;color:var(--muted)}
+td.empty{color:var(--muted);text-align:center;padding:18px 8px}
+.help{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.help .card{margin:0}
+.help h3{font-size:1.02rem;margin-bottom:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;background:var(--gold);color:var(--gold-ink);font-family:"Montserrat",sans-serif;font-weight:800;text-decoration:none;margin-top:6px}
+.btn:hover{filter:brightness(1.05);color:var(--gold-ink)}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:700;font-family:"Montserrat",system-ui,sans-serif;font-size:1rem}
+details p{margin:10px 0 0;color:var(--muted)}
+.legal{font-size:.9rem;color:var(--muted);margin-top:28px}
+footer.site{border-top:1px solid var(--line);background:var(--card);color:var(--muted);font-size:.92rem}
+footer.site .wrap{padding-top:20px;padding-bottom:24px}
+footer.site nav{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:10px}
+footer.site a{color:var(--muted)}
+footer.site a:hover{color:var(--gold)}
+footer.site a[aria-current="page"]{color:var(--ink);font-weight:700;text-decoration:none}
+@media (max-width:640px){body{font-size:16px}.steps,.help{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.counter{padding:18px 16px 16px}.hero{padding:30px 0 50px}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a href="/" aria-label="Talemir — на главную"><img src="/img/logo.svg" height="40" alt="Talemir"></a>
+    <a href="/#products">Выбрать подарок</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="kicker">💛 Добрые подарки</span>
+    <h1>Каждый подарок Talemir — немного тепла для детей</h1>
+    <p>Часть каждого оплаченного заказа мы откладываем на помощь детскому дому. Цена для вас не меняется: это доля Talemir из нашей выручки, а не доплата к заказу.</p>
+  </div>
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="counter" id="cnt" aria-live="polite">
+    <h2>Отложено на помощь детям</h2>
+    <div class="big"><span id="cAcc">0</span>&nbsp;<small>₽</small></div>
+    <div class="bar" role="progressbar" aria-label="Прогресс к первой цели" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="cBar"></i></div>
+    <div class="cnote" id="cGoalLine" style="margin-top:0">Первая цель — ориентир 27&nbsp;000&nbsp;₽</div>
+    <div class="stats">
+      <div class="stat"><b id="cPend">0 ₽</b><span>в проверке (первые сутки после оплаты)</span></div>
+      <div class="stat"><b id="cTr">0 ₽</b><span>передано детскому дому</span></div>
+      <div class="stat"><b id="cOrd">0</b><span>заказов в счётчике</span></div>
+    </div>
+    <p class="cnote" id="cNote">Загружаем данные счётчика…</p>
+  </div>
+
+  <div class="status" role="note">
+    <span aria-hidden="true">🤝</span>
+    <p><b>Учреждение и отчёты опубликуем после подписания соглашения.</b> Сейчас мы договариваемся с детским домом о помощи и порядке её передачи. До письменного согласия учреждения мы не называем его и не публикуем никаких фотографий детей.</p>
+  </div>
+
+  <section id="how">
+    <h2>Как это работает</h2>
+    <ol class="steps">
+      <li><h3>Вы выбираете подарок</h3><p>Книгу-сказку, песню, фотосессию или любой другой подарок — по обычной цене. Мы ничего не добавляем к цене.</p></li>
+      <li><h3>Мы откладываем <span class="js-rate">5</span>&nbsp;%</h3><p>От фактически оплаченной суммы заказа — после скидок. Сумма попадает в счётчик через <span class="js-hold">сутки</span> после оплаты. Если заказ вернут — начисление снимем.</p></li>
+      <li><h3>Покупаем и передаём вещь</h3><p>Когда набираем сумму, сами покупаем то, что нужно детям, и передаём по договору пожертвования и акту. Документы публикуем здесь.</p></li>
+    </ol>
+  </section>
+
+  <section id="goal">
+    <h2>Первая цель</h2>
+    <div class="card goal">
+      <div class="ico" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="9" rx="2"/><path d="M6 9h12M7 17v3M12 16v4M17 17v3"/></svg></div>
+      <div>
+        <h3 id="gTitle">Сплит-система с установкой для детской комнаты</h3>
+        <p id="gNote">Ориентир — 27&nbsp;000&nbsp;₽. Точную сумму назовём по смете после согласования с учреждением.</p>
+      </div>
+    </div>
+    <p>Мы помогаем вещью, а не переводом денег: так помощь быстрее и точнее доходит до детей. Купим кондиционер, оплатим установку у подрядчика с гарантией и передадим учреждению по договору и акту приёма-передачи.</p>
+  </section>
+
+  <section id="reports">
+    <h2>Отчёты</h2>
+    <div class="card tbl">
+      <table>
+        <thead><tr><th>Дата</th><th>Что передано</th><th>Сумма</th><th>Документы</th></tr></thead>
+        <tbody id="tRows"><tr><td colspan="4" class="empty">Передач пока не было. Первый отчёт — договор, акт и чеки — появится здесь сразу после передачи.</td></tr></tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:.95rem">Счётчик показывает только реальные суммы: оплаченные заказы, без тестовых и служебных, за вычетом возвратов. Передачи — только подтверждённые документами.</p>
+  </section>
+
+  <section id="help">
+    <h2>Как помочь</h2>
+    <div class="help">
+      <div class="card">
+        <h3>🎁 Подарите подарок близким</h3>
+        <p>С каждого оплаченного заказа Talemir откладывает <span class="js-rate">5</span>&nbsp;% на помощь детям. Чем больше подарков — тем быстрее дойдём до цели.</p>
+        <a class="btn" href="/#products">Выбрать подарок</a>
+      </div>
+      <div class="card">
+        <h3>💌 Расскажите друзьям</h3>
+        <p>Поделитесь этой страницей. Можно и подсказать нам: если вы знаете надёжного мастера по установке кондиционеров в Ростовской области или у вас есть идея, как ещё помочь — напишите на <a href="mailto:info@talemir.com">info@talemir.com</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>Вопросы и ответы</h2>
+    <details><summary>Это моё пожертвование?</summary><p>Нет. Вы платите только за подарок, по обычной цене. Отчисление делает Talemir из своей выручки, поэтому налоговый вычет покупателю не положен.</p></details>
+    <details><summary>От какой суммы считаются <span class="js-rate">5</span>&nbsp;%?</summary><p>От фактически оплаченной суммы заказа — после всех скидок и бонусов. Тестовые и служебные заказы в счётчик не входят. Если заказ вернули, начисление снимается.</p></details>
+    <details><summary>Почему не деньгами?</summary><p>Детский дом — государственное учреждение: денежные пожертвования проходят через бюджет и закупки. Вещь с установкой быстрее доходит до детей, а мы можем показать каждый документ.</p></details>
+    <details><summary>Почему вы не называете детский дом?</summary><p>Мы назовём учреждение только с его письменного согласия — после подписания соглашения. До этого мы не публикуем название, логотип и не пишем от его имени.</p></details>
+    <details><summary>Почему на странице нет фотографий детей?</summary><p>Мы бережём частную жизнь детей. Вместо лиц покажем то, что было передано: кондиционер в комнате, акт и благодарственное письмо — если учреждение разрешит.</p></details>
+  </section>
+
+  <p class="legal" id="legal">Программу «Добрые подарки» проводит ИП Селезнева Светлана Тюговна (бренд Talemir), ИНН 231703925221, ОГРНИП 324470400009340. Talemir не собирает пожертвования и не действует от имени учреждения. <span id="lStart"></span> Об изменении условий сообщим на этой странице в тот же день.</p>
+</div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <nav aria-label="Документы">
+      <a href="/contacts.html">Контакты и реквизиты</a>
+      <a href="/offer.html">Публичная оферта</a>
+      <a href="/privacy.html">Политика конфиденциальности</a>
+      <a href="/charity.html" aria-current="page">💛 Добрые подарки</a>
+    </nav>
+    <p>© 2026 Talemir. ИП Селезнева Светлана Тюговна, ИНН 231703925221</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var API = (document.querySelector('meta[name="talemir-api"]') || {}).content || '';
+  var $ = function(id){ return document.getElementById(id); };
+  var rub = function(x){ var n = Number(x) || 0; return n.toLocaleString('ru-RU', {minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2}).replace(/ /g, ' '); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  var dmy = function(s){ var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] : esc(s); };
+  function render(d){
+    var rate = Number(d.rate_pct) || 5, goal = Number(d.goal_rub) || 0, acc = Number(d.accrued_rub) || 0;
+    [].forEach.call(document.querySelectorAll('.js-rate'), function(e){ e.textContent = rub(rate); });
+    var h = Number(d.hold_hours) || 24;
+    [].forEach.call(document.querySelectorAll('.js-hold'), function(e){ e.textContent = h === 24 ? 'сутки' : (h + ' ч'); });
+    $('cAcc').textContent = rub(acc);
+    $('cPend').textContent = rub(d.pending_rub) + ' ₽';
+    $('cTr').textContent = rub(d.transferred_rub) + ' ₽';
+    $('cOrd').textContent = String(d.orders || 0);
+    if (goal > 0){
+      var p = Math.min(100, acc / goal * 100);
+      $('cBar').style.width = (acc > 0 ? Math.max(p, 1) : 0) + '%';
+      $('cBar').parentNode.setAttribute('aria-valuenow', p.toFixed(1));
+      $('cGoalLine').textContent = rub(acc) + ' ₽ из ' + rub(goal) + ' ₽ — ориентир первой цели';
+    }
+    if (d.goal_title) $('gTitle').textContent = d.goal_title;
+    if (d.goal_note) $('gNote').textContent = 'Ориентир — ' + rub(goal) + ' ₽. ' + d.goal_note;
+    if (!d.live){
+      $('cNote').textContent = 'Счётчик начнёт работу с даты запуска программы — мы покажем её здесь. Пока отложено 0 ₽: мы не показываем выдуманных цифр.';
+    } else {
+      var st = d.start ? dmy(d.start) : '';
+      $('cNote').textContent = 'Считаем заказы, оплаченные с ' + st + '. Обновляется автоматически' + (d.updated ? ', данные на ' + d.updated.slice(11,16) + ' МСК' : '') + '.' + (acc === 0 ? ' Пока отложено 0 ₽ — первые суммы появятся после первых оплаченных заказов.' : '');
+      $('lStart').textContent = st ? 'Дата начала программы — ' + st + '.' : '';
+    }
+    var tr = d.transfers || [];
+    if (tr.length){
+      $('tRows').innerHTML = tr.map(function(t){
+        var docs = (t.docs || []).map(function(x){ return /^https:\/\//.test(x.url || '') ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title || 'документ') + '</a>' : ''; }).filter(Boolean).join(', ');
+        return '<tr><td>' + dmy(t.date) + '</td><td>' + esc(t.what) + '</td><td>' + rub(t.amount) + ' ₽</td><td>' + (docs || '—') + '</td></tr>';
+      }).join('');
+    }
+  }
+  function fail(){ ['cAcc','cPend','cTr','cOrd'].forEach(function(i){ $(i).textContent = '—'; }); $('cNote').textContent = 'Данные счётчика сейчас недоступны — попробуйте обновить страницу чуть позже.'; }
+  if (!API){ fail(); return; }
+  fetch(API + '/api/charity/total', {credentials: 'omit'}).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(render).catch(fail);
+})();
+</script>
+</body>
+</html>
