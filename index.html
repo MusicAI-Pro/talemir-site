@@ -920,6 +920,16 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
     </div>
   </div></section>
 
+  <!-- CHAR3 30.10: анонс «💛 Добрые подарки» (только RU — показывает invSync). Учреждение не называем до соглашения. -->
+  <section id="kind" style="padding-top:0" hidden><div class="wrap">
+    <style>#kind .kd{display:flex;gap:22px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--cloth);color:var(--cloth-ink);border-radius:var(--r);padding:26px 28px;box-shadow:var(--shadow)}#kind .kd h2{color:#fff;font-size:clamp(1.3rem,3vw,1.8rem);margin:0 0 8px}#kind .kd p{margin:0;color:color-mix(in srgb,var(--cloth-ink) 82%,transparent);max-width:620px}#kind .kd .btn{flex:none}@media (max-width:640px){#kind .kd{padding:20px 18px}#kind .kd .btn{width:100%}}</style>
+    <div class="kd">
+      <div><h2>💛 Добрые подарки</h2>
+        <p>Часть каждого оплаченного заказа Talemir откладывает на помощь детскому дому — цена для вас не меняется. Учреждение и отчёты опубликуем после подписания соглашения.</p></div>
+      <a class="btn btn-gold" href="/charity.html">Как это работает</a>
+    </div>
+  </div></section>
+
   <section style="padding-top:0"><div class="wrap final">
     <h2 data-i="fn_h"></h2>
     <a class="btn btn-gold" href="#products" data-i="nav_cta">Выбрать подарок</a>
@@ -929,7 +939,7 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
 
 <footer><div class="wrap">
   <span><b class="brand">Talemir</b></span>
-  <nav class="ftlinks"><a href="/contacts.html" data-i="ft_contacts"></a><a href="/offer.html" data-i="ft_offer"></a><a href="/privacy.html" data-i="ft_privacy"></a><a href="https://ru.api.talemir.com/cabinet" data-i="nav_cab"></a><a href="/invite.html" id="ftInv" hidden>Приглашение на праздник</a></nav>
+  <nav class="ftlinks"><a href="/contacts.html" data-i="ft_contacts"></a><a href="/offer.html" data-i="ft_offer"></a><a href="/privacy.html" data-i="ft_privacy"></a><a href="https://ru.api.talemir.com/cabinet" data-i="nav_cab"></a><a href="/invite.html" id="ftInv" hidden>Приглашение на праздник</a><a href="/charity.html" id="ftKind" hidden>💛 Добрые подарки</a></nav>
   <span>© 2026 · ИП Селезнева Светлана Тюговна · ИНН 231703925221 · ОГРНИП 324470400009340</span>
 </div></footer>
 
@@ -1080,7 +1090,7 @@ const LANGS_ON = ['ru','en'];
 /* 26.10.2026: приглашения (/invite.html). true — показать карточку «Приглашение на праздник» и ссылку в подвале (только на русском, цены только в рублях).
    Включать вместе с публикацией оферты от 26.10.2026 и CHAT_INV_LIVE на сервере. */
 const INVITE_LIVE = true;   /* 26.10.2026: открыто по «да» собственника */
-function invSync(){ const on = INVITE_LIVE && lang === 'ru'; const s = document.getElementById('invite'); if (s) s.hidden = !on; const f = document.getElementById('ftInv'); if (f) f.hidden = !on; }
+function invSync(){ const on = INVITE_LIVE && lang === 'ru'; const s = document.getElementById('invite'); if (s) s.hidden = !on; const f = document.getElementById('ftInv'); if (f) f.hidden = !on; const kd = document.getElementById('kind'), fk = document.getElementById('ftKind'); if (kd) kd.hidden = lang !== 'ru'; if (fk) fk.hidden = lang !== 'ru';   /* CHAR3 30.10 */ }
 function curSet(){ try { const b = bundleFor(curProd).filter(k => k !== 'inv' && k !== 'invkit'); return b.length ? b : [curProd]; } catch(_) { return [curProd]; } }   /* 29.10 CART1 */
 function photoMax(){ const S = curSet(); return S.length === 1 && S[0] === 'ny' ? 4 : S.length === 1 && S[0] === 'sing' ? 1 : 8; }
 function consentKind(){ return curSet().every(k => k === 'clip' || k === 'live') ? 'universal' : 'parent'; }   /* = варианты 1.1 и 1.3 согласия 1.5 */
@@ -1516,7 +1526,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   try {
     const r = await fetch(API + '/api/orders', {method:'POST', body:fd});
     const j = await r.json().catch(() => ({}));
-    if (r.status === 201) { try { localStorage.setItem('tm_order', j.token); } catch(_){} SEND_NOW = false;
+    if (r.status === 201) { try { localStorage.setItem('tm_order', j.token); } catch(_){} try { window.tmMyAdd && tmMyAdd(j.token); } catch(_){} SEND_NOW = false;   /* PS2 */
       if (window.PAYUX && j.token) { PAYUX.after(j.token, _keys, _sig); return; }   /* 29.10 PAYUX1: оплата — в этом же окне */
       let rf = ''; try { rf = localStorage.getItem('tm_ref') || ''; } catch(_){} location.href = API + '/api/start/' + encodeURIComponent(j.token || '') + (rf ? '?ref=' + encodeURIComponent(rf) : ''); return; }
     SEND_NOW = false;
@@ -1809,8 +1819,23 @@ function draw(d){var os=(d&&d.orders)||[],sn=ls('tm_seen'),dn=ls('tm_dinged');
  if(work){W.className='tm-giftw';T.innerHTML='Подарок готовится<span class="tm-dots"></span>';W.href=work.link;W.onclick=null;W.hidden=false;return true}
  if(ready){W.className='tm-giftw ready';T.textContent='Подарок готов — открыть';W.href=ready.link;W.onclick=function(){lsAdd('tm_seen',ready.num)};W.hidden=false;return false}
  W.hidden=true;return false}
-function load(){fetch('https://ru.api.talemir.com/api/widget',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null})
- .then(function(d){var again=draw(d);clearTimeout(timer);if(again)timer=setTimeout(load,30000)}).catch(function(){})}
+/* PS2 30.10: значок видел заказ только по cookie, которую ставит возврат с ЮKassa (/r/) или страница заказа. Оплатил в другой вкладке,
+   в приложении банка (СБП) или из Mini App /app/ и не вернулся по «Вернуться в магазин» — значка не было. Теперь номер заказа запоминается
+   на этом устройстве (localStorage talemir.com — общий у сайта и /app/; только номер заказа, не ПДн), этап — из /api/orders/<номер>/state. */
+var RU='https://ru.api.talemir.com',MY_K='tm_my_orders',H=3600e3,UNP={awaiting_payment:1,in_review:1,preview_ready:1,preview_wait:1},DEAD={canceled:1,expired:1,gone:1};
+function myGet(){try{var a=JSON.parse(localStorage.getItem(MY_K)||'[]');return Array.isArray(a)?a.filter(function(e){return e&&/^[0-9a-f]{16}$/.test(e.t)}):[]}catch(e){return[]}}
+function myAdd(tok){if(!/^[0-9a-f]{16}$/.test(tok||''))return;try{var a=myGet().filter(function(e){return e.t!==tok});a.push({t:tok,at:Date.now()});localStorage.setItem(MY_K,JSON.stringify(a.slice(-10)))}catch(e){}}
+function mySave(list,drop){try{var cur=myGet().filter(function(e){return!drop[e.t]});list.forEach(function(e){for(var i=0;i<cur.length;i++)if(cur[i].t===e.t)cur[i]=e});localStorage.setItem(MY_K,JSON.stringify(cur.slice(-10)))}catch(e){}}
+function myOrders(){var now=Date.now(),drop={},keep=myGet().filter(function(e){var d=now-e.at>14*24*H||DEAD[e.s]||(UNP[e.s||'in_review']&&now-e.at>24*H);if(d)drop[e.t]=1;return!d});
+ return Promise.all(keep.map(function(e){if(e.s==='ready'||(UNP[e.s||'in_review']&&now-e.at>3*H))return Promise.resolve(e);
+  return fetch(RU+'/api/orders/'+e.t+'/state',{cache:'no-store'}).then(function(r){if(r.status===404){e.s='gone';return e}
+   return r.ok?r.json().then(function(j){e.s=j.status;e.g=j.stage;if(j.status==='ready'&&!e.r)e.r=now;return e}):e}).catch(function(){return e})}))
+ .then(function(list){mySave(list,drop);return list.filter(function(e){return e.s&&!UNP[e.s]&&!DEAD[e.s]&&e.g&&e.g!=='wait'&&e.g!=='queued'&&!(e.s==='ready'&&now-(e.r||e.at)>7*24*H)})
+  .map(function(e){return{num:e.t.slice(0,8).toUpperCase(),stage:e.s==='ready'?'ready':e.g,link:RU+'/order/'+e.t}}).reverse()})}
+window.tmMyAdd=myAdd;
+function load(){Promise.all([fetch(RU+'/api/widget',{credentials:'include',cache:'no-store'}).then(function(r){return r.ok?r.json():null}).catch(function(){return null}),
+  myOrders().catch(function(){return[]})]).then(function(v){var os=((v[0]&&v[0].orders)||[]).slice(),have={};os.forEach(function(o){have[o.num]=1});
+  v[1].forEach(function(o){if(!have[o.num])os.push(o)});var again=draw({orders:os});clearTimeout(timer);if(again)timer=setTimeout(load,30000)}).catch(function(){})}
 window.tmGiftW={draw:draw,ding:ding};   /* для проверки в консоли */
 /* 29.10 PAY2: возврат после оплаты (ЮKassa → ru.api /r/ → сюда с ?paid=НОМЕР): плашка «Оплата получена» и сразу значок «Подарок готовится» */
 (function(){try{var q=new URLSearchParams(location.search),n=(q.get('paid')||'').toUpperCase();if(!/^[0-9A-F]{8}$/.test(n))return;
@@ -2163,6 +2188,7 @@ var PAYUX = (function(){
         err(null, t('pe_http').replace('{c}', r.status)); b.disabled = true; S.busy = true; setTimeout(() => oldStart(), 1800); return; }   /* непредвиденная ошибка — прежняя страница оформления */
       let j = {}; try { j = await r.json(); } catch(_){}
       if (!j.confirmation_url) { err(null, t('pe_http').replace('{c}', r.status)); S.busy = true; setTimeout(() => oldStart(), 1800); return; }
+      try { window.tmMyAdd && tmMyAdd(S.tok); } catch(_){}               /* PS2: значок «Подарок готовится» — даже без возврата с ЮKassa */
       location.href = j.confirmation_url; }                                 /* страница банка — в этой же вкладке */
     catch(_) { S.busy = false; b.disabled = false; err(null, t('pe_net')); } }
   function back(){ clearErr(); show('formSum'); }
@@ -2884,7 +2910,7 @@ window.pregLive = (function(){
         fd.append('plan', (document.querySelector('input[name=plplan]:checked') || {}).value || 'photo');
         fd.append('weeks', $('plWeeks').value); fd.append('baby_name', $('plBaby').value); fd.append('lang', lang);
         [['q_skin_m','plQ1'],['q_hair_m','plQ2'],['q_skin_f','plQ3'],['q_hair_f','plQ4'],['q_grand','plQ5'],['q_wish','plQ6']].forEach(function(p){ fd.append(p[0], $(p[1]).value); });
-        post('/api/preg/orders', fd).then(function(j){ S.tok = j.token; S.start = API + j.start; location.href = S.start; })
+        post('/api/preg/orders', fd).then(function(j){ S.tok = j.token; try { window.tmMyAdd && tmMyAdd(j.token); } catch(_){} S.start = API + j.start; location.href = S.start; })
           .catch(function(e){ err('plE4', e); b.disabled = false; b.textContent = t('pl_send'); });
       }, 'image/jpeg', 0.93); };
   }
