@@ -320,6 +320,18 @@ details.acc[open] summary::after{content:"▴"}
 .ethumbs button[aria-pressed="true"]{border-color:var(--gold)}
 .ethumbs img{width:100%;height:100%;object-fit:cover}
 @media (prefers-reduced-motion:reduce){.step>i{transition:none}.step-leave,.step-enter{animation-duration:.01s!important;animation-delay:0s!important}}
+/* FAM2: превью календаря */
+.calprev{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin:0 -2px}
+.calpg{flex:0 0 76%;max-width:260px;scroll-snap-align:start;background:#fff;color:#343a4e;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.calpg img{display:block;width:100%;aspect-ratio:5/4;object-fit:cover}
+.calhd{display:flex;align-items:baseline;justify-content:space-between;padding:8px 10px 2px}.calhd b{font:600 20px/1.1 "Marck Script",cursive}.calhd small{color:#80808c;font-size:12px}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:4px 8px 10px;text-align:center;font:600 11px/1.9 system-ui,sans-serif}
+.calg i{font-style:normal;font-size:9px;color:#80808c}.calg .r{color:#c43434}.calg .f{box-shadow:inset 0 0 0 1.5px #d6a03c;border-radius:50%}
+.calded{margin:0 0 10px;font-size:14px}
+.calth{display:flex;flex-direction:column;gap:8px}.calth .thr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.calth .thr>b{flex:0 0 84px;font-weight:600}
+.calth .thc{display:flex;gap:6px;flex-wrap:wrap;flex:1}.calth .chip{border:1px solid var(--line);background:transparent;color:inherit;border-radius:999px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer}
+.calth .chip[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 22%,transparent);font-weight:600}
+@media (min-width:700px){.calpg{flex-basis:31%}}
 </style>
 </head>
 <body>
@@ -598,7 +610,8 @@ var PROD = {
  live:{ru:"Живые фото", en:"Living photos", sru:"Фото оживают под песню", sen:"Photos come alive with a song", price:1990, from:true, img:"ex_live2.jpg", dir:["adult"], via:"bot", eta:20},
  cartoon:{ru:"Мультфильм по вашей истории", en:"A cartoon of your story", sru:"30 с · 1 мин · 2 мин, сначала — герои", sen:"30 s · 1 min · 2 min, heroes first", price:2190, from:true, img:"ex_cartoon.jpg", dir:["cart","adult"], via:"site", eta:15},
  pet_live:{ru:"Живое фото питомца", en:"Living pet photo", sru:"Кошка или собака оживает", sen:"Your cat or dog comes alive", price:390, img:"ex_pet_live.jpg", dir:["pets"], via:"bot", eta:5},
- pet_sing:{ru:"Поющий питомец", en:"Singing pet", sru:"Песня с кличкой", sen:"A song with the pet's name", price:590, img:"ex_pet_sing.jpg", dir:["pets"], via:"bot", eta:40}
+ pet_sing:{ru:"Поющий питомец", en:"Singing pet", sru:"Песня с кличкой", sen:"A song with the pet's name", price:590, img:"ex_pet_sing.jpg", dir:["pets"], via:"bot", eta:40},
+ calendar:{ru:"Календарь семьи 2027", en:"Family calendar 2027", sru:"Ребёнок в теме каждого месяца: 13 листов A3, PDF для печати + 12 фото", sen:"Your child in every month's theme: 13 A3 pages, print PDF + 12 photos", price:990, img:"ex_calendar.jpg", dir:["kids","photo"], via:"site", eta:8, badge:"new", flag:"calendar"}
 };
 var DIRS = [["photo","📸"],["kids","🧸"],["adult","💛"],["pets","🐾"],["cart","🎬"]];
 
@@ -685,7 +698,7 @@ function renderHome(){
     var k = d[0], items;
     html += '<section id="sec-' + k + '"><h2>' + d[1] + ' ' + esc(t("d_" + k)) + '</h2><p class="sec-note">' + esc(t("dn_" + k)) + '</p>';
     if (k === "photo") items = PACKS.filter(function(p){ return !p.soon; }).slice(0, 6).map(packCard);
-    else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0; }).map(card);
+    else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0 && (!PROD[x].flag || S.flags[PROD[x].flag]); }).map(card);   /* FAM2: продукт за флагом */
     if (k === "kids") items.splice(1, 0, packCard(pk("kids_fairy")), packCard(pk("kids_prof")));
     if (k === "adult") items.push(packCard(pk("business")), packCard(pk("love_story")));
     html += '<div class="row">' + items.join("") + '</div></section>';
@@ -925,7 +938,57 @@ function stLangRu(){ return lang; }
 function stEmail(){ return {id:"email", type:"email", sec:function(){ return t("w_em_sec"); }, q:function(){ return t("w_em_q"); }, sub:function(){ return t("w_em_sub"); }, req:1, sum:function(a){ return a.email; }}; }
 function stSum(){ return {id:"sum", type:"sum", sec:function(){ return t("w_sum_sec"); }, q:function(){ return t("w_sum_q"); }, sub:function(){ return t("w_sum_sub"); }}; }
 function kidOf(){ var c = W.ctx; if (W.prod !== "photoshoot") return true; var who = c.who || W.a.who; return who === "child" || who === "family"; }   /* семья — в кадре есть дети: только свет и резкость */
+
+/* ---------------- FAM2 30.10.2026: «Календарь семьи» — красные дни 2027 = famcal_grid (ТК РФ ст. 112 + постановление № 1187 от 17.09.2026) ---------------- */
+var CAL27_OFF = {"1": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 16, 17, 23, 24, 30, 31], "2": [6, 7, 13, 14, 21, 22, 23, 27, 28], "3": [6, 7, 8, 13, 14, 20, 21, 27, 28], "4": [3, 4, 10, 11, 17, 18, 24, 25], "5": [1, 2, 3, 8, 9, 10, 15, 16, 22, 23, 29, 30], "6": [5, 6, 12, 13, 14, 19, 20, 26, 27], "7": [3, 4, 10, 11, 17, 18, 24, 25, 31], "8": [1, 7, 8, 14, 15, 21, 22, 28, 29], "9": [4, 5, 11, 12, 18, 19, 25, 26], "10": [2, 3, 9, 10, 16, 17, 23, 24, 30, 31], "11": [4, 5, 6, 7, 13, 14, 20, 21, 27, 28], "12": [4, 5, 11, 12, 18, 19, 25, 26, 31]};
+var CAL_M = ["","Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+var CAL_M_EN = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+var CAL_FOR = [["gr","👵","Бабушке и дедушке","Grandparents"],["mom","💐","Маме","Mum"],["dad","🧔","Папе","Dad"],["me","🏡","Себе, домой","For us, at home"],["oth","🎁","Другому человеку","Someone else"]];
+var CAL_TH = {"1": [["Снежные каникулы", "Snowy holidays"], ["Зимний лес", "Winter forest"]], "2": [["Зимние забавы", "Sledging"], ["Каток", "Ice rink"]], "3": [["Первые цветы весны", "First spring flowers"], ["Весенние ручьи", "Spring streams"]], "4": [["Весенние лужи", "Spring puddles"], ["Птицы вернулись", "Birds are back"]], "5": [["Сирень цветёт", "Lilac in bloom"], ["На велосипеде", "On a bike"]], "6": [["Здравствуй, лето", "Hello, summer"], ["Земляника", "Wild strawberries"]], "7": [["Солнце и вода", "Sun and water"], ["Летний пикник", "Summer picnic"]], "8": [["Сад и урожай", "Orchard harvest"], ["Подсолнухи", "Sunflowers"]], "9": [["Золотая осень", "Golden autumn"], ["Снова в школу", "Back to school"]], "10": [["Листопад", "Falling leaves"], ["Грибная прогулка", "Mushroom walk"]], "11": [["Уютная осень", "Cosy autumn"], ["Первый снег", "First snow"]], "12": [["Скоро Новый год", "New Year is coming"], ["Зимняя сказка", "Winter tale"]]};
+function calThDef(a, mo){ return mo === 9 && a.cal_who !== "family" && +a.age >= 6 && +a.age <= 11 ? "b" : "a"; }
+function calTh(a, mo){ return (a.cal_th && a.cal_th[mo]) || calThDef(a, mo); }
+function calThBody(){
+  var a = W.a, h = '<div class="calth">';
+  for (var mo = 1; mo <= 12; mo++) h += '<div class="thr"><b>' + esc(L2(CAL_M[mo], CAL_M_EN[mo])) + '</b><div class="thc">' + ["a", "b"].map(function(k, i){ return '<button type="button" class="chip" data-tm="' + mo + k + '" aria-pressed="' + (calTh(a, mo) === k) + '">' + esc(L2(CAL_TH[mo][i][0], CAL_TH[mo][i][1])) + '</button>'; }).join("") + '</div></div>';
+  return h + '</div><p class="tips">' + esc(L2("Обложка — портрет ребёнка. Фото месяцев создаёт ИИ по вашим фото: лицо сверяем с оригиналом на каждом листе.","The cover is a portrait. AI creates each month's photo from your photos; we check the face against the original on every page.")) + '</p>';
+}
+var CAL_DED = {gr:["Любимым бабушке и дедушке от ","To dear Granny and Grandpa from "], mom:["Любимой маме от ","To dear Mum from "], dad:["Любимому папе от ","To dear Dad from "]};
+function calDates(raw){ var out = []; String(raw || "").split(/[;\n]+/).forEach(function(p){ var m = p.match(/^\s*(\d{1,2})[.\/](\d{1,2})(?:[.\/]\d{2,4})?\s*[-—–:]?\s*(.*)$/); if (!m) return; var d = +m[1], mo = +m[2]; if (mo < 1 || mo > 12 || d < 1 || d > new Date(2027, mo, 0).getDate() || !m[3].trim()) return; out.push({d:d, m:mo, t:m[3].trim().slice(0, 28)}); }); return out.slice(0, 12); }
+function calMonth(mo, a){
+  var first = (new Date(2027, mo - 1, 1).getDay() + 6) % 7, n = new Date(2027, mo, 0).getDate(), off = CAL27_OFF[mo] || [], fam = calDates(a.cal_dates).filter(function(x){ return x.m === mo; }).map(function(x){ return x.d; });
+  var h = '<div class="calg">' + ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map(function(d, i){ return '<i' + (i > 4 ? ' class="r"' : '') + '>' + d + '</i>'; }).join("");
+  for (var i = 0; i < first; i++) h += '<span></span>';
+  for (var d = 1; d <= n; d++) h += '<span class="' + (off.indexOf(d) >= 0 ? "r" : "") + (fam.indexOf(d) >= 0 ? " f" : "") + '">' + d + '</span>';
+  return h + '</div>';
+}
+function calPrevBody(){
+  var a = W.a, ded = String(a.dedic || "").trim();
+  var h = '<p class="tips" style="margin-top:0">' + esc(L2("Так будет выглядеть календарь: сетка 2027 года с официальными выходными и вашими датами. На фото здесь — пример; в вашем календаре на каждом месяце будет ваш ребёнок.","This is how the calendar will look: the 2027 grid with official holidays and your dates. The photos here are an example; your calendar will show your child in every month.")) + '</p>';
+  if (ded) h += '<div class="calded">' + esc(L2("На обложке: ","On the cover: ")) + '<b>' + esc(ded) + '</b></div>';
+  h += '<div class="calprev">' + [1, 5, 9].map(function(mo){ return '<div class="calpg"><img loading="lazy" src="../img/cal/ex_' + (mo < 10 ? "0" : "") + mo + '.jpg" alt=""><div class="calhd"><b>' + esc(L2(CAL_M[mo], CAL_M_EN[mo])) + '</b><small>2027</small></div>' + calMonth(mo, a) + '</div>'; }).join("") + '</div>';
+  h += '<p class="tips">' + esc(L2("Каждый лист перед отправкой проверяем: сходство лица с вашим фото и качество кадра. Праздники и переносы — по постановлению Правительства РФ № 1187 от 17.09.2026.","Before sending, we check every page: the face matches your photo and the picture is flawless. Holidays follow the Russian Government decree No. 1187 of 17.09.2026.")) + '</p>';
+  return h;
+}
 var DEF = {
+ calendar: function(){ return [
+  {id:"for", type:"tiles", field:"cal_for", cols:1, sec:["Календарь","Calendar"], q:["Кому подарок?","Who is the gift for?"], sub:["13 листов A3: обложка и 12 месяцев, на каждом — ваш ребёнок в теме месяца.","13 A3 pages: a cover and 12 months, your child in every month's theme."], opts:function(){ return opt4(CAL_FOR); }, req:1, sum:function(a){ var g = CAL_FOR.filter(function(x){ return x[0] === a.cal_for; })[0]; return g ? L2(g[2], g[3]) : ""; }},
+  {id:"who", type:"tiles", field:"cal_who", cols:1, sec:["Кто на листах","Who is pictured"], q:["Кто будет на каждом месяце?","Who will be in every month?"], opts:function(){ return [{v:"child", e:"🧒", t:L2("Ребёнок","A child"), d:L2("1–10 фото одного ребёнка","1–10 photos of one child")}, {v:"family", e:"👨‍👩‍👧", t:L2("Вся семья","The whole family"), d:L2("одно общее фото, до 5 человек","one group photo, up to 5 people")}]; }, req:1, def:"child", sum:function(a){ return a.cal_who === "family" ? L2("вся семья","the whole family") : L2("ребёнок","a child"); }},
+  Object.assign(stName(["Как зовут ребёнка?","What is the child's name?"], ["Имя подпишем на обложке, если захотите.","We can put the name on the cover."]), {when:function(a){ return a.cal_who !== "family"; }}),
+  Object.assign(stAge(false), {when:function(a){ return a.cal_who !== "family"; }}),
+  {id:"fam", type:"text", field:"name", max:30, req:1, sec:["Имя","Name"], q:["Как подписать календарь?","How should we sign the calendar?"], ph:["Семья Соколовых","The Sokolov family"], when:function(a){ return a.cal_who === "family"; }, sum:function(a){ return a.name; }},
+  stPhotos("cal", {min:1, max:10, q:function(){ return W.a.cal_who === "family" ? L2("Общее фото семьи","A family photo") : L2("Фото ребёнка","Photos of the child"); }, sub:function(){ return W.a.cal_who === "family" ? L2("Первым — общее фото: все лица хорошо видны. Можно добавить до 9 фото каждого крупно.","First a group photo with every face clearly visible. You can add up to 9 close-ups.") : L2("1–10 фото, лучше 3–5: лицо крупно, хороший свет, без очков и масок. Главное фото — первым.","1–10 photos, ideally 3–5: face close, good light, no sunglasses or masks. The best one first."); }}),
+  {id:"dedic", type:"text", field:"dedic", max:60, opt:1, sec:["Посвящение","Dedication"], q:["Подпись на обложке","A line on the cover"], sub:["Например, кому и от кого. Можно пропустить.","For example, to whom and from whom. You can skip it."],
+   ph:function(){ var c = CAL_DED[W.a.cal_for], n = String(W.a.name || "").trim(); return c && n && W.a.cal_who !== "family" ? [c[0] + n, c[1] + n] : ["Любимой бабушке от Амелии","To dear Granny from Amelia"]; }, sum:function(a){ return a.dedic; }},
+  {id:"dates", type:"text", field:"cal_dates", max:300, opt:1, sec:["Даты семьи","Family dates"], q:["Отметить даты семьи?","Mark family dates?"], sub:["Дни рождения, годовщины — через точку с запятой. Обведём число и подпишем.","Birthdays, anniversaries — separated by semicolons. We circle the day and sign it."], ph:["12.03 ДР бабушки; 05.07 Годовщина","12.03 Granny's birthday; 05.07 Anniversary"], sum:function(a){ var n = calDates(a.cal_dates).length; return n ? L2("даты семьи: ","family dates: ") + n : ""; },
+   valid:function(a){ var raw = String(a.cal_dates || "").trim(); if (!raw) return ""; var n = calDates(raw).length, parts = raw.split(/[;\n]+/).filter(function(x){ return x.trim(); }).length; return n < parts ? L2("Не поняли " + (parts - n) + " из " + parts + " дат. Формат: 12.03 ДР бабушки; 05.07 Годовщина.","Could not read " + (parts - n) + " of " + parts + " dates. Format: 12.03 Granny's birthday; 05.07 Anniversary.") : ""; }},
+  {id:"year", type:"tiles", field:"cal_year", cols:1, sec:["Год","Year"], q:["На какой год?","Which year?"], sub:["2028 добавим осенью 2027 года, когда выйдет постановление о переносах выходных.","We will add 2028 in autumn 2027, when the decree on moved days off is published."], opts:function(){ return [{v:"2027", e:"📅", t:L2("2027, с января по декабрь","2027, January to December")}]; }, req:1, def:"2027", sum:function(){ return "2027"; }},
+  {id:"themes", type:"calthemes", sec:["Темы","Themes"], q:["Темы месяцев","Themes of the months"], sub:["12 тем — по одной на месяц. Нажмите, чтобы выбрать другую.","12 themes, one per month. Tap to pick another."], sum:function(a){ var n = 0; for (var mo = 1; mo <= 12; mo++) if (calTh(a, mo) === "b") n++; return n ? L2("своих тем: ", "changed themes: ") + n : L2("12 тем по месяцам", "12 monthly themes"); }},
+  {id:"prev", type:"calprev", nosum:1, sec:["Превью","Preview"], q:["Превью: январь, май, сентябрь","Preview: January, May, September"]},
+  {id:"fmt", type:"tiles", field:"cal_fmt", cols:1, sec:["Формат","Format"], q:["Как будете печатать?","How will you print it?"], req:1, def:"pdf",
+   opts:function(){ return [{v:"pdf", e:"🖨", t:L2("PDF для печати рядом с домом — 990 ₽","Print-ready PDF — 990 ₽"), d:L2("A3, 13 листов: файл для типографии (CMYK, вылеты) + страницы JPG для фотосалона + 12 фото","A3, 13 pages: a press-ready file + JPG pages for a photo shop + 12 photos")}, {v:"print", e:"🚚", t:L2("Печать у нас с доставкой — скоро","We print and deliver — coming soon"), d:L2("нажмите, чтобы узнать почему","tap to see why")}]; },
+   valid:function(a){ return a.cal_fmt === "print" ? L2("Печать у нас пока не включена: ждём от типографии цену перекидного календаря A3 с доставкой не дороже 1 500 ₽. Сейчас такая печать обошлась бы вам дороже, чем распечатать наш PDF в типографии или фотосалоне рядом с домом. Выберите PDF — файл уже подготовлен под печать.","Printing by us is not available yet: we are waiting for a print-shop quote for an A3 wall calendar with delivery of no more than 1,500 ₽. Right now it would cost you more than printing our PDF at a local print shop. Please choose the PDF — it is already print-ready.") : ""; },
+   noAuto:function(v){ return v === "print"; }, sum:function(a){ return a.cal_fmt === "print" ? "" : L2("PDF для печати", "print-ready PDF"); }},
+  stEmail(), stSum()]; },
  ny: function(){ return [
   {id:"gender", type:"tiles", field:"gender", cols:2, sec:["Дед Мороз","Ded Moroz"], q:["Кого поздравит Дед Мороз?","Who will Ded Moroz greet?"], sub:["Видео около 2 минут: Дед Мороз назовёт по имени, похвалит и передаст песенку от Снегурочки.","A ~2-minute video: Ded Moroz says the name, praises the child and passes on a song from Snegurochka."], opts:function(){ return [{v:"f", e:"👧", t:L2("Девочку","A girl")}, {v:"m", e:"👦", t:L2("Мальчика","A boy")}]; }, req:1, sum:function(a){ return a.gender === "m" ? L2("мальчика","a boy") : L2("девочку","a girl"); }},
   stName(["Как зовут ребёнка?","What is the child's name?"]), stStress(),
@@ -1030,6 +1093,7 @@ function wizDraw(dir){
 function answered(s){
   var a = W.a;
   switch (s.type) {
+    case "calprev": case "calthemes": return true;
     case "text": case "area": return String(a[s.field || s.id] || "").trim().length > 0;
     case "tiles": case "img": return a[s.field] != null && a[s.field] !== "";
     case "age": return a.age != null && a.age !== "";
@@ -1087,7 +1151,7 @@ function bodyOf(s){
   switch (s.type) {
     case "tiles": return '<div class="tiles' + (s.cols === 1 ? " c1" : s.cols === 3 ? " c3" : "") + '" role="group">' + s.opts().map(function(o){ return tileHtml(o, a[s.field]); }).join("") + '</div>';
     case "img": return '<div class="tiles c3" role="group">' + s.opts().map(function(o){ return '<button type="button" class="tile img" data-v="' + o.v + '" aria-pressed="' + (a[s.field] === o.v) + '"><img loading="lazy" src="' + o.img + '" alt=""><span>' + esc(o.t) + '</span></button>'; }).join("") + '</div>';
-    case "text": return '<input class="wfield" type="text" id="wIn" maxlength="' + (s.max || 80) + '" autocomplete="off" placeholder="' + esc(tx(s.ph)) + '" value="' + esc(a[s.field || s.id] || "") + '">';
+    case "text": return '<input class="wfield" type="text" id="wIn" maxlength="' + (s.max || 80) + '" autocomplete="off" placeholder="' + esc(tx(typeof s.ph === "function" ? s.ph() : s.ph)) + '" value="' + esc(a[s.field || s.id] || "") + '">';
     case "area": var v = String(a[s.field] || ""); return '<textarea class="wfield" id="wIn" maxlength="' + (s.max || 600) + '" placeholder="' + esc(tx(s.ph)) + '">' + esc(v) + '</textarea><div class="wcount" id="wCntA">' + v.length + (s.min ? " / " + s.min + "–" : " / ") + (s.max || 600) + '</div>';
     case "age": var h = '<div class="tiles c6" role="group">'; for (var n = 0; n <= 17; n++) h += '<button type="button" class="tile num" data-v="' + n + '" aria-pressed="' + (String(a.age) === String(n)) + '">' + (n === 0 ? "&lt;1" : n) + '</button>'; h += '</div>';
       if (s.adult) h += '<div class="tiles c1" style="margin-top:10px">' + tileHtml({v:"adult", e:"🧑", t:L2("Взрослый (18+)","An adult (18+)")}, a.age) + '</div>'; return h;
@@ -1097,6 +1161,8 @@ function bodyOf(s){
     case "photos": return '<div id="wPh"></div>' + (s.key === "pet" ? '' : '<p class="tips">' + t(s.key === "ph" && W.ctx.pack && (W.ctx.pack.who === "couple" || W.ctx.pack.who === "family") ? "tips_grp" : "tips") + '</p>');
     case "email": return '<input class="wfield" type="email" id="wEm" autocomplete="email" inputmode="email" maxlength="120" placeholder="name@mail.ru" value="' + esc(a.email || "") + '" spellcheck="false" autocapitalize="off"><label class="f" for="wCode">' + esc(t("w_code")) + '</label><input type="text" id="wCode" maxlength="40" autocomplete="off" value="' + esc(a.code || "") + '" autocapitalize="characters" spellcheck="false">';
     case "enh": return enhBody();
+    case "calprev": return calPrevBody();
+    case "calthemes": return calThBody();
     case "sum": return sumBody();
   }
   return "";
@@ -1115,6 +1181,12 @@ function mountOf(s){
     W.tok = null; W.quoted = false; wizFoot();
     if (s.noAuto && s.noAuto(v)) { var m = s.valid ? s.valid(a) : ""; if (m) wErr(m); return; }
     setTimeout(function(){ if (W && W.cur === s.id) wizNext(); }, 180);       /* галочка 180 мс → «испарение» */
+  });
+  if (s.type === "calthemes") b.addEventListener("click", function(e){                 /* FAM2b: тема месяца — без автоперехода */
+    var x = e.target.closest("[data-tm]"); if (!x || W.busy) return; var v = x.getAttribute("data-tm");
+    a.cal_th = a.cal_th || {}; a.cal_th[parseInt(v, 10)] = v.slice(-1);
+    x.parentNode.querySelectorAll("[data-tm]").forEach(function(y){ y.setAttribute("aria-pressed", String(y === x)); });
+    hapticSel(); W.tok = null; W.quoted = false; wizFoot();
   });
   if (s.type === "text" || s.type === "area" || s.type === "occ" || s.type === "email") b.addEventListener("input", function(e){
     if (e.target.id === "wIn") { a[s.field || s.id] = e.target.value; if (s.type === "area") $("wCntA").textContent = e.target.value.length + (s.min ? " / " + s.min + "–" : " / ") + (s.max || 600); W.soft[s.id] = 0; $("wHint").hidden = true; }
@@ -1325,7 +1397,7 @@ function sumBody(){
   act.forEach(function(s){
     if (s.type === "photos") { var fs = W.files[s.key] || []; if (s.key === "ph" && W.usePP) phs += '<img src="' + S.ppUrl + '" alt="">'; fs.forEach(function(x){ phs += '<img src="' + x.url + '" alt="">'; });
       chips += '<button type="button" class="sumchip" data-edit="' + s.id + '"><b>📷</b><span>' + esc(t("w_photos_n").replace("{n}", phCount(s.key))) + '</span><i>✎</i></button>'; return; }
-    var v = s.sum ? s.sum(a) : ""; if (!v && s.opt) return;
+    var v = s.sum ? s.sum(a) : ""; if (!v && (s.opt || s.nosum)) return;
     if (s.long) longs += '<button type="button" class="sumtxt" data-edit="' + s.id + '"><b>' + esc(tx(s.sec)) + ' ✎</b>' + esc(String(v).slice(0, 220)) + (String(v).length > 220 ? "…" : "") + '</button>';
     else chips += '<button type="button" class="sumchip" data-edit="' + s.id + '"><span>' + esc(v || "—") + '</span><i>✎</i></button>';
   });
@@ -1383,7 +1455,7 @@ function reasonOf(detail, status, nph){
   if (d === "ps_pack" || d === "ps_style") return t("sy_soon");
   return t("e_http").replace("{c}", status || "?");
 }
-var ERR_STEP = {photo_count:"@ph", photo_type:"@ph", photo_too_large:"@ph", photo_small:"@ph", bad_contact:"email", bad_email:"email", cart_story:"story", cart_heroes:"name", pet_kind:"kind", pet_name:"name", child_name:"name", consent_child:"sum", consent:"sum", consent_teen:"sum"};
+var ERR_STEP = {cal_themes:"themes", cal_fmt:"fmt", cal_who:"who", cal_dates:"dates", photo_count:"@ph", photo_type:"@ph", photo_too_large:"@ph", photo_small:"@ph", bad_contact:"email", bad_email:"email", cart_story:"story", cart_heroes:"name", pet_kind:"kind", pet_name:"name", child_name:"name", consent_child:"sum", consent:"sum", consent_teen:"sum"};
 function errStep(d){ var k = String(d || ""); if (k.indexOf("photo_mod:") === 0) k = "photo_count"; var s = ERR_STEP[k]; if (!s) return null; if (s === "@ph") { var p = wizActive().filter(function(x){ return x.type === "photos"; })[0]; return p ? p.id : null; } return s; }
 function allPhotos(){ var out = []; wizActive().forEach(function(s){ if (s.type !== "photos") return; if (s.key === "ph" && W.usePP) { out.push(W.ppEnh || "PP"); return; } (W.files[s.key] || []).forEach(function(x){ out.push(x.f); }); }); return out; }
 function wizForm(phs){
@@ -1411,6 +1483,9 @@ function wizForm(phs){
     fd.append("length", p === "song" ? (a.len || "l_60") : ""); if (a.pet_kind === "cat" || a.pet_kind === "dog") fd.append("pet_kind", a.pet_kind);
     fd.append("pet", a.pet || ""); fd.append("from_whom", a.from || ""); fd.append("wish", a.wish || ""); fd.append("stress", String(stressAt)); fd.append("stress_auto", auto); fd.append("gift", a.gift || "g1");
     fd.append("consent_teen", needTeen() ? (a.teen ? "true" : "false") : "n/a");
+    if (p === "calendar") { fd.append("cal_who", a.cal_who === "family" ? "family" : "child"); fd.append("cal_for", a.cal_for || ""); fd.append("cal_year", "2027"); fd.append("cal_fmt", "pdf");
+      fd.append("cal_themes", [1,2,3,4,5,6,7,8,9,10,11,12].map(function(mo){ return mo + calTh(a, mo); }).join(","));
+      fd.append("cal_dates", calDates(a.cal_dates).map(function(x){ return (x.d < 10 ? "0" : "") + x.d + "." + (x.m < 10 ? "0" : "") + x.m + " " + x.t; }).join("; ")); fd.append("consent_child", a.cons ? "true" : "false"); }
     if (p === "cartoon") { fd.append("cart_len", a.cart_len || "60"); fd.append("cart_heroes", [String(a.name || "").trim()].concat(others()).join(", ")); fd.append("cart_story", String(a.story || "").trim()); fd.append("cart_style", a.cart_style || "3d"); fd.append("cart_music", a.cart_music || "song");
       fd.append("cart_counts", ["c1", "c2", "c3"].map(function(k){ return (W.files[k] || []).length; }).join(",")); }
   }
@@ -1563,8 +1638,8 @@ $("prBot").addEventListener("click", function(){
 });
 
 /* ---------------- заказы ---------------- */
-var PICON = {photoshoot:"📸", book:"📖", song:"🎵", clip:"🎬", live:"✨", sing:"🎤", ny:"🎅", cartoon:"🎞", pet_live:"🐾", pet_sing:"🐾", inv:"💌", invkit:"🎉", preg:"👶", preg_v:"👶"};
-var PNAME = {photoshoot:["Фотосессия","Photo session"], book:["Книга-сказка","Fairy-tale book"], song:["Песня с именем","Song with a name"], clip:["Клип из фото","Photo clip"], live:["Живые фото","Living photos"], sing:["Поющее фото","Singing photo"], ny:["Дед Мороз","Ded Moroz"], cartoon:["Мультфильм","Cartoon"], pet_live:["Живое фото питомца","Living pet photo"], pet_sing:["Поющий питомец","Singing pet"], inv:["Приглашение","Invitation"], invkit:["Набор праздника","Party kit"], preg:["Малыш по УЗИ","Baby from ultrasound"], preg_v:["Малыш по УЗИ","Baby from ultrasound"]};
+var PICON = {calendar:"📅", photoshoot:"📸", book:"📖", song:"🎵", clip:"🎬", live:"✨", sing:"🎤", ny:"🎅", cartoon:"🎞", pet_live:"🐾", pet_sing:"🐾", inv:"💌", invkit:"🎉", preg:"👶", preg_v:"👶"};
+var PNAME = {calendar:["Календарь семьи","Family calendar"], photoshoot:["Фотосессия","Photo session"], book:["Книга-сказка","Fairy-tale book"], song:["Песня с именем","Song with a name"], clip:["Клип из фото","Photo clip"], live:["Живые фото","Living photos"], sing:["Поющее фото","Singing photo"], ny:["Дед Мороз","Ded Moroz"], cartoon:["Мультфильм","Cartoon"], pet_live:["Живое фото питомца","Living pet photo"], pet_sing:["Поющий питомец","Singing pet"], inv:["Приглашение","Invitation"], invkit:["Набор праздника","Party kit"], preg:["Малыш по УЗИ","Baby from ultrasound"], preg_v:["Малыш по УЗИ","Baby from ultrasound"]};
 /* QA1 30.10: заказы этого устройства (номера из tm_my_orders, этап — из открытого /api/orders/<номер>/state). Нужен, когда заказ
    создан без входа (Mini App открыт не из Telegram / initData не пришёл) — раньше такой оплаченный заказ в «Заказах» не появлялся вовсе. */
 async function devOrders(known){
