@@ -777,7 +777,7 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
 <section class="e-sheetw" id="products" aria-labelledby="eSlogan"><div class="wrap e-wide"><div class="e-sheet">
     <div class="e-shead">
       <h2 class="e-slogan" id="eSlogan"><span class="e-br" data-i="h4_slogan_b">Talemir —</span> <span data-i="h4_slogan">подарки, в которых живёт любовь</span></h2>
-      <div class="e-seg" id="eAud" role="group" aria-label="Для кого подарок"><button type="button" data-aud="all" aria-pressed="true" data-i="h4_aud_all">Все</button><button type="button" data-aud="kids" aria-pressed="false" data-i="h4_aud_kids">Детям</button><button type="button" data-aud="adult" aria-pressed="false" data-i="h4_aud_adult">Взрослым</button><button type="button" class="e-pets" data-aud="pets" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg><span data-i="h4_aud_pets">Питомцам</span></button></div>
+      <div class="e-seg" id="eAud" role="group" aria-label="Для кого подарок"><button type="button" data-aud="all" aria-pressed="true" data-i="h4_aud_all">Все</button><button type="button" data-aud="kids" aria-pressed="false" data-i="h4_aud_kids">Детям</button><button type="button" data-aud="adult" aria-pressed="false" data-i="h4_aud_adult">Взрослым</button><button type="button" class="e-pets" data-aud="pets" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg><span data-i="h4_aud_pets">Питомцам</span></button><button type="button" class="e-ps-a" onclick="location.hash='photo'" aria-pressed="false"><span aria-hidden="true">📸</span><span data-psru="Фотосессии" data-psen="Photo sessions">Фотосессии</span></button></div>
     </div>
     <div class="e-chips" id="eChips" role="group" aria-label="Тип подарка"></div>
     <div class="e-sgrid">
@@ -797,6 +797,42 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
       </aside>
     </div>
   </div></div></section>
+
+  <!-- BLOOM2 30.10.2026: 5-е направление «Фотосессии» (по одному фото). Оформление — в Talemir Mini App (app/), то же в Telegram. -->
+  <section class="ps-sec" id="photo" aria-labelledby="psH"><div class="wrap e-wide">
+    <div class="ps-head"><span class="ps-pill" data-psru="Новинка · 1 фото → 6 снимков" data-psen="New · 1 photo → 6 shots">Новинка · 1 фото → 6 снимков</span>
+      <h2 id="psH" data-psru="Фотосессии по одному фото" data-psen="Photo sessions from one photo">Фотосессии по одному фото</h2>
+      <p data-psru="Загрузите одно фото — получите 6 реалистичных снимков 2K в выбранном стиле. Для взрослых, детей (фото загружает родитель), пар и семей. Обычно ~5 минут, затем мы вручную проверяем каждый кадр." data-psen="Upload one photo — get 6 realistic 2K shots in the style you choose. For adults, kids (a parent uploads the photo), couples and families. Usually ~5 minutes, then we check every shot by hand.">Загрузите одно фото — получите 6 реалистичных снимков 2K в выбранном стиле. Для взрослых, детей (фото загружает родитель), пар и семей. Обычно ~5 минут, затем мы вручную проверяем каждый кадр.</p></div>
+    <div class="ps-grid"><a class="ps-c" href="app/#ny_family" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/ny_family_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Новогодняя семья" data-psen="New Year family">Новогодняя семья</b><span class="ps-w" data-psru="семья, до 5 человек" data-psen="family, up to 5">семья, до 5 человек</span></a><a class="ps-c" href="app/#christmas" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/christmas_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Рождество" data-psen="Christmas">Рождество</b><span class="ps-w" data-psru="взрослый или ребёнок" data-psen="adult or child">взрослый или ребёнок</span></a><a class="ps-c" href="app/#winter_tale" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/winter_tale_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Зимняя сказка" data-psen="Winter tale">Зимняя сказка</b><span class="ps-w" data-psru="взрослый или ребёнок" data-psen="adult or child">взрослый или ребёнок</span></a><a class="ps-c" href="app/#kids_fairy" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/kids_fairy_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Принц / принцесса" data-psen="Prince / princess">Принц / принцесса</b><span class="ps-w" data-psru="ребёнок" data-psen="child">ребёнок</span></a><a class="ps-c" href="app/#kids_prof" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/kids_prof_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Профессии мечты" data-psen="Dream jobs">Профессии мечты</b><span class="ps-w" data-psru="ребёнок" data-psen="child">ребёнок</span></a><a class="ps-c" href="app/#love_story" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/love_story_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Love story" data-psen="Love story">Love story</b><span class="ps-w" data-psru="пара" data-psen="couple">пара</span></a><a class="ps-c" href="app/#business" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/business_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Деловой портрет" data-psen="Business portrait">Деловой портрет</b><span class="ps-w" data-psru="взрослый" data-psen="adult">взрослый</span></a><a class="ps-c" href="app/#noir" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/noir_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Кино-нуар" data-psen="Film noir">Кино-нуар</b><span class="ps-w" data-psru="взрослый" data-psen="adult">взрослый</span></a></div>
+    <div class="ps-buy"><a class="btn btn-gold" href="app/#photo" data-psl data-psru="Создать фотосессию · 590 ₽" data-psen="Create a photo session · 590 ₽">Создать фотосессию · 590 ₽</a><a class="ps-tg" href="https://t.me/Talemir_bot" rel="noopener" data-psru="Открыть в Telegram" data-psen="Open in Telegram">Открыть в Telegram</a></div>
+    <p class="ps-note" data-psru="Примеры — на вымышленных людях, созданы с помощью ИИ. Фото ребёнка — только с согласия родителя; фото удаляется после выдачи." data-psen="Examples show fictional people and are created with AI. A child's photo only with a parent's consent; the photo is deleted after delivery.">Примеры — на вымышленных людях, созданы с помощью ИИ. Фото ребёнка — только с согласия родителя; фото удаляется после выдачи.</p>
+  </div></section>
+<style>
+.ps-sec{padding:44px 0 8px}
+.ps-head{max-width:760px}
+.ps-pill{display:inline-block;background:var(--pome);color:#fff;font-weight:800;font-size:.8rem;border-radius:999px;padding:.3em .8em}
+.ps-sec h2{font-family:var(--f-display);font-size:clamp(1.5rem,3vw,2.1rem);margin:.4em 0 .3em;color:var(--ink)}
+.ps-sec p{color:var(--muted);margin:0}
+.ps-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:20px}
+.ps-c{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;padding-bottom:12px;transition:transform .15s}
+.ps-c:hover{transform:translateY(-2px)}
+.ps-m{position:relative;display:block;aspect-ratio:4/5;background:var(--line)}
+.ps-m img{width:100%;height:100%;object-fit:cover;display:block}
+.ps-ai{position:absolute;right:8px;bottom:8px;background:rgba(20,16,29,.75);color:#fff;font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px}
+.ps-c b{padding:8px 12px 0;font-family:var(--f-display);font-size:1rem}
+.ps-w{padding:0 12px;color:var(--muted);font-size:.85rem}
+.ps-buy{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:20px}
+.ps-note{font-size:.85rem;margin-top:12px!important}
+.ps-tg{display:inline-flex;align-items:center;min-height:48px;padding:10px 18px;border-radius:14px;border:2px solid var(--cloth);color:var(--ink);font-weight:800;text-decoration:none}.ps-tg:hover{background:color-mix(in srgb,var(--cloth) 8%,transparent)}
+#photo{scroll-margin-top:80px}
+@media (max-width:760px){ .ps-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .ps-sec{padding-top:32px} }
+</style>
+<script>/* BLOOM2: тексты блока «Фотосессии» RU/EN (остальные языки — RU до перевода) и язык ссылок в Mini App */
+(function(){ function ap(){ var L = document.documentElement.lang === 'en' ? 'en' : 'ru';
+  document.querySelectorAll('[data-psru]').forEach(function(e){ e.textContent = e.getAttribute(L === 'en' ? 'data-psen' : 'data-psru'); });
+  document.querySelectorAll('a[data-psl]').forEach(function(a){ var h = a.getAttribute('href').replace(/\?lang=en/, ''); a.setAttribute('href', L === 'en' ? h.replace('app/', 'app/?lang=en') : h); }); }
+  try { ap(); new MutationObserver(ap).observe(document.documentElement, {attributes:true, attributeFilter:['lang']}); } catch(e){} })();
+</script>
 
   <!-- 24.10.2026 указ владельца: Дед Мороз — яркий акционный баннер на всю ширину, не в списке продуктов (29.10 HOME4: оформление макета E) -->
   <section class="e-dm" id="dm" aria-labelledby="dmH"><div class="wrap e-wide"><div class="dmin">
