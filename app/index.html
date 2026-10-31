@@ -594,6 +594,7 @@ var PACKS = [
  {id:"ny_family", ru:"Новогодняя семья", en:"New Year family", who:"family", icon:"🎄", season:true, isNew:true, ref:"family"},
  {id:"christmas", ru:"Рождество", en:"Christmas", who:"any", icon:"✨", season:true, isNew:true, ref:"woman"},
  {id:"winter_tale", ru:"Зимняя сказка", en:"Winter tale", who:"any", icon:"❄️", season:true, isNew:true, ref:"girl"},
+ {id:"jet", ru:"Частный самолёт", en:"Private jet", who:"adult", icon:"✈️", isNew:true, ref:"woman", mf:true, nf:5, nm:6},   /* JET1 31.10: mf — мужские примеры jet_m_<i>.jpg; примеров жен. 5, муж. 6 */
  {id:"kids_fairy", ru:"Сказочный принц / принцесса", en:"Fairy-tale prince / princess", who:"child", icon:"👑", ref:"girl"},
  {id:"kids_prof", ru:"Профессии мечты", en:"Dream jobs", who:"child", icon:"🚀", ref:"boy"},
  {id:"love_story", ru:"Love story", en:"Love story", who:"couple", icon:"💞", ref:"couple"},
@@ -602,6 +603,8 @@ var PACKS = [
  {id:"halloween", ru:"Хеллоуин", en:"Halloween", who:"any", icon:"🎃", soon:true}
 ];
 function pk(id){ for (var i = 0; i < PACKS.length; i++) if (PACKS[i].id === id) return PACKS[i]; return null; }
+function psImg(p, i){ return PS + p.id + (p.mf && S.gs === "m" ? "_m" : "") + "_" + i + ".jpg"; }   /* JET1 */
+function psN(p){ return p.mf ? (S.gs === "m" ? (p.nm || 6) : (p.nf || 6)) : 6; }   /* JET1: число примеров */
 function pkTitle(p){ return lang === "en" ? p.en : p.ru; }
 /* Подарки (не фотосессии): цены = chain.py PRICE; оформление — существующие конструкторы (бот / сайт). */
 var PROD = {
@@ -691,7 +694,7 @@ function card(k){
   return '<button class="pc" type="button" data-prod="' + k + '"><div class="m">' + (p.img ? '<img loading="lazy" src="' + EX + p.img + '" alt="">' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px">' + p.icon + '</div>') + (p.link ? '<span class="ai">↗</span>' : '') + (p.badge ? '<span class="badge new">' + esc(t(p.badge === "season" ? "season" : "new_")) + '</span>' : '') + '</div><div class="b"><span class="t">' + esc(lang === "en" ? p.en : p.ru) + '</span><span class="s">' + esc(lang === "en" ? p.sen : p.sru) + '</span><span class="p">' + (p.from ? (lang === "en" ? "from " : "от ") : "") + money(p.price) + '</span></div></button>';
 }
 function packCard(p){
-  var img = p.soon ? "" : '<img loading="lazy" src="' + PS + p.id + '_1.jpg" alt="">';
+  var img = p.soon ? "" : '<img loading="lazy" src="' + psImg(p, 1) + '" alt="">';
   var badge = p.soon ? '<span class="badge soon">' + esc(t("soon")) + '</span>' : (p.isNew ? '<span class="badge new">' + esc(t("new_")) + '</span>' : '');
   var ph = p.soon ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px">' + p.icon + '</div>' : '';
   return '<button class="pc" type="button" data-pack="' + p.id + '"><div class="m">' + img + ph + badge + (p.soon ? '' : '<span class="ai">AI</span>') + '</div><div class="b"><span class="t">' + p.icon + ' ' + esc(pkTitle(p)) + '</span><span class="s">' + esc(t("who_" + p.who)) + '</span><span class="p">' + (p.soon ? esc(t("soon")) : money(PS_PRICE) + ' · 6 ' + (lang === "en" ? "photos" : "фото")) + '</span></div></button>';
@@ -703,7 +706,7 @@ function renderHome(){   /* FIX2 31.10: направление без проду
     if (k === "photo") items = PACKS.filter(function(p){ return !p.soon; }).slice(0, 6).map(packCard);
     else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0 && (!PROD[x].flag || S.flags[PROD[x].flag]) && !(PROD[x].ruOnly && lang === "en"); }).map(card);   /* FAM2: продукт за флагом; FIX1: RU-only скрыт в EN */
     if (k === "kids") items.splice(1, 0, packCard(pk("kids_fairy")), packCard(pk("kids_prof")));
-    if (k === "adult") items.push(packCard(pk("business")), packCard(pk("love_story")));
+    if (k === "adult") items.push(packCard(pk("jet")), packCard(pk("business")), packCard(pk("love_story")));
     if (!items.length) return;
     shown.push(d);
     html += '<section id="sec-' + k + '"><h2>' + d[1] + ' ' + esc(t("d_" + k)) + '</h2><p class="sec-note">' + esc(t("dn_" + k)) + '</p>';
@@ -724,7 +727,7 @@ function renderHome(){   /* FIX2 31.10: направление без проду
 Object.assign(I.ru, {
  ph_p:"Выберите стиль — загрузите от 1 до 10 фото — получите 6 снимков 2K. Первый раздел — к ближайшему празднику.",
  gs_f:"👩 Женские образы", gs_m:"👨 Мужские образы", ch_all:"Все", ch_hol:"Праздники", ch_kids:"Дети, пары, семья", ch_seas:"Сезоны", ch_port:"Портрет и студия", ch_fash:"Мода и глянец", ch_trav:"Город и путешествия", ch_art:"Сказка и арт", ch_life:"Хобби и профессии",
- leg_h:"Дети, пары и семья", leg_n:"наборы по 6 фото", hot:"скоро праздник", n_sty:"{n} стилей", u_neutral:"пример — женский образ",
+ leg_h:"Готовые наборы", leg_n:"можно заказать сейчас · по 6 фото", hot:"скоро праздник", n_sty:"{n} стилей", u_neutral:"пример — женский образ",
  sy_go:"Выбрать этот стиль · {p}", sy_more:"Ещё в разделе «{t}»", sy_soon:"Этот стиль откроется совсем скоро — мы подключаем новый каталог. Сейчас можно заказать наборы «Дети, пары и семья».", sy_get:"6 фото 2K в стиле «{t}» + архив. Лицо — как на вашем фото.",
  cat_err:"Каталог не загрузился. Проверьте интернет (или выключите VPN) и нажмите, чтобы попробовать ещё раз.",
  w_step:"Шаг {n} из {m}", w_next:"Далее", w_skip:"Пропустить", w_opt:" · необязательно", w_to_pay:"Перейти к оплате · {p}", w_pay:"Оплатить {p}", w_price_from:"от {p}",
@@ -749,7 +752,7 @@ Object.assign(I.ru, {
 Object.assign(I.en, {
  ph_p:"Pick a style — upload 1 to 10 photos — get 6 shots in 2K. The first section is for the nearest holiday.",
  gs_f:"👩 Women's looks", gs_m:"👨 Men's looks", ch_all:"All", ch_hol:"Holidays", ch_kids:"Kids, couples, family", ch_seas:"Seasons", ch_port:"Portrait & studio", ch_fash:"Fashion & glam", ch_trav:"City & travel", ch_art:"Fairy tale & art", ch_life:"Hobbies & jobs",
- leg_h:"Kids, couples and family", leg_n:"sets of 6 photos", hot:"holiday soon", n_sty:"{n} styles", u_neutral:"example — female look",
+ leg_h:"Ready-made sets", leg_n:"available now · 6 photos each", hot:"holiday soon", n_sty:"{n} styles", u_neutral:"example — female look",
  sy_go:"Choose this style · {p}", sy_more:"More in “{t}”", sy_soon:"This style opens very soon — we are connecting the new catalogue. You can already order the “Kids, couples and family” sets.", sy_get:"6 photos 2K in the “{t}” style + an archive. The face stays as in your photo.",
  cat_err:"The catalogue did not load. Check the internet (or turn off VPN) and tap to try again.",
  w_step:"Step {n} of {m}", w_next:"Next", w_skip:"Skip", w_opt:" · optional", w_to_pay:"Go to payment · {p}", w_pay:"Pay {p}", w_price_from:"from {p}",
@@ -817,7 +820,7 @@ function packOrder(){
 }
 function chipHas(id){ if (S.chip === "all") return true; var c = CHIPS.filter(function(x){ return x[0] === S.chip; })[0]; return !!c && (" " + c[1] + " ").indexOf(" " + id + " ") >= 0; }
 function renderChips(){ $("fChips").innerHTML = CHIPS.map(function(c){ return '<button type="button" data-chip="' + c[0] + '" aria-pressed="' + (S.chip === c[0]) + '">' + esc(t("ch_" + c[0])) + '</button>'; }).join(""); }
-function legCard(p){ return '<button type="button" class="sc leg" data-pack="' + p.id + '"><img loading="lazy" decoding="async" src="' + PS + p.id + '_1.jpg" alt="" width="240" height="320"><span class="p">' + money(PS_PRICE) + '</span><span class="t">' + p.icon + ' ' + esc(pkTitle(p)) + '</span></button>'; }
+function legCard(p){ return '<button type="button" class="sc leg" data-pack="' + p.id + '"><img loading="lazy" decoding="async" src="' + psImg(p, 1) + '" alt="" width="240" height="320"><span class="p">' + money(PS_PRICE) + '</span><span class="t">' + p.icon + ' ' + esc(pkTitle(p)) + '</span></button>'; }
 function styCard(s){ return '<button type="button" class="sc" data-sty="' + s.id + '"><img loading="lazy" decoding="async" src="' + styImg(s) + '" alt="" width="240" height="320"><span class="p">' + money(PS_PRICE) + '</span>' + '<span class="t">' + (S.gs === "m" && s.g === "n" ? '<small class="u">' + esc(t("u_neutral")) + '</small>' : '') + esc(s.t) + '</span></button>'; }
 var rowIO = null;
 function renderPhoto(){
@@ -828,7 +831,7 @@ function renderPhoto(){
   var po = packOrder(), html = "", n = 0;
   var legOk = PACKS.filter(function(p){ return !p.soon; });
   po.list.forEach(function(p, i){
-    if (i === 1 && chipHas("@legacy")) html += '<section><div class="pkh"><h2>👨‍👩‍👧 ' + esc(t("leg_h")) + '</h2><span class="n">' + esc(t("leg_n")) + '</span></div><div class="srow">' + legOk.map(legCard).join("") + '</div></section>';
+    if (i === 1 && chipHas("@legacy")) html += '<section><div class="pkh"><h2>✨ ' + esc(t("leg_h")) + '</h2><span class="n">' + esc(t("leg_n")) + '</span></div><div class="srow">' + legOk.map(legCard).join("") + '</div></section>';
     if (!chipHas(p.id)) return;
     var vs = visSty(p); if (!vs.length) return; n++;
     html += '<section data-pk="' + p.id + '"><div class="pkh"><h2>' + p.e + ' ' + esc(pkName(p)) + '</h2>' + (p.id === po.hot ? '<span class="hot">' + esc(t("hot")) + '</span>' : '') + '<span class="n">' + esc(t("n_sty").replace("{n}", vs.length)) + '</span></div><div class="srow" data-fill="' + p.id + '"></div></section>';
@@ -876,10 +879,10 @@ function openPack(id){
     $("pkGo").hidden = true; $("pkSoon").hidden = false; $("pkSoon").textContent = t("pk_soon"); show("pack", true); return;
   }
   $("pkSoon").hidden = true; $("pkGo").hidden = false; $("pkCmp").hidden = false;
-  var g = ""; for (var i = 1; i <= 6; i++) g += '<figure><img ' + (i > 2 ? 'loading="lazy" ' : '') + 'src="' + PS + p.id + "_" + i + '.jpg" alt="' + esc(pkTitle(p)) + ' ' + i + '/6"><span class="ai">AI</span></figure>';
+  var nEx = psN(p), g = ""; for (var i = 1; i <= nEx; i++) g += '<figure><img ' + (i > 2 ? 'loading="lazy" ' : '') + 'src="' + psImg(p, i) + '" alt="' + esc(pkTitle(p)) + ' ' + i + '/' + nEx + '"><span class="ai">AI</span></figure>';
   $("pkGal").innerHTML = g; $("pkGal").scrollLeft = 0;
-  $("pkDots").innerHTML = "<i class='on'></i><i></i><i></i><i></i><i></i><i></i>";
-  $("pkCmp").innerHTML = '<img src="' + PS + 'ref_' + p.ref + '.jpg" alt=""><span class="arr" aria-hidden="true">→</span><div class="mini"><img src="' + PS + p.id + '_2.jpg" alt=""><img src="' + PS + p.id + '_3.jpg" alt=""><img src="' + PS + p.id + '_4.jpg" alt=""></div>';
+  $("pkDots").innerHTML = "<i class='on'></i>" + new Array(nEx).join("<i></i>");
+  $("pkCmp").innerHTML = '<img src="' + PS + 'ref_' + (p.mf && S.gs === "m" ? "man" : p.ref) + '.jpg" alt=""><span class="arr" aria-hidden="true">→</span><div class="mini"><img src="' + psImg(p, 2) + '" alt=""><img src="' + psImg(p, 3) + '" alt=""><img src="' + psImg(p, 4) + '" alt=""></div>';
   $("pkPrice").textContent = money(PS_PRICE); $("pkPer").textContent = t("per_shots").replace("{p}", Math.round(PS_PRICE / 6));
   var need = p.who === "couple" ? t("need_couple") : p.who === "family" ? t("need_family") : t("need_adult");
   $("pkFacts").innerHTML = fact("🎁", t("f_get"), t("f_get_v").replace("{t}", pkTitle(p))) + fact("👤", t("f_who"), t("who_" + p.who)) + fact("📷", t("f_need"), need) + fact("⏱", t("f_eta"), t("f_eta_v"));
