@@ -929,6 +929,103 @@ function stressInfo(name){
 }
 function stressVar(ch, i){ return ch.slice(0, i + 1).join("") + "́" + ch.slice(i + 1).join(""); }
 
+/* ---------------- DM4 30.10.2026 (КОПИЯ, не опубликовано): Дед Мороз читает письмо ребёнка и оживляет рисунок ----------------
+   Цены: письмо +190 ₽, рисунок +290 ₽, вместе +390 ₽. Один вопрос на экран; все причины «нельзя продолжить» — конкретные (правило №140).
+   Бэкенд: POST /api/dm_letter/prepare → dm_letter.prepare() (выпрямление, распознавание Gemini, чистка адресов/телефонов/школ, ≤60 слов, имена для ударений). */
+var DM4_LMAX = 60, DM4_PII = /(\+7|8)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}|[\w.+-]+@[\w-]+\.[\w.]+|(?:^|[^А-Яа-яЁё])(ул\.|улиц[аеуы]|проспект|переул|бульвар|шоссе|микрорайон|квартир|кв\.|дом\s*№?\s*\d|корпус|подъезд|этаж)|(?:^|[^А-Яа-яЁё])(школ\w*|гимнази\w*|лице\w*|садик\w*|детск\w+\s+сад\w*)\s*(№\s*)?\d+|№\s*\d+/i;
+function dm4W(n){ var d = n % 10, h = n % 100; return d === 1 && h !== 11 ? "слово" : d >= 2 && d <= 4 && (h < 12 || h > 14) ? "слова" : "слов"; }
+function dm4Words(s){ return (String(s || "").match(/[А-Яа-яЁёA-Za-z0-9-]+/g) || []).length; }
+function dm4Addon(a){ if (!(S.flags && S.flags.dm4)) return 0; var l = a.l_mode === "photo" || a.l_mode === "typed", d = a.d_mode === "photo"; return (l ? 190 : 0) + (d ? (l ? 200 : 290) : 0); }
+function dm4Sents(s){ return String(s || "").replace(/\s*\n\s*/g, " ").split(/(?<=[.!?…])\s+/).filter(function(x){ return x.trim(); }); }
+function dm4Pii(s){ return dm4Sents(s).filter(function(x){ return DM4_PII.test(x); }); }
+function dm4Prepare(kind){                       /* вызывается при входе на шаг проверки текста / после загрузки рисунка */
+  var a = W.a, fd = new FormData(), f = function(k){ var x = (W.files[k] || [])[0]; return x && (x.file || x.f || x.blob || x); };
+  fd.append("name", String(a.name || "").trim());
+  if (kind === "letter") { if (a.l_mode === "photo" && f("nyl")) fd.append("letter_photo", f("nyl")); else fd.append("letter_text", a.l_text || ""); }
+  if (kind === "drawing" && f("nyd")) { fd.append("drawing_photo", f("nyd")); fd.append("drawing_hint", a.d_hint || ""); }
+  a.l_busy = 1; wizDraw();
+  return fetch(API + "/api/dm_letter/prepare", {method: "POST", body: fd}).then(function(r){ return r.json(); }).then(function(j){
+    a.l_busy = 0; a.l_err = a.l_err || {}; delete a.l_err.net; delete a.l_err.srv;   /* DM5: ошибки письма и рисунка не стирают друг друга */
+    if (kind === "letter") { delete a.l_err.letter_photo; delete a.l_err.letter_text; } else delete a.l_err.drawing_photo;
+    if (j.detail) a.l_err.srv = dm4Detail(j.detail);
+    (j.errors || []).forEach(function(e){ a.l_err[e.step] = e.reason; });
+    if (kind === "letter" && j.text != null) { if (a.l_mode === "photo" && !a.l_text_edited) a.l_text = j.text; a.l_removed = j.removed || []; a.l_force_typed = j.force_typed || "";
+      a.l_gift_req = !!(j.check && j.check.gift_request); a.l_flag = j.check && j.check.ok === false ? (j.check.why || "") : "";
+      a.l_stress = ((j.check && j.check.stress_words) || []).map(function(w){ return {w: w.word, s: w.stressed}; }); }
+    if (kind === "drawing") a.d_motion = j.motion || "";
+    wizDraw();
+  }).catch(function(){ a.l_busy = 0; a.l_err = {net: L2("Нет связи с сервером — проверьте интернет и нажмите «Далее» ещё раз.", "No connection — check the internet and tap Next again.")}; wizDraw(); });
+}
+function dm4Sig(k){ var x = (W.files[k] || [])[0]; x = x && (x.file || x.f || x.blob || x); return x ? [x.name, x.size, x.lastModified].join(":") : ""; }
+function dm4Detail(d){ return ({unavailable: L2("Письмо и рисунок временно недоступны — оформите поздравление без них или попробуйте позже.", "Letter and drawing are temporarily unavailable."),
+  too_many: L2("Слишком много попыток подряд — подождите минуту и нажмите «Далее» ещё раз.", "Too many attempts — wait a minute."),
+  photo_type: L2("Этот файл не похож на фото — загрузите JPG, PNG или HEIC.", "Upload a JPG, PNG or HEIC photo."), photo_too_large: L2("Фото больше 15 МБ — выберите фото поменьше.", "Photo is larger than 15 MB."),
+  busy: L2("Сервер распознавания занят — нажмите «Далее» ещё раз через минуту.", "Recognition is busy — try again in a minute.")})[d] || L2("Не получилось распознать — нажмите «Далее» ещё раз.", "Could not process — tap Next again."); }
+function dm4StressHtml(a){
+  var h = '<div class="calth">';
+  (a.l_stress || []).forEach(function(it, i){
+    var si = stressInfo(it.w); if (!si.ask) return;
+    h += '<div class="thr"><b>' + esc(it.w) + '</b><div class="thc">' + si.idx.map(function(j){ var v = stressVar(si.ch, j), cur = (a.l_st && a.l_st[it.w]) || it.s;
+      return '<button type="button" class="chip" aria-pressed="' + (cur === v) + '" onclick="dm4SetSt(' + i + ',' + j + ')">' + esc(v) + '</button>'; }).join("") + '</div></div>';
+  });
+  return h + '</div><p class="tips">' + esc(L2("Нажмите, как слово звучит дома. Мы подсветили имена и клички из письма — Дед Мороз прочтёт их именно так.", "Tap how the word sounds at home.")) + '</p>';
+}
+function dm4SetSt(i, j){ var a = W.a, it = a.l_stress[i], si = stressInfo(it.w); a.l_st = a.l_st || {}; a.l_st[it.w] = stressVar(si.ch, j); wizDraw(); }
+function DM4_STEPS(){ return [
+  {id:"l_mode", type:"tiles", field:"l_mode", cols:1, sec:["Письмо","Letter"], q:["Ребёнок писал Деду Морозу письмо?","Did the child write a letter to Ded Moroz?"],
+   sub:["Дед Мороз получит его, прочтёт вслух и ответит. До 60 слов.","Ded Moroz reads it aloud and answers. Up to 60 words."], def:"none", req:1,
+   opts:function(){ return [{v:"photo", e:"📷", t:L2("Сфотографирую письмо","I'll photograph the letter"), d:L2("Рекомендуем: в видео будет почерк ребёнка · +190 ₽","Recommended: the child's handwriting · +190 ₽")},
+     {v:"typed", e:"⌨️", t:L2("Напечатаю текст","I'll type the text"), d:L2("Покажем лист печатными буквами, с честной подписью «набрано шрифтом» · +190 ₽","Shown in a print font, honestly labelled · +190 ₽")},
+     {v:"none", e:"➖", t:L2("Пропустить","Skip")}]; },
+   sum:function(a){ return a.l_mode === "photo" ? L2("письмо — фото, +190 ₽","letter — photo") : a.l_mode === "typed" ? L2("письмо — текст, +190 ₽","letter — text") : ""; }},
+  stPhotos("nyl", {min:1, max:1, when:function(a){ return a.l_mode === "photo"; }, sec:["Письмо","Letter"], q:["Сфотографируйте письмо","Photograph the letter"],
+   sub:["Положите лист на тёмный стол и снимите сверху при дневном свете — так, чтобы были видны все 4 угла.","Put the sheet on a dark table and shoot from above in daylight, all 4 corners visible."],
+   valid:function(a){ return a.l_err && a.l_err.letter_photo ? a.l_err.letter_photo : ""; }}),       /* причины: «Не видим все 4 угла…», «Слишком темно…», «Это не похоже на письмо…» */
+  {id:"l_text", type:"area", field:"l_text", max:600, when:function(a){ return a.l_mode === "photo" || a.l_mode === "typed"; }, sec:["Письмо","Letter"],
+   q:function(){ return W.a.l_mode === "photo" ? L2("Проверьте текст письма","Check the letter text") : L2("Как написал ребёнок?","What did the child write?"); },
+   sub:function(){ return W.a.l_mode === "photo" ? L2("Мы распознали письмо. Исправьте ошибки только здесь — на листе в видео останется почерк ребёнка, а Дед Мороз прочтёт этот текст.","We recognised the letter. Fix mistakes here — the video keeps the child's handwriting.")
+     : L2("До 60 слов, как написал ребёнок. В видео лист будет напечатан детским шрифтом — мы честно подпишем это в кадре.","Up to 60 words. Shown in a child-like print font, labelled as such."); },
+   ph:["Дорогой Дедушка Мороз! Меня зовут Миша…","Dear Ded Moroz! My name is Misha…"], long:1, req:1,
+   load:function(){ var sg = dm4Sig("nyl"); if (W.a.l_mode === "photo" && sg && W.a.l_sig !== sg && !W.a.l_busy) { W.a.l_sig = sg; W.a.l_text = ""; W.a.l_text_edited = 0; W.a.l_stress = null; dm4Prepare("letter"); } },   /* DM5: переснятое фото — распознаём заново */
+   valid:function(a){ var n = dm4Words(a.l_text);
+     if (a.l_busy) return L2("Распознаём письмо — это 15–25 секунд…","Reading the letter — 15–25 seconds…");   /* DM5: замер 15,8–21,7 с (фото), 4,2 с (текст) */
+     if (a.l_err && a.l_err.net) return a.l_err.net;
+     if (a.l_err && a.l_err.srv) return a.l_err.srv;
+     if (a.l_mode === "photo" && a.l_err && a.l_err.letter_photo) return a.l_err.letter_photo + L2(" — вернитесь на шаг назад и переснимите письмо.", " — go back and retake the photo.");
+     if (n > DM4_LMAX) return L2("В письме " + n + " " + dm4W(n) + ", а Дед Мороз прочитает до 60. Оставьте отрывок, который он прочтёт, — остальное останется на листе.", "The letter has " + n + " words; Ded Moroz reads up to 60.");
+     if (n < 3) return L2("Текста почти нет — напишите хотя бы одно предложение или вернитесь и пропустите письмо.","Almost no text — write at least one sentence or skip.");
+     return ""; },
+   soft:function(a){ var p = dm4Pii(a.l_text); return p.length ? L2("Ради безопасности ребёнка Дед Мороз не прочтёт адрес, телефон и номер школы или садика: «" + p.join(" ") + "». На фото письма эти строки будут размыты. Нажмите «Далее» ещё раз, чтобы продолжить.","For safety we skip addresses, phones and school numbers.") : ""; },
+   sum:function(a){ var n = dm4Words(a.l_text); return n + " " + L2(dm4W(n), "words"); }},
+  {id:"l_st", type:"lstress", sec:["Ударения","Stress"], q:["Как правильно сказать?","How do you say it?"], when:function(a){ return (a.l_mode === "photo" || a.l_mode === "typed") && (a.l_stress || []).some(function(x){ return stressInfo(x.w).ask; }); },
+   load:function(){ if (!W.a.l_stress && !W.a.l_busy) dm4Prepare("letter"); }, sum:function(a){ return Object.keys(a.l_st || {}).map(function(k){ return a.l_st[k]; }).join(", "); }},
+  {id:"l_gifts", type:"tiles", field:"l_gifts", cols:1, sec:["Письмо","Letter"], q:["Зачитать просьбы о подарках?","Read out the gift wishes?"], when:function(a){ return !!a.l_gift_req; },
+   sub:["Дед Мороз ничего не обещает — ответит «я всё запомнил». Подарки решаете вы.","Ded Moroz promises nothing — he says “I remember everything”."], def:"yes", req:1,
+   opts:function(){ return [{v:"yes", e:"🎁", t:L2("Да, читать всё письмо","Yes, read the whole letter")}, {v:"no", e:"🤫", t:L2("Нет, пропустить просьбы","No, skip the wishes")}]; }},
+  {id:"d_mode", type:"tiles", field:"d_mode", cols:1, sec:["Рисунок","Drawing"], q:["Добавим рисунок? Он оживёт в руках у Деда Мороза","Add a drawing? It comes alive in Ded Moroz's hands"],
+   sub:function(){ return W.a.l_mode === "photo" || W.a.l_mode === "typed" ? L2("Вместе с письмом — +200 ₽ (итого за письмо и рисунок 390 ₽).","With the letter: +200 ₽.") : L2("+290 ₽","+290 ₽"); }, def:"none", req:1,
+   opts:function(){ return [{v:"photo", e:"🖍", t:L2("Загрузить фото рисунка","Upload a photo of the drawing")}, {v:"none", e:"➖", t:L2("Пропустить","Skip")}]; },
+   sum:function(a){ return a.d_mode === "photo" ? L2("рисунок оживёт","drawing comes alive") : ""; }},
+  stPhotos("nyd", {min:1, max:1, when:function(a){ return a.d_mode === "photo"; }, sec:["Рисунок","Drawing"], q:["Сфотографируйте рисунок","Photograph the drawing"],
+   sub:["Только рисунок, без детей в кадре. Положите лист на стол и снимите сверху, чтобы были видны 4 угла.","Only the drawing, no children in the frame; all 4 corners visible."],
+   valid:function(a){ return a.l_err && a.l_err.drawing_photo ? a.l_err.drawing_photo : ""; }}),
+  {id:"d_hint", type:"text", field:"d_hint", max:80, opt:1, when:function(a){ return a.d_mode === "photo"; }, sec:["Рисунок","Drawing"], q:["Что на рисунке?","What is in the drawing?"],
+   sub:["Необязательно. Поможет оживить точнее.","Optional. Helps animate it precisely."], ph:["Снеговик и наш пёс Бублик","A snowman and our dog"], load:function(){ var sg = dm4Sig("nyd"); if (sg && W.a.d_sig !== sg && !W.a.l_busy) { W.a.d_sig = sg; W.a.d_motion = ""; dm4Prepare("drawing"); } },
+   valid:function(a){ if (a.l_busy) return L2("Смотрим рисунок — это 10–15 секунд…","Looking at the drawing — 10–15 seconds…"); if (a.l_err && a.l_err.net) return a.l_err.net; if (a.l_err && a.l_err.srv) return a.l_err.srv;
+     if (a.l_err && a.l_err.drawing_photo) return a.l_err.drawing_photo + L2(" — вернитесь на шаг назад и переснимите рисунок.", " — go back and retake the photo."); return ""; },
+   sum:function(a){ return a.d_hint; }},
+  {id:"l_cons", type:"tiles", field:"l_cons", cols:1, sec:["Согласие","Consent"], q:["Согласие на письмо и рисунок","Consent for the letter and drawing"], when:function(a){ return a.l_mode === "photo" || a.l_mode === "typed" || a.d_mode === "photo"; },
+   sub:["Я законный представитель ребёнка. Разрешаю Talemir обработать текст и фото письма и рисунка и переработать (оживить) рисунок только для изготовления этого заказа, без публикации. Файлы удаляются вместе с фото заказа.","I am the child's legal guardian and allow processing and animation of the drawing only to make this order."],
+   req:1, opts:function(){ return [{v:"yes", e:"✅", t:L2("Согласен(на) — подробнее в оферте, раздел 9","I agree — offer, section 9")}]; }, sum:function(a){ return a.l_cons === "yes" ? L2("согласие дано","consent given") : ""; }}
+]; }
+function dm4Append(fd, a){
+  var l = a.l_mode === "photo" || a.l_mode === "typed", d = a.d_mode === "photo", f = function(k){ var x = (W.files[k] || [])[0]; return x && (x.file || x.f || x.blob || x); };
+  if (!l && !d) return;
+  fd.append("dm4", JSON.stringify({letter: l ? {mode: a.l_force_typed ? "typed" : a.l_mode, text: a.l_text || "", stress: a.l_st || {}, read_gifts: a.l_gifts !== "no"} : null, drawing: d ? {hint: a.d_hint || ""} : null, consent: a.l_cons === "yes", consent_ver: "dm4/30.10.2026", addon_rub: dm4Addon(a)}));
+  if (l && a.l_mode === "photo" && f("nyl")) fd.append("letter_photo", f("nyl"));
+  if (d && f("nyd")) fd.append("drawing_photo", f("nyd"));
+}
+
 /* ---------------- описание мастеров (один вопрос на экран) ---------------- */
 var STRESS_P = {song:1, clip:1, live:1, sing:1, ny:1, cartoon:1, pet_sing:1};
 function needsStress(a, prod){ return !!STRESS_P[prod] && !(prod === "cartoon" && a.cart_music === "instrumental") && stressInfo(a.name).ask; }
@@ -1032,8 +1129,8 @@ var DEF = {
   {id:"pet", type:"text", field:"pet", max:80, opt:1, sec:["Питомец","Pet"], q:["Есть ли питомец?","Is there a pet?"], sub:["Дед Мороз передаст привет и ему.","Ded Moroz will greet the pet too."], ph:["Кот Персик","Peach the cat"], sum:function(a){ return a.pet; }},
   {id:"from", type:"text", field:"from", max:80, opt:1, sec:["От кого","From"], q:["От кого подарок?","Who is the gift from?"], ph:["Мама и папа","Mum and dad"], sum:function(a){ return a.from; }},
   {id:"gift", type:"tiles", field:"gift", cols:1, sec:["Подарок","Present"], q:["Что Дед Мороз скажет про подарок?","What will Ded Moroz say about a present?"], sub:["Обещание подарка выбирайте, только если подарок точно будет.","Choose a promise only if there will definitely be a present."], opts:function(){ return opt4(GIFTS); }, req:1, def:"g1", sum:function(a){ var g = GIFTS.filter(function(x){ return x[0] === a.gift; })[0]; return g ? L2(g[2], g[3]) : ""; }},
-  stPhotos("ny", {min:0, max:4, opt:1, q:["Фото для альбома Деда Мороза","Photos for Ded Moroz's album"], sub:["До 4 фото — Дед Мороз покажет их в своём альбоме. Можно пропустить.","Up to 4 photos — Ded Moroz shows them in his album. You can skip."]}),
-  stEmail(), stSum()]; },
+  stPhotos("ny", {min:0, max:4, opt:1, q:["Фото для альбома Деда Мороза","Photos for Ded Moroz's album"], sub:["До 4 фото — Дед Мороз покажет их в своём альбоме. Можно пропустить.","Up to 4 photos — Ded Moroz shows them in his album. You can skip."]})
+  ].concat(S.flags && S.flags.dm4 ? DM4_STEPS() : [], [stEmail(), stSum()]); },   /* DM5: письмо и рисунок — за флагом dm4 (miniapp_flags.json), выкл. = как раньше */
  book: function(){ return [
   stName(["Как зовут ребёнка?","What is the child's name?"]), stAge(false),
   {id:"style", type:"img", field:"style", sec:["Стиль","Style"], q:["В каком стиле нарисовать книгу?","Which art style for the book?"], opts:function(){ return BSTY.map(function(s){ return {v:s[0], t:L2(s[1], s[2]), img:"../img/" + s[0] + ".jpg"}; }); }, req:1, sum:function(a){ var s = BSTY.filter(function(x){ return x[0] === a.style; })[0]; return s ? L2(s[1], s[2]) : ""; }},
@@ -1083,7 +1180,7 @@ function wizActive(){ return wizAll().filter(function(s){ return !s.when || s.wh
 function curStep(){ var a = wizActive(); return a.filter(function(s){ return s.id === W.cur; })[0] || a[0]; }
 function phCount(k){ return (W.files[k] || []).length + (k === "ph" && W.usePP ? 1 : 0); }
 function prodTitle(k){ if (k === "photoshoot") return W && W.ctx.sty ? W.ctx.sty.t : W && W.ctx.pack ? pkTitle(W.ctx.pack) : t("o_what"); var p = PROD[k]; return p ? (lang === "en" ? p.en : p.ru) : k; }
-function basePrice(){ if (W.prod === "photoshoot") return PS_PRICE; if (W.prod === "cartoon") return {"30":2190, "60":2990, "120":5490}[W.a.cart_len || "60"] || 2990; return PROD[W.prod].price; }
+function basePrice(){ if (W.prod === "photoshoot") return PS_PRICE; if (W.prod === "cartoon") return {"30":2190, "60":2990, "120":5490}[W.a.cart_len || "60"] || 2990; return PROD[W.prod].price + (W.prod === "ny" ? dm4Addon(W.a) : 0); }
 function draftKey(){ return "tm_wiz_" + W.prod + (W.ctx.sty ? "_" + W.ctx.sty.id : W.ctx.pack ? "_" + W.ctx.pack.id : ""); }
 function saveDraft(){ try { var a = Object.assign({}, W.a); delete a.enh; delete a.email; localStorage.setItem(draftKey(), JSON.stringify({a: a, at: Date.now()})); } catch(e){} }
 function wizStart(prod, ctx){
@@ -1185,6 +1282,7 @@ function tileHtml(o, sel, cls){ return '<button type="button" class="tile' + (cl
 function bodyOf(s){
   var a = W.a;
   switch (s.type) {
+    case "lstress": return dm4StressHtml(a);
     case "tiles": return '<div class="tiles' + (s.cols === 1 ? " c1" : s.cols === 3 ? " c3" : "") + '" role="group">' + s.opts().map(function(o){ return tileHtml(o, a[s.field]); }).join("") + '</div>';
     case "img": return '<div class="tiles c3" role="group">' + s.opts().map(function(o){ return '<button type="button" class="tile img" data-v="' + o.v + '" aria-pressed="' + (a[s.field] === o.v) + '"><img loading="lazy" src="' + o.img + '" alt=""><span>' + esc(o.t) + '</span></button>'; }).join("") + '</div>';
     case "text": return '<input class="wfield" type="text" id="wIn" maxlength="' + (s.max || 80) + '" autocomplete="off" placeholder="' + esc(tx(typeof s.ph === "function" ? s.ph() : s.ph)) + '" value="' + esc(a[s.field || s.id] || "") + '">';
@@ -1232,6 +1330,7 @@ function mountOf(s){
   });
   if (s.type === "text" || s.type === "email") b.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); wizNext(); } });
   if (s.type === "photos") { W.phKey = s.key; renderPh(s); }
+  if (s.load) s.load(s);                                  /* DM4: распознавание письма / описание рисунка при входе на шаг */
   if (s.type === "enh") enhMount();
   if (s.type === "sum") sumMount();
 }
@@ -1489,11 +1588,17 @@ function reasonOf(detail, status, nph){
   if (d === "pet_name" || d === "child_name") return t("w_name_e");
   if (d === "consent_teen") return t("e_teen");
   if (d === "ps_pack" || d === "ps_style") return t("sy_soon");
+  if (d === "dm4_words") return L2("В письме должно быть от 3 до 60 слов — Дед Мороз прочитает до 60.", "The letter must have 3–60 words.");   /* DM5, правило №140 */
+  if (d === "dm4_text" || d === "dm4") return L2("Проверьте текст письма — он не подошёл (до 600 знаков).", "Please check the letter text (up to 600 characters).");
+  if (d === "dm4_letter_photo") return L2("Не пришло фото письма — загрузите его ещё раз.", "The letter photo is missing — upload it again.");
+  if (d === "dm4_drawing_photo") return L2("Не пришло фото рисунка — загрузите его ещё раз.", "The drawing photo is missing — upload it again.");
+  if (d === "dm4_consent") return L2("Нужно согласие на обработку письма и рисунка.", "Consent for the letter and drawing is required.");
+  if (d === "dm4_off" || d === "dm4_product") return L2("Письмо и рисунок сейчас недоступны — уберите их, и поздравление оформится как обычно.", "Letter and drawing are unavailable now.");
   return t("e_http").replace("{c}", status || "?");
 }
-var ERR_STEP = {cal_themes:"themes", cal_fmt:"fmt", cal_who:"who", cal_dates:"dates", photo_count:"@ph", photo_type:"@ph", photo_too_large:"@ph", photo_small:"@ph", bad_contact:"email", bad_email:"email", cart_story:"story", cart_heroes:"name", pet_kind:"kind", pet_name:"name", child_name:"name", consent_child:"sum", consent:"sum", consent_teen:"sum"};
+var ERR_STEP = {cal_themes:"themes", cal_fmt:"fmt", cal_who:"who", cal_dates:"dates", photo_count:"@ph", photo_type:"@ph", photo_too_large:"@ph", photo_small:"@ph", bad_contact:"email", bad_email:"email", cart_story:"story", cart_heroes:"name", pet_kind:"kind", pet_name:"name", child_name:"name", consent_child:"sum", consent:"sum", consent_teen:"sum", dm4_words:"l_text", dm4_text:"l_text", dm4:"l_text", dm4_letter_photo:"ph_nyl", dm4_drawing_photo:"ph_nyd", dm4_consent:"l_cons", dm4_off:"l_mode", dm4_product:"l_mode"};
 function errStep(d){ var k = String(d || ""); if (k.indexOf("photo_mod:") === 0) k = "photo_count"; var s = ERR_STEP[k]; if (!s) return null; if (s === "@ph") { var p = wizActive().filter(function(x){ return x.type === "photos"; })[0]; return p ? p.id : null; } return s; }
-function allPhotos(){ var out = []; wizActive().forEach(function(s){ if (s.type !== "photos") return; if (s.key === "ph" && W.usePP) { out.push(W.ppEnh || "PP"); return; } (W.files[s.key] || []).forEach(function(x){ out.push(x.f); }); }); return out; }
+function allPhotos(){ var out = []; wizActive().forEach(function(s){ if (s.type !== "photos" || s.key === "nyl" || s.key === "nyd") return; if (s.key === "ph" && W.usePP) { out.push(W.ppEnh || "PP"); return; } (W.files[s.key] || []).forEach(function(x){ out.push(x.f); }); }); return out; }
 function wizForm(phs){
   var a = W.a, p = W.prod, fd = new FormData(), ps = p === "photoshoot";
   fd.append("product", p); fd.append("bundle", p); fd.append("contact", String(a.email || "").trim()); fd.append("consent", "true"); fd.append("site_lang", lang); fd.append("src", "miniapp");
@@ -1517,7 +1622,7 @@ function wizForm(phs){
     var occ = a.occ === "own" ? (String(a.occOwn || "").trim().slice(0, 60) || occLabel("justbecause")) : occLabel(a.occ);
     fd.append("occasion", a.occ ? occ : ""); fd.append("occasion_id", a.occ || ""); fd.append("genre", a.genre || ""); fd.append("voice", a.voice || ""); fd.append("mood", a.mood || "");
     fd.append("length", p === "song" ? (a.len || "l_60") : ""); if (a.pet_kind === "cat" || a.pet_kind === "dog") fd.append("pet_kind", a.pet_kind);
-    fd.append("pet", a.pet || ""); fd.append("from_whom", a.from || ""); fd.append("wish", a.wish || ""); fd.append("stress", String(stressAt)); fd.append("stress_auto", auto); fd.append("gift", a.gift || "g1");
+    fd.append("pet", a.pet || ""); fd.append("from_whom", a.from || ""); fd.append("wish", a.wish || ""); fd.append("stress", String(stressAt)); fd.append("stress_auto", auto); fd.append("gift", a.gift || "g1"); if (p === "ny") dm4Append(fd, a);
     fd.append("consent_teen", needTeen() ? (a.teen ? "true" : "false") : "n/a");
     if (p === "calendar") { fd.append("cal_who", a.cal_who === "family" ? "family" : "child"); fd.append("cal_for", a.cal_for || ""); fd.append("cal_year", "2027"); fd.append("cal_fmt", "pdf");
       fd.append("cal_themes", [1,2,3,4,5,6,7,8,9,10,11,12].map(function(mo){ return mo + calTh(a, mo); }).join(","));
