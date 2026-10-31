@@ -580,7 +580,10 @@ Object.assign(I.en, {o_drop:"Drag a photo here or tap to choose", o_drop_many:"D
   if (!lc) lc = (navigator.language || "ru");
   lang = q === "en" || q === "ru" ? q : (s === "en" || s === "ru") ? s : (/^(ru|uk|be|kk|hy|ky|uz|tg)/i.test(lc) ? "ru" : "en");
 })();
-function t(k){ var v = (I[lang] && I[lang][k]); if (v == null) v = I.ru[k]; return v == null ? k : v; }
+function t(k){ var v = (I[lang] && I[lang][k]); if (v == null) v = I.ru[k]; return v == null ? k : (typeof inTG !== "undefined" && !inTG && typeof v === "string" ? noChat(v) : v); }
+/* FIX1 (QA1 P3): вне Telegram чата нет — не обещаем «пришлём в этот чат» */
+function noChat(s){ return s.replace(" Пришлём в этот чат и на почту.", " Пришлём на почту — заказ будет и в «Заказах».").replace(" Подарок пришлём и в этот чат.", "")
+  .replace(" We will send it to this chat and by e-mail.", " We will send it by e-mail — the order will also be in «Orders».").replace(" We will also send the gift to this chat.", ""); }
 function money(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽"; }
 function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function $(id){ return document.getElementById(id); }
@@ -608,7 +611,9 @@ var PROD = {
  sing:{ru:"Поющее фото", en:"Singing photo", sru:"Фото поёт песню с именем", sen:"The photo sings a song with the name", price:1490, img:"ex_sing.jpg", dir:["kids","adult"], via:"bot", eta:35},
  clip:{ru:"Клип из фото", en:"Photo clip", sru:"Ваши фото под вашу песню", sen:"Your photos with your own song", price:790, from:true, img:"ex_clip.jpg", dir:["kids","adult"], via:"bot", eta:10},
  live:{ru:"Живые фото", en:"Living photos", sru:"Фото оживают под песню", sen:"Photos come alive with a song", price:1990, from:true, img:"ex_live2.jpg", dir:["adult"], via:"bot", eta:20},
- cartoon:{ru:"Мультфильм по вашей истории", en:"A cartoon of your story", sru:"30 с · 1 мин · 2 мин, сначала — герои", sen:"30 s · 1 min · 2 min, heroes first", price:2190, from:true, img:"ex_cartoon.jpg", dir:["cart","adult"], via:"site", eta:15},
+ cartoon:{ru:"Мультфильм по вашей истории", en:"A cartoon of your story", sru:"30 с · 1 мин · 2 мин, сначала — герои", sen:"30 s · 1 min · 2 min, heroes first", price:2190, from:true, img:"ex_cartoon.jpg", dir:["cart","adult"], via:"site", eta:15, ruOnly:1},   /* FIX1 (QA1 P3): как на сайте — только RU/RUB */
+ inv:{ru:"Приглашения на праздник", en:"Party invitations", sru:"Открытка-приглашение с вашим текстом и местом", sen:"An invitation card with your text", price:290, from:true, icon:"💌", dir:["kids"], link:"/invite.html", ruOnly:1},   /* FIX1: ссылкой на сайт */
+ preg:{ru:"Малыш по УЗИ", en:"Baby from an ultrasound", sru:"Каким будет малыш — по снимку УЗИ", sen:"Your baby's portrait from an ultrasound", price:990, from:true, img:"ex_preg_1.jpg", dir:["adult"], link:"/#uzi", ruOnly:1},   /* FIX1: ссылкой на сайт (там — предзапись/заказ) */
  pet_live:{ru:"Живое фото питомца", en:"Living pet photo", sru:"Кошка или собака оживает", sen:"Your cat or dog comes alive", price:390, img:"ex_pet_live.jpg", dir:["pets"], via:"bot", eta:5},
  pet_sing:{ru:"Поющий питомец", en:"Singing pet", sru:"Песня с кличкой", sen:"A song with the pet's name", price:590, img:"ex_pet_sing.jpg", dir:["pets"], via:"bot", eta:40},
  calendar:{ru:"Календарь семьи 2027", en:"Family calendar 2027", sru:"Ребёнок в теме каждого месяца: 13 листов A3, PDF для печати + 12 фото", sen:"Your child in every month's theme: 13 A3 pages, print PDF + 12 photos", price:990, img:"ex_calendar.jpg", dir:["kids","photo"], via:"site", eta:8, badge:"new", flag:"calendar"}
@@ -622,7 +627,7 @@ try { S.token = sessionStorage.getItem("tm_app_tok"); } catch(e){}
 function toast(m){ var e = $("toast"); e.textContent = m; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ e.hidden = true; }, 2600); }
 function haptic(k){ try { if (inTG && tg.HapticFeedback && ver("6.1")) { if (k === "ok") tg.HapticFeedback.notificationOccurred("success"); else if (k === "err") tg.HapticFeedback.notificationOccurred("error"); else tg.HapticFeedback.impactOccurred("light"); } } catch(e){} }
 function openExt(url){ if (inTG) { try { tg.openLink(url); return; } catch(e){} } window.open(url, "_blank", "noopener"); }
-function openTg(url){ if (inTG) { try { tg.openTelegramLink(url); return; } catch(e){} } location.href = url; }
+function openTg(url){ if (inTG) { try { tg.openTelegramLink(url); return; } catch(e){} } var w = null; try { w = window.open(url, "_blank", "noopener"); } catch(e){} if (!w) location.href = url; }   /* FIX1 (QA1 P2): вне Telegram — новая вкладка */
 
 function api(path, opt){
   opt = opt || {}; var h = opt.headers || {};
@@ -683,7 +688,7 @@ document.addEventListener("click", function(e){
 /* ---------------- главная ---------------- */
 function card(k){
   var p = PROD[k];
-  return '<button class="pc" type="button" data-prod="' + k + '"><div class="m"><img loading="lazy" src="' + EX + p.img + '" alt="">' + (p.badge ? '<span class="badge new">' + esc(t(p.badge === "season" ? "season" : "new_")) + '</span>' : '') + '</div><div class="b"><span class="t">' + esc(lang === "en" ? p.en : p.ru) + '</span><span class="s">' + esc(lang === "en" ? p.sen : p.sru) + '</span><span class="p">' + (p.from ? (lang === "en" ? "from " : "от ") : "") + money(p.price) + '</span></div></button>';
+  return '<button class="pc" type="button" data-prod="' + k + '"><div class="m">' + (p.img ? '<img loading="lazy" src="' + EX + p.img + '" alt="">' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px">' + p.icon + '</div>') + (p.link ? '<span class="ai">↗</span>' : '') + (p.badge ? '<span class="badge new">' + esc(t(p.badge === "season" ? "season" : "new_")) + '</span>' : '') + '</div><div class="b"><span class="t">' + esc(lang === "en" ? p.en : p.ru) + '</span><span class="s">' + esc(lang === "en" ? p.sen : p.sru) + '</span><span class="p">' + (p.from ? (lang === "en" ? "from " : "от ") : "") + money(p.price) + '</span></div></button>';
 }
 function packCard(p){
   var img = p.soon ? "" : '<img loading="lazy" src="' + PS + p.id + '_1.jpg" alt="">';
@@ -698,7 +703,7 @@ function renderHome(){
     var k = d[0], items;
     html += '<section id="sec-' + k + '"><h2>' + d[1] + ' ' + esc(t("d_" + k)) + '</h2><p class="sec-note">' + esc(t("dn_" + k)) + '</p>';
     if (k === "photo") items = PACKS.filter(function(p){ return !p.soon; }).slice(0, 6).map(packCard);
-    else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0 && (!PROD[x].flag || S.flags[PROD[x].flag]); }).map(card);   /* FAM2: продукт за флагом */
+    else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0 && (!PROD[x].flag || S.flags[PROD[x].flag]) && !(PROD[x].ruOnly && lang === "en"); }).map(card);   /* FAM2: продукт за флагом; FIX1: RU-only скрыт в EN */
     if (k === "kids") items.splice(1, 0, packCard(pk("kids_fairy")), packCard(pk("kids_prof")));
     if (k === "adult") items.push(packCard(pk("business")), packCard(pk("love_story")));
     html += '<div class="row">' + items.join("") + '</div></section>';
@@ -953,7 +958,33 @@ function calThBody(){
   return h + '</div><p class="tips">' + esc(L2("Обложка — портрет ребёнка. Фото месяцев создаёт ИИ по вашим фото: лицо сверяем с оригиналом на каждом листе.","The cover is a portrait. AI creates each month's photo from your photos; we check the face against the original on every page.")) + '</p>';
 }
 var CAL_DED = {gr:["Любимым бабушке и дедушке от ","To dear Granny and Grandpa from "], mom:["Любимой маме от ","To dear Mum from "], dad:["Любимому папе от ","To dear Dad from "]};
-function calDates(raw){ var out = []; String(raw || "").split(/[;\n]+/).forEach(function(p){ var m = p.match(/^\s*(\d{1,2})[.\/](\d{1,2})(?:[.\/]\d{2,4})?\s*[-—–:]?\s*(.*)$/); if (!m) return; var d = +m[1], mo = +m[2]; if (mo < 1 || mo > 12 || d < 1 || d > new Date(2027, mo, 0).getDate() || !m[3].trim()) return; out.push({d:d, m:mo, t:m[3].trim().slice(0, 28)}); }); return out.slice(0, 12); }
+/* FIX1 (K1 calendar-03..08, №140): ни одна дата не теряется молча — у каждой отклонённой понятная причина; «1 марта» понимаем */
+var CAL_MW = {"янв":1,"фев":2,"мар":3,"апр":4,"мая":5,"май":5,"июн":6,"июл":7,"авг":8,"сен":9,"окт":10,"ноя":11,"дек":12};
+var CAL_MP = ["","январе","феврале","марте","апреле","мае","июне","июле","августе","сентябре","октябре","ноябре","декабре"];
+var CAL_ME = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+function calDatesEx(raw){ var ok = [], bad = [];
+  String(raw || "").split(/[;\n]+/).forEach(function(p){ if (!p.trim()) return; var src = p.trim().slice(0, 40), d, mo, rest, m = p.match(/^\s*(\d{1,2})[.\/](\d{1,2})(?:[.\/]\d{2,4})?\s*[-—–:]?\s*(.*)$/);
+    if (m) { d = +m[1]; mo = +m[2]; rest = m[3]; }
+    else { var w = p.match(/^\s*(\d{1,2})(?:-?го)?\s+([А-Яа-яЁё]{3,})\.?\s*[-—–:]?\s*(.*)$/), k = w && CAL_MW[w[2].toLowerCase().slice(0, 3)];
+      if (!k) { bad.push(L2("«" + src + "» — не поняли дату (пример: 12.03 ДР бабушки)", "«" + src + "» — could not read the date (example: 12.03 Granny's birthday)")); return; }
+      d = +w[1]; mo = k; rest = w[3]; }
+    if (mo < 1 || mo > 12) { bad.push(L2("«" + src + "» — месяца " + mo + " нет: сначала число, потом месяц (12.03 = 12 марта)", "«" + src + "» — there is no month " + mo + ": day first, then month (12.03 = 12 March)")); return; }
+    var last = new Date(2027, mo, 0).getDate();
+    if (d < 1 || d > last) { bad.push(d === 29 && mo === 2 ? L2("«" + src + "» — в 2027 году нет 29 февраля: укажите 28.02 или 01.03", "«" + src + "» — there is no 29 February in 2027: use 28.02 or 01.03")
+                                                       : L2("«" + src + "» — в " + CAL_MP[mo] + " " + last + (last === 31 ? " день" : " дней") + ", такого числа нет", "«" + src + "» — " + CAL_ME[mo] + " has " + last + " days")); return; }
+    var tx = String(rest || "").replace(/\s+/g, " ").trim();
+    if (!tx) { bad.push(L2("«" + src + "» — добавьте подпись: что за дата", "«" + src + "» — add a caption: what is the date")); return; }
+    if (tx.length > 28) { bad.push(L2("«" + src + "» — подпись " + tx.length + " знаков, на листе помещается 28: сократите", "«" + src + "» — the caption has " + tx.length + " characters, 28 fit: please shorten it")); return; }
+    if (ok.length >= 12) { bad.push(L2("«" + src + "» — на листах помещается до 12 дат, эта лишняя", "«" + src + "» — up to 12 dates fit, this one is extra")); return; }
+    ok.push({d:d, m:mo, t:tx}); });
+  return {ok: ok, bad: bad}; }
+function calDates(raw){ return calDatesEx(raw).ok; }
+/* FIX1 (K1 calendar-09..12, book-19/20): подпись/посвящение — длина и недопустимое с понятной причиной до оплаты, а не молча на сервере */
+function dedWhy(s, max){ s = String(s || "").trim(); if (!s) return "";
+  if (max && s.length > max) return L2("Подпись — " + s.length + " знаков, помещается " + max + ". Сократите, пожалуйста: сами мы текст не обрезаем.", "The line has " + s.length + " characters, " + max + " fit. Please shorten it — we never cut your text ourselves.");
+  if (/https?:|www\.|\S@\S|\+?\d[\d\s()\-]{6,}\d|звони|whats ?app|ватсап|телеграм|подпис(ыв|ись)/i.test(s)) return L2("Телефоны, ссылки, почту и призывы звонить или подписаться не печатаем — уберите их, пожалуйста.", "Phone numbers, links, e-mails and calls to subscribe are not printed — please remove them.");
+  if (/(в память|памяти|помним|скорб|покойн|умер|погиб|ушедш|нет с нами|на небесах|вечная память|светлая память)/i.test(s)) return L2("Это светлый подарок: памятные и грустные слова мы не печатаем. Напишите, пожалуйста, тёплую подпись — кому и от кого.", "This is a joyful gift: we do not print memorial or sad words. Please write a warm line — to whom and from whom.");
+  return ""; }
 function calMonth(mo, a){
   var first = (new Date(2027, mo - 1, 1).getDay() + 6) % 7, n = new Date(2027, mo, 0).getDate(), off = CAL27_OFF[mo] || [], fam = calDates(a.cal_dates).filter(function(x){ return x.m === mo; }).map(function(x){ return x.d; });
   var h = '<div class="calg">' + ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map(function(d, i){ return '<i' + (i > 4 ? ' class="r"' : '') + '>' + d + '</i>'; }).join("");
@@ -977,10 +1008,10 @@ var DEF = {
   Object.assign(stAge(false), {when:function(a){ return a.cal_who !== "family"; }}),
   {id:"fam", type:"text", field:"name", max:30, req:1, sec:["Имя","Name"], q:["Как подписать календарь?","How should we sign the calendar?"], ph:["Семья Соколовых","The Sokolov family"], when:function(a){ return a.cal_who === "family"; }, sum:function(a){ return a.name; }},
   stPhotos("cal", {min:1, max:10, q:function(){ return W.a.cal_who === "family" ? L2("Общее фото семьи","A family photo") : L2("Фото ребёнка","Photos of the child"); }, sub:function(){ return W.a.cal_who === "family" ? L2("Первым — общее фото: все лица хорошо видны. Можно добавить до 9 фото каждого крупно.","First a group photo with every face clearly visible. You can add up to 9 close-ups.") : L2("1–10 фото, лучше 3–5: лицо крупно, хороший свет, без очков и масок. Главное фото — первым.","1–10 photos, ideally 3–5: face close, good light, no sunglasses or masks. The best one first."); }}),
-  {id:"dedic", type:"text", field:"dedic", max:60, opt:1, sec:["Посвящение","Dedication"], q:["Подпись на обложке","A line on the cover"], sub:["Например, кому и от кого. Можно пропустить.","For example, to whom and from whom. You can skip it."],
+  {id:"dedic", type:"text", field:"dedic", max:200, opt:1, sec:["Посвящение","Dedication"], q:["Подпись на обложке","A line on the cover"], sub:["Например, кому и от кого, до 80 знаков. Можно пропустить.","For example, to whom and from whom, up to 80 characters. You can skip it."], valid:function(a){ return dedWhy(a.dedic, 80); },   /* FIX1: не обрезаем молча — причина */
    ph:function(){ var c = CAL_DED[W.a.cal_for], n = String(W.a.name || "").trim(); return c && n && W.a.cal_who !== "family" ? [c[0] + n, c[1] + n] : ["Любимой бабушке от Амелии","To dear Granny from Amelia"]; }, sum:function(a){ return a.dedic; }},
   {id:"dates", type:"text", field:"cal_dates", max:300, opt:1, sec:["Даты семьи","Family dates"], q:["Отметить даты семьи?","Mark family dates?"], sub:["Дни рождения, годовщины — через точку с запятой. Обведём число и подпишем.","Birthdays, anniversaries — separated by semicolons. We circle the day and sign it."], ph:["12.03 ДР бабушки; 05.07 Годовщина","12.03 Granny's birthday; 05.07 Anniversary"], sum:function(a){ var n = calDates(a.cal_dates).length; return n ? L2("даты семьи: ","family dates: ") + n : ""; },
-   valid:function(a){ var raw = String(a.cal_dates || "").trim(); if (!raw) return ""; var n = calDates(raw).length, parts = raw.split(/[;\n]+/).filter(function(x){ return x.trim(); }).length; return n < parts ? L2("Не поняли " + (parts - n) + " из " + parts + " дат. Формат: 12.03 ДР бабушки; 05.07 Годовщина.","Could not read " + (parts - n) + " of " + parts + " dates. Format: 12.03 Granny's birthday; 05.07 Anniversary.") : ""; }},
+   valid:function(a){ var r = calDatesEx(a.cal_dates); return r.bad.length ? L2("Проверьте даты: ", "Please check the dates: ") + r.bad.slice(0, 3).join("; ") + (r.bad.length > 3 ? L2(" и ещё " + (r.bad.length - 3), " and " + (r.bad.length - 3) + " more") : "") + "." : ""; }},   /* FIX1: конкретная причина по каждой дате */
   {id:"year", type:"tiles", field:"cal_year", cols:1, sec:["Год","Year"], q:["На какой год?","Which year?"], sub:["2028 добавим осенью 2027 года, когда выйдет постановление о переносах выходных.","We will add 2028 in autumn 2027, when the decree on moved days off is published."], opts:function(){ return [{v:"2027", e:"📅", t:L2("2027, с января по декабрь","2027, January to December")}]; }, req:1, def:"2027", sum:function(){ return "2027"; }},
   {id:"themes", type:"calthemes", sec:["Темы","Themes"], q:["Темы месяцев","Themes of the months"], sub:["12 тем — по одной на месяц. Нажмите, чтобы выбрать другую.","12 themes, one per month. Tap to pick another."], sum:function(a){ var n = 0; for (var mo = 1; mo <= 12; mo++) if (calTh(a, mo) === "b") n++; return n ? L2("своих тем: ", "changed themes: ") + n : L2("12 тем по месяцам", "12 monthly themes"); }},
   {id:"prev", type:"calprev", nosum:1, sec:["Превью","Preview"], q:["Превью: январь, май, сентябрь","Preview: January, May, September"]},
@@ -1002,7 +1033,7 @@ var DEF = {
   stName(["Как зовут ребёнка?","What is the child's name?"]), stAge(false),
   {id:"style", type:"img", field:"style", sec:["Стиль","Style"], q:["В каком стиле нарисовать книгу?","Which art style for the book?"], opts:function(){ return BSTY.map(function(s){ return {v:s[0], t:L2(s[1], s[2]), img:"../img/" + s[0] + ".jpg"}; }); }, req:1, sum:function(a){ var s = BSTY.filter(function(x){ return x[0] === a.style; })[0]; return s ? L2(s[1], s[2]) : ""; }},
   {id:"family", type:"text", field:"family", max:200, opt:1, sec:["Герои","Characters"], q:["Кто ещё будет в книге?","Who else is in the book?"], sub:["Родные, питомец, любимая игрушка — через запятую.","Family, a pet, a favourite toy — separated by commas."], ph:["Мама Лена, кот Чакки","Mum Lena, Chucky the cat"], sum:function(a){ return a.family; }},
-  {id:"dedic", type:"text", field:"dedic", max:200, opt:1, sec:["Посвящение","Dedication"], q:["Посвящение на первой странице","A dedication on the first page"], ph:["Алине — от бабушки","To Alina — from Granny"], sum:function(a){ return a.dedic; }},
+  {id:"dedic", type:"text", field:"dedic", max:200, opt:1, sec:["Посвящение","Dedication"], q:["Посвящение на первой странице","A dedication on the first page"], ph:["Алине — от бабушки","To Alina — from Granny"], valid:function(a){ return dedWhy(a.dedic, 160); }, sum:function(a){ return a.dedic; }},   /* FIX1 (K1 book-19/20) */
   stPhotos("book", {max:8, q:["Фото ребёнка","Photos of the child"], sub:["2–8 фото, лучше 5–8: лицо крупно, хороший свет, без очков и масок.","2–8 photos, ideally 5–8: face close, good light, no sunglasses or masks."], soft:function(){ var n = phCount("book"); return n === 1 ? L2("Одного фото хватит, но с 5–8 фото ребёнок будет похож в каждой сцене. Добавьте ещё или нажмите кнопку ещё раз.","One photo is enough, but with 5–8 photos the child looks alike in every scene. Add more or tap the button again.") : ""; }}),
   stEmail(), stSum()]; },
  song: function(){ return [stName(["Как зовут того, кому песня?","Who is the song for? Their name"]), stStress(), stAge(true), stOcc(), stGenre(), stVoice(), stMood(), stWish(), stEmail(), stSum()]; },
@@ -1015,7 +1046,7 @@ var DEF = {
  cartoon: function(){ return [
   {id:"len", type:"tiles", field:"cart_len", cols:1, sec:["Мультфильм","Cartoon"], q:["Какой длины мультфильм?","How long is the cartoon?"], sub:["Сначала покажем героев на утверждение (~3 минуты), затем мультфильм будет готов примерно за 15 минут.","First we show the characters for approval (~3 minutes), then the cartoon is ready in about 15 minutes."], opts:function(){ return [{v:"30", e:"⚡", t:L2("30 секунд · 6 сцен","30 seconds · 6 scenes"), d:money(2190)}, {v:"60", e:"🎬", t:L2("1 минута · 12 сцен","1 minute · 12 scenes"), d:money(2990)}, {v:"120", e:"🍿", t:L2("2 минуты · 24 сцены","2 minutes · 24 scenes"), d:money(5490)}]; }, req:1, def:"60", sum:function(a){ return {"30":L2("30 секунд","30 s"), "60":L2("1 минута","1 min"), "120":L2("2 минуты","2 min")}[a.cart_len]; }},
   stName(["Как зовут главного героя?","What is the main hero's name?"], ["Первый герой — его фото загрузите первыми.","The first hero — upload their photos first."]),
-  {id:"others", type:"text", field:"others", max:60, opt:1, sec:["Герои","Characters"], q:["Кто ещё в истории?","Who else is in the story?"], sub:["До 2 имён через запятую. Можно о паре, семье или ребёнке.","Up to 2 names, separated by commas."], ph:["Максим, дочка Соня","Max, daughter Sonya"], sum:function(a){ return a.others; }},
+  {id:"others", type:"text", field:"others", max:120, opt:1, valid:function(a){ var n = String(a.others || "").split(",").map(function(x){ return x.trim(); }).filter(Boolean).length; return n > 2 ? L2("В мультфильме до 3 героев: главный и ещё двое. Сейчас ещё " + n + " — оставьте двоих; остальных можно упомянуть в истории, их покажем через предметы и фото в кадре.", "A cartoon has up to 3 characters: the main one and two more. You listed " + n + " more — keep two; the others can be mentioned in the story.") : ""; },   /* FIX1 (K1 cartoon-04): не отбрасываем молча */ sec:["Герои","Characters"], q:["Кто ещё в истории?","Who else is in the story?"], sub:["До 2 имён через запятую. Можно о паре, семье или ребёнке.","Up to 2 names, separated by commas."], ph:["Максим, дочка Соня","Max, daughter Sonya"], sum:function(a){ return a.others; }},
   {id:"story", type:"area", field:"story", min:150, max:1500, sec:["История","Story"], q:["Ваша история","Your story"], sub:["5–8 главных моментов по порядку — каждый станет сценой. От 150 до 1500 знаков.","5–8 key moments in order — each becomes a scene. 150 to 1500 characters."], ph:["Познакомились осенью в книжном магазине — потянулись за одной книгой. Первое свидание — кофе и прогулка под дождём…","We met in a bookshop in autumn, reaching for the same book. First date — coffee and a walk in the rain…"], req:1, sum:function(a){ return a.story; }, long:1},
   {id:"cstyle", type:"tiles", field:"cart_style", cols:1, sec:["Стиль","Style"], q:["Стиль мультфильма","Cartoon style"], opts:function(){ return [{v:"3d", e:"🧸", t:L2("3D-мультфильм","3D cartoon")}, {v:"watercolor", e:"🎨", t:L2("Акварель","Watercolour")}, {v:"anime", e:"✨", t:L2("Аниме","Anime")}]; }, req:1, sum:function(a){ return {"3d":"3D", watercolor:L2("Акварель","Watercolour"), anime:L2("Аниме","Anime")}[a.cart_style]; }},
   {id:"music", type:"tiles", field:"cart_music", cols:1, sec:["Музыка","Music"], q:["Музыка в мультфильме","Music in the cartoon"], sub:["Песня входит в цену.","The song is included."], opts:function(){ return [{v:"song", e:"🎵", t:L2("Песня с вашими именами","A song with your names")}, {v:"instrumental", e:"🎻", t:L2("Красивая музыка без слов","Beautiful music without words")}]; }, req:1, def:"song", sum:function(a){ return a.cart_music === "song" ? L2("песня с именами","song with names") : L2("музыка без слов","instrumental"); }},
@@ -1619,7 +1650,10 @@ document.addEventListener("visibilitychange", function(){ if (!document.hidden) 
 
 /* ---------------- карточка подарка ---------------- */
 function openProd(k){
-  var p = PROD[k]; if (!p) return; S.prod = k;
+  var p = PROD[k]; if (!p) return;
+  if (p.ruOnly && lang === "en") { toast("This gift is available in Russian only for now."); return; }   /* FIX1: причина, а не пустой экран (№140) */
+  if (p.link) { openExt(SITE + p.link); return; }                                                     /* FIX1: «Приглашения», «УЗИ» — на сайте */
+  S.prod = k;
   $("prTitle").textContent = lang === "en" ? p.en : p.ru;
   $("prMedia").innerHTML = '<div style="border-radius:18px;overflow:hidden;border:1px solid var(--line)"><img src="' + EX + p.img + '" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover"></div>';
   $("prPrice").textContent = (p.from ? (lang === "en" ? "from " : "от ") : "") + money(p.price);
