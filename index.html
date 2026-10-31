@@ -777,7 +777,7 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
 <section class="e-sheetw" id="products" aria-labelledby="eSlogan"><div class="wrap e-wide"><div class="e-sheet">
     <div class="e-shead">
       <h2 class="e-slogan" id="eSlogan"><span class="e-br" data-i="h4_slogan_b">Talemir —</span> <span data-i="h4_slogan">подарки, в которых живёт любовь</span></h2>
-      <div class="e-seg" id="eAud" role="group" aria-label="Для кого подарок"><button type="button" data-aud="all" aria-pressed="true" data-i="h4_aud_all">Все</button><button type="button" data-aud="kids" aria-pressed="false" data-i="h4_aud_kids">Детям</button><button type="button" data-aud="adult" aria-pressed="false" data-i="h4_aud_adult">Взрослым</button><button type="button" class="e-pets" data-aud="pets" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg><span data-i="h4_aud_pets">Питомцам</span></button><button type="button" class="e-ps-a" onclick="location.hash='photo'" aria-pressed="false"><span aria-hidden="true">📸</span><span data-psru="Фотосессии" data-psen="Photo sessions">Фотосессии</span></button></div>
+      <div class="e-seg" id="eAud" role="group" aria-label="Для кого подарок"><button type="button" data-aud="all" aria-pressed="true" data-i="h4_aud_all">Все</button><button type="button" data-aud="kids" aria-pressed="false" data-i="h4_aud_kids">Детям</button><button type="button" data-aud="adult" aria-pressed="false" data-i="h4_aud_adult">Взрослым</button><button type="button" class="e-pets" data-aud="pets" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg><span data-i="h4_aud_pets">Питомцам</span></button><button type="button" class="e-ps-a" data-psopen aria-pressed="false"><span aria-hidden="true">📸</span><span data-psru="Фотосессии" data-psen="Photo sessions">Фотосессии</span></button></div>
     </div>
     <div class="e-chips" id="eChips" role="group" aria-label="Тип подарка"></div>
     <div class="e-sgrid">
@@ -798,13 +798,26 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
     </div>
   </div></div></section>
 
-  <!-- BLOOM2 30.10.2026: 5-е направление «Фотосессии» (по одному фото). Оформление — в Talemir Mini App (app/), то же в Telegram. -->
+  <!-- 24.10.2026 указ владельца: Дед Мороз — яркий акционный баннер на всю ширину, не в списке продуктов (29.10 HOME4: оформление макета E) -->
+  <section class="e-dm" id="dm" aria-labelledby="dmH"><div class="wrap e-wide"><div class="dmin">
+    <div class="dmvid"><video controls playsinline preload="none" poster="img/ex/ex_ny_v6.jpg" src="img/ex/ex_ny_v6.mp4" aria-labelledby="dmH"></video></div>
+    <div class="dmtxt">
+      <span class="dmkick" data-i="dm_kick"></span>
+      <h2 id="dmH" data-i="dm_h"></h2>
+      <p data-i="dm_p"></p>
+      <div class="e-dmrow"><p class="dmfree" data-i="dm_free"></p><p class="dmor" id="dmOr"></p></div>
+      <div class="dmacts"><button type="button" class="btn btn-gold" id="dmAdd" aria-pressed="false"></button><button type="button" class="btn dmghost" id="dmSolo" data-i="dm_solo"></button></div>
+    </div>
+  </div></div></section>
+
+  <!-- BLOOM2 30.10.2026: 5-е направление «Фотосессии». PS3 31.10: всё оформление — в большом окне сайта (#psModal), без перехода в Mini App. -->
   <section class="ps-sec" id="photo" aria-labelledby="psH"><div class="wrap e-wide">
-    <div class="ps-head"><span class="ps-pill" data-psru="Новинка · 1 фото → 6 снимков" data-psen="New · 1 photo → 6 shots">Новинка · 1 фото → 6 снимков</span>
-      <h2 id="psH" data-psru="Фотосессии по одному фото" data-psen="Photo sessions from one photo">Фотосессии по одному фото</h2>
-      <p data-psru="Загрузите одно фото — получите 6 реалистичных снимков 2K в выбранном стиле. Для взрослых, детей (фото загружает родитель), пар и семей. Обычно ~5 минут, затем мы вручную проверяем каждый кадр." data-psen="Upload one photo — get 6 realistic 2K shots in the style you choose. For adults, kids (a parent uploads the photo), couples and families. Usually ~5 minutes, then we check every shot by hand.">Загрузите одно фото — получите 6 реалистичных снимков 2K в выбранном стиле. Для взрослых, детей (фото загружает родитель), пар и семей. Обычно ~5 минут, затем мы вручную проверяем каждый кадр.</p></div>
-    <div class="ps-grid"><a class="ps-c" href="app/#ny_family" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/ny_family_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Новогодняя семья" data-psen="New Year family">Новогодняя семья</b><span class="ps-w" data-psru="семья, до 5 человек" data-psen="family, up to 5">семья, до 5 человек</span></a><a class="ps-c" href="app/#christmas" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/christmas_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Рождество" data-psen="Christmas">Рождество</b><span class="ps-w" data-psru="взрослый или ребёнок" data-psen="adult or child">взрослый или ребёнок</span></a><a class="ps-c" href="app/#winter_tale" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/winter_tale_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Зимняя сказка" data-psen="Winter tale">Зимняя сказка</b><span class="ps-w" data-psru="взрослый или ребёнок" data-psen="adult or child">взрослый или ребёнок</span></a><a class="ps-c" href="app/#kids_fairy" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/kids_fairy_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Принц / принцесса" data-psen="Prince / princess">Принц / принцесса</b><span class="ps-w" data-psru="ребёнок" data-psen="child">ребёнок</span></a><a class="ps-c" href="app/#kids_prof" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/kids_prof_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Профессии мечты" data-psen="Dream jobs">Профессии мечты</b><span class="ps-w" data-psru="ребёнок" data-psen="child">ребёнок</span></a><a class="ps-c" href="app/#love_story" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/love_story_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Love story" data-psen="Love story">Love story</b><span class="ps-w" data-psru="пара" data-psen="couple">пара</span></a><a class="ps-c" href="app/#business" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/business_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Деловой портрет" data-psen="Business portrait">Деловой портрет</b><span class="ps-w" data-psru="взрослый" data-psen="adult">взрослый</span></a><a class="ps-c" href="app/#noir" data-psl><span class="ps-m"><img loading="lazy" src="img/ps/noir_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Кино-нуар" data-psen="Film noir">Кино-нуар</b><span class="ps-w" data-psru="взрослый" data-psen="adult">взрослый</span></a></div>
-    <div class="ps-buy"><a class="btn btn-gold" href="app/#photo" data-psl data-psru="Создать фотосессию · 590 ₽" data-psen="Create a photo session · 590 ₽">Создать фотосессию · 590 ₽</a><a class="ps-tg" href="https://t.me/Talemir_bot" rel="noopener" data-psru="Открыть в Telegram" data-psen="Open in Telegram">Открыть в Telegram</a></div>
+    <div class="ps-head"><span class="ps-pill" data-psru="Новинка · от 1 до 10 ваших фото → 6 готовых снимков" data-psen="New · 1–10 of your photos → 6 finished shots">Новинка · от 1 до 10 ваших фото → 6 готовых снимков</span>
+      <h2 id="psH"><button type="button" class="ps-hb" data-psopen><span data-psru="Фотосессия по вашим фото" data-psen="Photo session from your photos">Фотосессия по вашим фото</span> <span class="ps-arr" aria-hidden="true">→</span></button></h2>
+      <p data-psru="Выберите стиль и загрузите от 1 до 10 своих фото — получите 6 реалистичных снимков 2K. Для взрослых, детей (фото загружает родитель), пар и семей." data-psen="Choose a style and upload 1 to 10 of your photos — get 6 realistic 2K shots. For adults, kids (a parent uploads the photo), couples and families.">Выберите стиль и загрузите от 1 до 10 своих фото — получите 6 реалистичных снимков 2K. Для взрослых, детей (фото загружает родитель), пар и семей.</p></div>
+    <div class="ps-price" role="note"><b data-psru="Любая фотосессия — 590 ₽" data-psen="Any photo session — 590 ₽">Любая фотосессия — 590 ₽</b><span data-psru="ровно 6 снимков 2K в выбранном стиле · обычно ~5 минут, затем мы вручную проверяем каждый кадр" data-psen="exactly 6 2K shots in the chosen style · usually ~5 minutes, then we check every shot by hand">ровно 6 снимков 2K в выбранном стиле · обычно ~5 минут, затем мы вручную проверяем каждый кадр</span></div>
+    <div class="ps-grid"><a class="ps-c" href="app/#ny_family" data-psl data-pk="ny_family"><span class="ps-m"><img loading="lazy" src="img/ps/ny_family_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Новогодняя семья" data-psen="New Year family">Новогодняя семья</b><span class="ps-w" data-psru="семья, до 5 человек" data-psen="family, up to 5">семья, до 5 человек</span></a><a class="ps-c" href="app/#christmas" data-psl data-pk="christmas"><span class="ps-m"><img loading="lazy" src="img/ps/christmas_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Рождество" data-psen="Christmas">Рождество</b><span class="ps-w" data-psru="взрослый или ребёнок" data-psen="adult or child">взрослый или ребёнок</span></a><a class="ps-c" href="app/#winter_tale" data-psl data-pk="winter_tale"><span class="ps-m"><img loading="lazy" src="img/ps/winter_tale_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Зимняя сказка" data-psen="Winter tale">Зимняя сказка</b><span class="ps-w" data-psru="взрослый или ребёнок" data-psen="adult or child">взрослый или ребёнок</span></a><a class="ps-c" href="app/#kids_fairy" data-psl data-pk="kids_fairy"><span class="ps-m"><img loading="lazy" src="img/ps/kids_fairy_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Принц / принцесса" data-psen="Prince / princess">Принц / принцесса</b><span class="ps-w" data-psru="ребёнок" data-psen="child">ребёнок</span></a><a class="ps-c" href="app/#kids_prof" data-psl data-pk="kids_prof"><span class="ps-m"><img loading="lazy" src="img/ps/kids_prof_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Профессии мечты" data-psen="Dream jobs">Профессии мечты</b><span class="ps-w" data-psru="ребёнок" data-psen="child">ребёнок</span></a><a class="ps-c" href="app/#love_story" data-psl data-pk="love_story"><span class="ps-m"><img loading="lazy" src="img/ps/love_story_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Love story" data-psen="Love story">Love story</b><span class="ps-w" data-psru="пара" data-psen="couple">пара</span></a><a class="ps-c" href="app/#business" data-psl data-pk="business"><span class="ps-m"><img loading="lazy" src="img/ps/business_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Деловой портрет" data-psen="Business portrait">Деловой портрет</b><span class="ps-w" data-psru="взрослый" data-psen="adult">взрослый</span></a><a class="ps-c" href="app/#noir" data-psl data-pk="noir"><span class="ps-m"><img loading="lazy" src="img/ps/noir_1.jpg" alt="" width="640" height="800"><span class="ps-ai">AI</span></span><b data-psru="Кино-нуар" data-psen="Film noir">Кино-нуар</b><span class="ps-w" data-psru="взрослый" data-psen="adult">взрослый</span></a></div>
+    <div class="ps-buy"><button type="button" class="btn btn-gold" data-psopen><span data-psru="Выбрать стиль и создать фотосессию" data-psen="Choose a style and create a photo session">Выбрать стиль и создать фотосессию</span></button><a class="ps-tg" href="https://t.me/Talemir_bot" rel="noopener" data-psru="Или оформить в Telegram" data-psen="Or order in Telegram">Или оформить в Telegram</a></div>
     <p class="ps-note" data-psru="Примеры — на вымышленных людях, созданы с помощью ИИ. Фото ребёнка — только с согласия родителя; фото удаляется после выдачи." data-psen="Examples show fictional people and are created with AI. A child's photo only with a parent's consent; the photo is deleted after delivery.">Примеры — на вымышленных людях, созданы с помощью ИИ. Фото ребёнка — только с согласия родителя; фото удаляется после выдачи.</p>
   </div></section>
 <style>
@@ -825,6 +838,9 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
 .ps-note{font-size:.85rem;margin-top:12px!important}
 .ps-tg{display:inline-flex;align-items:center;min-height:48px;padding:10px 18px;border-radius:14px;border:2px solid var(--cloth);color:var(--ink);font-weight:800;text-decoration:none}.ps-tg:hover{background:color-mix(in srgb,var(--cloth) 8%,transparent)}
 #photo{scroll-margin-top:80px}
+.ps-hb{all:unset;cursor:pointer;display:inline;border-radius:10px}.ps-arr{display:inline-block}.ps-hb:hover span:first-child{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}.ps-hb:focus-visible{outline:3px solid var(--gold);outline-offset:4px}.ps-arr{color:var(--gold);transition:transform .15s}.ps-hb:hover .ps-arr{transform:translateX(4px)}
+.ps-price{display:flex;gap:4px 14px;flex-wrap:wrap;align-items:baseline;margin-top:16px;background:color-mix(in srgb,var(--gold) 14%,var(--card));border:1px solid color-mix(in srgb,var(--gold) 45%,var(--card));border-radius:14px;padding:12px 16px;color:var(--ink);max-width:760px}.ps-price b{font-family:var(--f-display);font-size:1.1rem}
+.ps-c:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.ps-c b{text-decoration:underline transparent}.ps-c:hover b{text-decoration-color:currentColor;text-underline-offset:3px}
 #eAud{max-width:100%;overflow-x:auto;scrollbar-width:none}#eAud::-webkit-scrollbar{display:none}#eAud button{flex:0 0 auto}
 @media (max-width:760px){ .ps-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .ps-sec{padding-top:32px} }
 </style>
@@ -834,18 +850,6 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
   document.querySelectorAll('a[data-psl]').forEach(function(a){ var h = a.getAttribute('href').replace(/\?lang=en/, ''); a.setAttribute('href', L === 'en' ? h.replace('app/', 'app/?lang=en') : h); }); }
   try { ap(); new MutationObserver(ap).observe(document.documentElement, {attributes:true, attributeFilter:['lang']}); } catch(e){} })();
 </script>
-
-  <!-- 24.10.2026 указ владельца: Дед Мороз — яркий акционный баннер на всю ширину, не в списке продуктов (29.10 HOME4: оформление макета E) -->
-  <section class="e-dm" id="dm" aria-labelledby="dmH"><div class="wrap e-wide"><div class="dmin">
-    <div class="dmvid"><video controls playsinline preload="none" poster="img/ex/ex_ny_v6.jpg" src="img/ex/ex_ny_v6.mp4" aria-labelledby="dmH"></video></div>
-    <div class="dmtxt">
-      <span class="dmkick" data-i="dm_kick"></span>
-      <h2 id="dmH" data-i="dm_h"></h2>
-      <p data-i="dm_p"></p>
-      <div class="e-dmrow"><p class="dmfree" data-i="dm_free"></p><p class="dmor" id="dmOr"></p></div>
-      <div class="dmacts"><button type="button" class="btn btn-gold" id="dmAdd" aria-pressed="false"></button><button type="button" class="btn dmghost" id="dmSolo" data-i="dm_solo"></button></div>
-    </div>
-  </div></div></section>
 
   <section class="e-trustw" aria-label="Talemir"><div class="wrap e-wide e-trust">
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><b data-i="tr2_t"></b><span data-i="tr2_d"></span></div>
@@ -1012,7 +1016,7 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
           <div class="row"><label for="fInvPal">Цвет приглашения</label><select id="fInvPal"><option value="lavender">💜 Лаванда</option><option value="mint">🌿 Мята</option><option value="sunny">☀️ Солнце</option><option value="sky">🩵 Небо</option><option value="rose">🌹 Роза</option></select></div>
         </div>
       </div>
-      <div class="row" data-for="cartoon"><label for="fCartOthers">Кто ещё в истории — до 2 имён через запятую</label><input type="text" id="fCartOthers" maxlength="60" autocomplete="off" placeholder="Например: Максим, дочка Соня"><span class="hint">Первый герой — имя выше. Можно рассказать о паре, семье или ребёнке.</span></div>
+      <div class="row" data-for="cartoon"><label for="fCartOthers">Кто ещё в истории — до 2 имён через запятую</label><input type="text" id="fCartOthers" maxlength="120" autocomplete="off" placeholder="Например: Максим, дочка Соня"><span class="hint">Первый герой — имя выше. Можно рассказать о паре, семье или ребёнке.</span></div>
       <div class="row" data-for="cartoon"><label for="fCartStory">Ваша история</label><textarea id="fCartStory" rows="7" maxlength="1500" style="width:100%;font:inherit;padding:12px;border-radius:14px;border:1px solid var(--line)" placeholder="Например: Познакомились осенью в книжном магазине — потянулись за одной книгой. Первое свидание — кофе и прогулка под дождём с одним зонтом. Летом поехали к морю, катались на велосипедах. Предложение — на холме на закате. Свадьба в саду с гирляндами. Теперь у нас дочка Соня, и вечером мы втроём читаем сказки."></textarea><div id="fCartCnt" style="font-size:13px;color:var(--muted);text-align:right;margin-top:4px" aria-live="polite"></div><span class="hint" id="fCartHint">От 150 до 1500 знаков. 5–8 главных моментов по порядку — каждый станет сценой.</span></div>
       <div class="row" data-for="cartoon"><label for="fCartStyle">Стиль мультфильма</label><select id="fCartStyle"><option value="3d">3D-мультфильм</option><option value="watercolor">Акварель</option><option value="anime">Аниме</option></select></div>
       <div class="row" data-for="cartoon"><label>Фото героев — 1–3 фото каждого, лицо хорошо видно</label>
@@ -1447,10 +1451,17 @@ function whyBlocked(){
   const oc = document.getElementById('fOcc'), own = document.getElementById('fOccOwn');
   if (oc && oc.offsetParent !== null && oc.value === 'own' && own && !own.value.trim()) return ['fOccOwn', 'Напишите свой повод — например «Выпускной в садике» или «Просто так».'];
   if (curProd === 'cartoon') {
+    const on = document.getElementById('fCartOthers').value.split(',').map(x => x.trim()).filter(Boolean).length;   /* FIX1 (K1 cartoon-04): до 3 героев — с причиной */
+    if (on > 2) return ['fCartOthers', lang === 'en' ? 'A cartoon has up to 3 characters: the main one and two more. You listed ' + on + ' more — keep two; the others can be mentioned in the story.' : 'В мультфильме до 3 героев: главный и ещё двое. Сейчас ещё ' + on + ' — оставьте двоих; остальных можно упомянуть в истории, их покажем через предметы и фото в кадре.'];
     const sn = document.getElementById('fCartStory').value.trim().length;
     if (sn < 150) return ['fCartStory', 'История слишком короткая: ' + sn + ' из 150 знаков. Добавьте ещё пару деталей — каждая станет сценой.'];
     if (!document.getElementById('fCartP1').files.length) return ['fCartP1', 'Добавьте хотя бы одно фото первого героя (Герой 1) — нажмите «Выбрать фото».'];
     for (const id of ['fCartP1','fCartP2','fCartP3']) { const w = photoWhy(document.getElementById(id).files); if (w) return [id, w]; }
+  }
+  if (S.includes('book')) {                                          /* FIX1 (K1 book-19/20): посвящение — причина до оплаты */
+    const dd = (document.getElementById('fDedic') || {}).value || '', ds = dd.trim();
+    if (ds && /https?:|www\.|\S@\S|\+?\d[\d\s()\-]{6,}\d|звони|whats ?app|ватсап|телеграм|подпис(ыв|ись)/i.test(ds)) return ['fDedic', lang === 'en' ? 'Phone numbers, links, e-mails and calls to subscribe are not printed — please remove them.' : 'Телефоны, ссылки, почту и призывы звонить или подписаться не печатаем — уберите их, пожалуйста.'];
+    if (ds && /(в память|памяти|помним|скорб|покойн|умер|погиб|ушедш|нет с нами|на небесах|вечная память|светлая память)/i.test(ds)) return ['fDedic', lang === 'en' ? 'This is a joyful gift: we do not print memorial or sad words. Please write a warm line — to whom and from whom.' : 'Это светлый подарок: памятные и грустные слова мы не печатаем. Напишите, пожалуйста, тёплую подпись — кому и от кого.'];
   }
   const needPh = S.some(k => ['book','clip','live','sing','pet_live','pet_sing'].includes(k));
   if (needPh && !fPhotos.files.length) return ['fPhotos', S.includes('sing') ? 'Добавьте одно фото, где хорошо видно лицо, — нажмите «Выбрать фото».' : 'Добавьте хотя бы одно фото, где хорошо видно лицо, — нажмите «Выбрать фото».'];
@@ -1936,12 +1947,12 @@ t.addEventListener('input',u);u();})();</script>
    Те же числа — chain.py ETA_MIN (страница оплаты /checkout, страница заказа, чат) и client.py ETA_MIN (бот): меняете здесь — поменяйте и там.
    Комплект делается по очереди: срок = сумма, округлённая вверх до 5 минут; потолок — 2 часа. */
 var TIME1 = (function(){
-  const ETA_MIN = {song:5, inv:2, invkit:2, clip:10, ny:10, book:15, cartoon:10, live:20, sing:35, pet_live:5, pet_sing:40}, ETA_MAX = 120;   /* 29.10 C6a: питомцы — пилот PET2 (поющий: обычно ~15, в пик до 40) */
+  const ETA_MIN = {song:5, inv:2, invkit:2, clip:10, ny:10, book:15, cartoon:10, live:20, sing:35, pet_live:5, pet_sing:40, photoshoot:5}, ETA_MAX = 120;   /* 29.10 C6a: питомцы — пилот PET2 (поющий: обычно ~15, в пик до 40) */
   const RU1 = {song:'Песня обычно готова за ~{m}.', clip:'Клип обычно готов за ~{m}.', live:'«Живые фото» обычно готовы за ~{m}.', sing:'«Поющее фото» обычно готово за ~{m}.',
     book:'Книга обычно готова за ~{m}.', ny:'Поздравление Деда Мороза обычно готово за ~{m}.', inv:'Приглашение обычно готово за ~{m}.', invkit:'Набор приглашений обычно готов за ~{m}.',
     cartoon:'Мультфильм обычно готов за ~{m}.', pet_live:'«Живое фото питомца» обычно готово за ~{m}, затем мы вручную проверяем качество.',
-    pet_sing:'«Поющий питомец» обычно готов за ~15 минут, в часы пик — до 40 минут; затем мы вручную проверяем качество.'};
-  const EN1 = {pet_live:'Usually ready in about 5 minutes, then we check the quality by hand.', pet_sing:'Usually ready in about 15 minutes, up to 40 minutes at peak times; then we check the quality by hand.'};
+    pet_sing:'«Поющий питомец» обычно готов за ~15 минут, в часы пик — до 40 минут; затем мы вручную проверяем качество.', photoshoot:'Фотосессия обычно готова за ~{m}, затем мы вручную проверяем каждый кадр.'};   /* PS3: = chain.py ETA_MIN.photoshoot */
+  const EN1 = {pet_live:'Usually ready in about 5 minutes, then we check the quality by hand.', pet_sing:'Usually ready in about 15 minutes, up to 40 minutes at peak times; then we check the quality by hand.', photoshoot:'Usually ready in about {m}, then we check every shot by hand.'};
   const TX = {
     ru:{one:'', many:'Все подарки вместе — до 2 часов, обычно до {m}.', many90:'Все подарки вместе — до 2 часов, обычно до полутора часов.', many60:'Все подарки вместе — до 2 часов, обычно до часа.', manyMax:'Все подарки вместе — до 2 часов.', none:'Обычно — от нескольких минут до 2 часов, в зависимости от подарка.'},
     en:{one:'Usually ready in about {m}.', many:'All the gifts together take up to 2 hours — usually no more than {m}.', many90:'All the gifts together take up to 2 hours — usually no more than an hour and a half.', many60:'All the gifts together take up to 2 hours — usually no more than an hour.', manyMax:'All the gifts together take up to 2 hours.', none:'Usually from a few minutes to 2 hours, depending on the gift.'},
@@ -2080,7 +2091,7 @@ var PAYUX = (function(){
   const EM_RE = /^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$/;          /* = chain.py /api/pay */
   const TG_RE = /^@?[A-Za-z0-9_]{5,32}$/;                              /* = checkout_page.html */
   const RS_OK = {friend:1, promo_ok:1, own_better:1, owner:1}, RS_BAD = {new_only:1, inactive:1, not_found:1, own_code:1, used:1, bound_other:1, expired_own:1, expired:1, not_for_product:1};
-  const RUB = {cartoon:2190, book:990, song:490, clip:790, live:1990, sing:1490, ny:490, inv:290, invkit:590, pet_live:390, pet_sing:590};   /* = chain.py PRICE (только для строки «было …»; цену считает сервер) */
+  const RUB = {cartoon:2190, book:990, song:490, clip:790, live:1990, sing:1490, ny:490, inv:290, invkit:590, pet_live:390, pet_sing:590, photoshoot:590};   /* = chain.py PRICE (только для строки «было …»; цену считает сервер) */
   const S = {tok:'', keys:[], sig:'', last:null, base:null, q:0, busy:false, timer:0, w:null};   /* w — ответ /api/wallet/offer (С4) */
   const CRED = {credentials:'include'};   /* С4: cookie кабинета ru.api (тот же сайт talemir.com) — бонусы/пакет/карта вошедшего клиента */
   function fmtN(n){ return fmt(n).replace(/ ₽$/, '\u00a0₽'); }   /* С4: «350 ₽» не разрывается на две строки */
@@ -2919,6 +2930,414 @@ window.pregLive = (function(){
   return {render: function(el, c){ cfg = c; if (root === el && root.childElementCount) return; root = el; step1(); }};
 })();
 </script>
+<!-- 31.10 PS3 (замечания собственника 31.10): фотосессия — в одном большом окне САЙТА (не копия Mini App): стиль → фото → оплата (PAYUX1), без перехода на другие страницы. -->
+<div class="modal psm" id="psModal" hidden>
+  <div class="sheet psm-sheet" role="dialog" aria-modal="true" aria-labelledby="psmH">
+    <div class="psm-top">
+      <div class="psm-tt"><h3 id="psmH"></h3><div class="psm-step" id="psmStep" aria-live="polite"></div><div class="psm-bar" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <button type="button" class="psm-x" id="psmX">×</button>
+    </div>
+    <div class="psm-body" id="psmBody">
+      <div class="psm-price" id="psmPrice" role="note"></div>
+      <div id="psmS1">
+        <div class="psm-tools"><div class="psm-seg" id="psmGs" role="group"></div><div class="psm-chips" id="psmChips" role="group"></div></div>
+        <div id="psmRows"></div>
+      </div>
+      <div id="psmS2" hidden></div>
+      <div id="psmPay" hidden></div>
+    </div>
+  </div>
+</div>
+<style>
+html.psm-lock,html.psm-lock body{overflow:hidden}
+.modal.psm{z-index:60}
+.modal.psm .psm-sheet{width:min(1120px,100%);height:min(92vh,980px);max-height:100%;padding:0;gap:0;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.psm-top{display:flex;align-items:flex-start;gap:12px;padding:18px 24px 12px;border-bottom:1px solid var(--line);background:var(--card)}
+.psm-tt{flex:1;min-width:0}
+.psm .psm-top h3{font-family:var(--f-display);font-size:1.35rem;line-height:1.2;margin:0;color:var(--ink)}
+.psm-step{color:var(--muted);font-weight:700;font-size:.9rem;margin-top:4px}
+.psm-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;max-width:360px}
+.psm-bar i{display:block;height:5px;border-radius:99px;background:var(--line)}.psm-bar i.on{background:var(--gold)}
+.psm-x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.psm-x:hover{border-color:var(--gold)}
+.psm-body{flex:1;overflow:auto;padding:16px 24px 28px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.psm-price{display:flex;gap:4px 14px;flex-wrap:wrap;align-items:baseline;background:color-mix(in srgb,var(--gold) 14%,var(--card));border:1px solid color-mix(in srgb,var(--gold) 45%,var(--card));border-radius:14px;padding:10px 14px;font-size:.95rem;line-height:1.4;color:var(--ink)}
+.psm-price b{font-family:var(--f-display);font-size:1.05rem}
+.psm-tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;position:sticky;top:-16px;z-index:3;background:var(--card);padding:12px 0 10px;margin-top:4px}
+.psm-seg{display:inline-flex;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px;flex:none}
+.psm-seg button,.psm-who button{font:inherit;font-weight:800;font-size:.92rem;border:0;background:transparent;color:var(--ink);border-radius:999px;padding:.5em 1.05em;cursor:pointer;min-height:40px}
+.psm-seg button[aria-pressed=true],.psm-who button[aria-pressed=true]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.psm-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 300px;padding:2px}
+.psm-chips::-webkit-scrollbar{display:none}
+.psm-chips button{flex:none;font:inherit;font-weight:700;font-size:.9rem;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.4em .95em;cursor:pointer;min-height:38px}
+.psm-chips button[aria-pressed=true]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 20%,var(--card))}
+.psm .psm-sec{margin-top:18px;padding:0}
+.psm-sh{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;margin-bottom:10px}
+.psm .psm-sh h4{font-family:var(--f-display);font-size:1.1rem;margin:0;color:var(--ink)}
+.psm-n{color:var(--muted);font-size:.85rem;font-weight:700}
+.psm-tag{font-size:.75rem;font-weight:800;border-radius:999px;padding:.25em .75em;background:var(--line);color:var(--ink)}
+.psm-tag.ok{background:color-mix(in srgb,#2e7d4f 18%,var(--card));color:#2e7d4f}
+.psm-tag.hot{background:var(--pome);color:#fff}
+.psm-arr{margin-inline-start:auto;display:flex;gap:6px}
+.psm-arr button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;cursor:pointer}
+.psm-note{background:var(--paper);border:1px dashed var(--line);border-radius:14px;padding:10px 14px;color:var(--muted);font-size:.9rem;margin-top:18px;line-height:1.45}
+.psm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}
+.psm-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(148px,168px);gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:2px 2px 8px;scrollbar-width:thin}
+.psm-c{display:flex;flex-direction:column;align-items:stretch;text-align:start;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;padding:0 0 10px;cursor:pointer;scroll-snap-align:start;transition:transform .15s ease,box-shadow .15s ease;min-width:0}
+.psm-c:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(35,23,58,.14)}
+.psm-c:focus-visible,.psm-x:focus-visible,.psm-chips button:focus-visible,.psm-seg button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.psm-m{position:relative;display:block;aspect-ratio:3/4;background:var(--line);overflow:hidden}
+.psm-m img{width:100%;height:100%;object-fit:cover;display:block}
+.psm-m.noimg::after{content:attr(data-e);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px}
+.psm-ai{position:absolute;right:7px;bottom:7px;background:rgba(20,16,29,.75);color:#fff;font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px}
+.psm-c b{padding:8px 10px 0;font-size:.92rem;line-height:1.25;font-family:var(--f-display)}
+.psm-c small{padding:3px 10px 0;color:var(--muted);font-size:.8rem;line-height:1.3}
+.psm-d{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:28px;align-items:start;margin-top:8px}
+.psm-gal{display:grid;grid-auto-flow:column;grid-auto-columns:100%;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:18px;scrollbar-width:none}
+.psm-gal::-webkit-scrollbar{display:none}
+.psm-gal figure{margin:0;position:relative;scroll-snap-align:start;aspect-ratio:4/5;background:var(--line)}
+.psm-gal img{width:100%;height:100%;object-fit:cover;display:block}
+.psm-dots{display:flex;justify-content:center;gap:6px;margin-top:8px}.psm-dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.psm-dots i.on{background:var(--gold)}
+.psm-cap{color:var(--muted);font-size:.82rem;text-align:center;margin:6px 0 0}
+.psm-back{font:inherit;font-weight:800;font-size:.92rem;color:var(--ink);background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.psm .psm-t{font-family:var(--f-display);font-size:1.45rem;line-height:1.2;margin:6px 0 2px;color:var(--ink)}
+.psm-sub{color:var(--muted);margin:0 0 4px}
+.psm-facts{display:flex;flex-direction:column;gap:8px;margin:12px 0 4px;padding:0;list-style:none}
+.psm-facts li{display:flex;gap:10px;align-items:flex-start;line-height:1.4}
+.psm-facts .ic{flex:none;width:24px;text-align:center}
+.psm-blk{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+.psm .psm-blk>h5{font-family:var(--f-display);font-size:1rem;margin:0;color:var(--ink)}
+.psm-who{display:flex;flex-wrap:wrap;gap:6px}
+.psm-who button{border:1px solid var(--line);background:var(--paper)}
+.psm-drop{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px dashed color-mix(in srgb,var(--gold) 55%,var(--line));border-radius:16px;padding:18px 14px;text-align:center;cursor:pointer;background:var(--paper);transition:background .15s,border-color .15s}
+.psm-drop:hover,.psm-drop.drag{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--paper))}
+.psm-drop b{font-size:1rem}.psm-drop small{color:var(--muted);font-size:.85rem}
+.psm-drop:focus-within{outline:3px solid var(--gold);outline-offset:2px}
+.psm-rules{margin:0;padding-inline-start:18px;color:var(--muted);font-size:.88rem;line-height:1.45}
+.psm-th{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.psm-tile{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px solid transparent;background:var(--line)}
+.psm-tile.main{border-color:var(--gold)}
+.psm-tm{all:unset;display:block;width:100%;height:100%;cursor:pointer}
+.psm-tm img{width:100%;height:100%;object-fit:cover;display:block}
+.psm-tm span{display:flex;align-items:center;justify-content:center;height:100%;font-size:.75rem;font-weight:800;color:var(--muted);padding:4px;text-align:center;word-break:break-all}
+.psm-ml{position:absolute;left:4px;bottom:4px;background:var(--gold);color:var(--gold-ink);font-size:10px;font-weight:800;border-radius:6px;padding:1px 5px;pointer-events:none}
+.psm-tx{position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(20,16,29,.78);color:#fff;font-size:14px;line-height:1;cursor:pointer}
+.psm-cnt{font-weight:700;font-size:.9rem}
+.psm input[type=email]{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:.6em .8em;width:100%;font:inherit;min-height:46px}
+.psm .consent input{width:22px;height:22px;flex:none;margin-top:1px}
+.psm .consent a{color:inherit}
+.psm-why{background:color-mix(in srgb,var(--pome) 10%,var(--card));border:1px solid color-mix(in srgb,var(--pome) 40%,var(--card));border-radius:14px;padding:12px 14px;line-height:1.45;margin-top:14px}
+.psm-alt{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.psm-alt button{display:flex;gap:8px;align-items:center;font:inherit;font-weight:700;font-size:.88rem;text-align:start;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;cursor:pointer}
+.psm-alt img{width:40px;height:50px;object-fit:cover;border-radius:8px;flex:none}
+.psm .ferr{display:block;color:#c0392b;font-size:14px;font-weight:600;line-height:1.35}
+.psm [aria-invalid=true]{border-color:#c0392b!important;box-shadow:0 0 0 3px rgba(192,57,43,.15)}
+.psm-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.psm-acts .btn-gold{flex:1 1 auto}
+.psm .btn[disabled]{opacity:.6;cursor:default}
+#psmPay #formPay{max-width:620px;margin:16px auto 0}
+@media (min-width:861px){.psm-pv{position:sticky;top:0}}
+@media (max-width:860px){.psm-d{grid-template-columns:1fr;gap:16px}.psm-pv{max-width:420px;width:100%;margin:0 auto}}
+@media (max-width:480px){.modal.psm .psm-sheet{height:100%;border-radius:0}.psm-price{font-size:.88rem;padding:8px 12px}.psm-price b{font-size:1rem}.psm-top{padding:max(12px,env(safe-area-inset-top,0px)) 16px 10px}.psm .psm-top h3{font-size:1.15rem}.psm-body{padding:12px 16px 24px}.psm-tools{top:-12px}.psm-row{grid-auto-columns:minmax(136px,42vw)}.psm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.psm-arr{display:none}.psm .psm-t{font-size:1.25rem}.psm-pv{max-width:270px}}
+@media (hover:none){.psm-arr{display:none}}
+</style>
+<script>
+/* 31.10 PS3: фотосессия в одном окне сайта. Данные — те же, что у Mini App и сервера:
+   цена 590 ₽ = chain.py PRICE.photoshoot (одна на любой набор и стиль: /api/quote считает только по ключу photoshoot);
+   6 снимков = SGP photoshoot.py N_SHOTS; ~5 мин = chain.py ETA_MIN.photoshoot (+ ручная проверка каждого кадра);
+   фото: 1…ps_max (GET /api/miniapp/config, сейчас 10), ≤ 15 МБ (site_api), для сходства берутся первые 4 (photoshoot.py 1 + EXTRA_REFS);
+   стили каталога (img/sty/catalog.min.json, STY1 44×12 и STY3 47×12 с cover_m/a) — заказ только при флаге sty (site_api: ps_style).
+   Оформление: POST /api/orders (те же поля, что у Mini App) → оплата PAYUX1 (#formPay переносится в это окно, тот же код). */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var API_ = (document.querySelector('meta[name="talemir-api"]') || {}).content || '';
+  var PRICE = 590, SHOTS = 6, ETA = 5, USE = 4, MAXB = 15000000;
+  var EM_RE = /^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$/;   /* = chain.py /api/pay и PAYUX1 */
+  var CFG = {photoshoot: true, sty: false, styAud: false, max: 1};
+  function L(){ return document.documentElement.lang === 'en' ? 'en' : 'ru'; }
+  function T(ru, en){ return L() === 'en' ? en : ru; }
+  function esc(x){ return String(x == null ? '' : x).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function rub(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽'; }
+  function mins(n){ if (L() === 'en') return n + (n === 1 ? ' minute' : ' minutes'); var a = n % 10, b = n % 100; return n + ' ' + (a === 1 && b !== 11 ? 'минуту' : (a >= 2 && a <= 4 && !(b >= 12 && b <= 14)) ? 'минуты' : 'минут'); }
+  /* готовые наборы = app/index.html PACKS (без «скоро»); ch — в каких чипах показывать */
+  var PACKS = [
+    {id:'ny_family', ru:'Новогодняя семья', en:'New Year family', who:'family', e:'🎄', ch:'hol kids'},
+    {id:'christmas', ru:'Рождество', en:'Christmas', who:'any', e:'✨', ch:'hol'},
+    {id:'winter_tale', ru:'Зимняя сказка', en:'Winter tale', who:'any', e:'❄️', ch:'seas hol'},
+    {id:'kids_fairy', ru:'Сказочный принц / принцесса', en:'Fairy-tale prince / princess', who:'child', e:'👑', ch:'kids art', royal:1},
+    {id:'kids_prof', ru:'Профессии мечты', en:'Dream jobs', who:'child', e:'🚀', ch:'kids life'},
+    {id:'love_story', ru:'Love story', en:'Love story', who:'couple', e:'💞', ch:'kids'},
+    {id:'business', ru:'Деловой портрет', en:'Business portrait', who:'adult', e:'💼', ch:'port'},
+    {id:'noir', ru:'Кино-нуар', en:'Film noir', who:'adult', e:'🎬', ch:'fash'}];
+  var WHO = {adult:['взрослый (18+)','adult (18+)'], any:['взрослый или ребёнок','adult or child'], child:['ребёнок (фото загружает родитель)','a child (a parent uploads the photo)'],
+    couple:['пара — общее фото двух взрослых','a couple — one photo of two adults'], family:['семья — общее фото, до 5 человек','a family — one group photo, up to 5 people']};
+  /* чипы и разделы = app/index.html CHIPS + STY3 (kids, couples, home) */
+  var CHIPS = [['all','Все','All'],['hol','Праздники','Holidays','halloween newyear christmas ny_glam birthday wedding valentine march8 feb23 maslenitsa easter may9'],['kids','Дети, пары, семья','Kids, couples, family','family kids couples'],
+    ['seas','Сезоны','Seasons','autumn_city golden_autumn winter summer spring sunset'],['port','Портрет и студия','Portrait & studio','women men business studio portraits bw light_shadow retouch'],
+    ['fash','Мода и глянец','Fashion & glam','magazine fashion glamour oldmoney retro80 vintage cinema'],['trav','Город и путешествия','City & travel','travel city neon'],['art','Сказка и арт','Fairy tale & art','fantasy zodiac art'],['life','Хобби и профессии','Hobbies & jobs','sport professions animals farm home']];
+  var PK_EN = {halloween:"Halloween", autumn_city:"Autumn in the city", golden_autumn:"Golden autumn", newyear:"New Year", christmas:"Christmas", winter:"Winter", ny_glam:"New Year glam", birthday:"Birthday", wedding:"Wedding", family:"Family", kids:"Kids photo shoot", couples:"Couples", home:"Home & cosy", women:"Women's looks", men:"Men's looks", business:"Business portrait", studio:"Studio", cinema:"Cinema", travel:"Travel", retro80:"Retro 80s", vintage:"Vintage 50s–60s", magazine:"Magazine cover", fashion:"Fashion week", retouch:"Retouch", bw:"Black & white", light_shadow:"Light & shadow", portraits:"Portraits", sunset:"Sunset", city:"City", oldmoney:"Quiet luxury", glamour:"Glamour", zodiac:"Zodiac signs", fantasy:"Fairy-tale looks", summer:"Summer & sea", spring:"Spring & flowers", valentine:"Valentine's Day", march8:"8 March", feb23:"23 February", maslenitsa:"Maslenitsa", easter:"Easter", may9:"9 May", sport:"Sport & fitness", animals:"Wild companions", farm:"Village & farm", neon:"Night city & neon", professions:"Professions", art:"Art portrait"};
+  var SEASON = {halloween:[[10,1],[10,31]], autumn:[[9,1],[11,30]], newyear:[[11,15],[1,10]], christmas:[[12,1],[1,14]], winter:[[12,1],[2,28]], valentine:[[1,25],[2,14]], feb23:[[2,1],[2,23]], march8:[[2,15],[3,8]], maslenitsa:[[2,1],[3,20]], easter:[[3,20],[5,5]], may9:[[4,20],[5,9]], spring:[[3,1],[5,31]], summer:[[6,1],[8,31]]};
+function seasonLeft(code, now){
+  var w = SEASON[code]; if (!w) return null; now = now || new Date();
+  var y = now.getFullYear(), t0 = new Date(y, now.getMonth(), now.getDate());
+  for (var dy = -1; dy <= 0; dy++) {
+    var a = new Date(y + dy, w[0][0] - 1, w[0][1]), b = new Date(y + dy + (w[1][0] < w[0][0] ? 1 : 0), w[1][0] - 1, w[1][1]);
+    if (t0 >= a && t0 <= b) return Math.round((b - t0) / 864e5);
+  }
+  return null;
+}
+  var S = {step: 1, gs: 'f', chip: 'all', cat: null, catP: null, catErr: false, sel: null, who: '', files: [], urls: [], email: '', ok: false, kid: false, busy: false, pushed: false, io: null, cfgP: null};
+  try { var _g = localStorage.getItem('tm_app_gs'); if (_g === 'm' || _g === 'f') S.gs = _g; } catch(_){}
+  function loadCfg(){
+    if (S.cfgP) return S.cfgP;
+    S.cfgP = fetch(API_ + '/api/miniapp/config', {cache: 'no-store'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      if (!j) { S.cfgP = null; return; } var f = j.flags || {}; CFG.photoshoot = f.photoshoot !== false; CFG.sty = !!f.sty; CFG.styAud = !!f.sty_aud;
+      var m = parseInt(j.ps_max, 10); CFG.max = (m >= 1 && m <= 10) ? m : 1; }).catch(function(){ S.cfgP = null; });
+    return S.cfgP; }
+  function loadCat(){
+    if (S.cat) return Promise.resolve(S.cat);
+    if (!S.catP) S.catP = fetch('img/sty/catalog.min.json', {cache: 'force-cache'}).then(function(r){ if (!r.ok) throw new Error('cat ' + r.status); return r.json(); })
+      .then(function(j){ j.byId = {}; (j.packs || []).forEach(function(p){ (p.st || []).forEach(function(s){ s.p = p; j.byId[s.id] = s; }); }); S.cat = j; S.catErr = false; return j; })
+      .catch(function(e){ S.catP = null; throw e; });
+    return S.catP; }
+  function pk(id){ for (var i = 0; i < PACKS.length; i++) if (PACKS[i].id === id) return PACKS[i]; return null; }
+  function pkName(p){ return L() === 'en' ? (PK_EN[p.id] || p.t) : p.t; }
+  function styImg(s, full){ var a = s.id.split('.'); return 'img/sty/' + (full ? '' : 't/') + a[0] + '/' + a[1] + (S.gs === 'm' && s.m ? '_m' : '') + '.webp'; }
+  function visSty(p){ var ok = S.gs === 'm' ? {m:1, n:1} : {f:1, n:1}; var a = (p.st || []).filter(function(s){ return !s.h && ok[s.g]; });
+    if (S.gs === 'm') a.sort(function(x, y){ return (x.g === 'm' ? 0 : 1) - (y.g === 'm' ? 0 : 1); }); return a; }
+  function packOrder(){ var now = new Date(), ps = S.cat.packs.slice(), act = [];
+    ps.forEach(function(p){ var l = seasonLeft(p.s, now); if (l != null) act.push([l, p.o, p]); });
+    act.sort(function(a, b){ return a[0] - b[0] || a[1] - b[1]; });
+    var first = act.map(function(x){ return x[2]; }), rest = ps.filter(function(p){ return first.indexOf(p) < 0; }).sort(function(a, b){ return a.o - b.o; });
+    return {list: first.concat(rest), hot: first.length ? first[0].id : null}; }
+  function chipHas(id){ if (S.chip === 'all') return true; var c = CHIPS.filter(function(x){ return x[0] === S.chip; })[0]; return !!c && (' ' + (c[3] || '') + ' ').indexOf(' ' + id + ' ') >= 0; }
+  function legHas(p){ return S.chip === 'all' || (' ' + p.ch + ' ').indexOf(' ' + S.chip + ' ') >= 0; }
+  /* выбор: {k:'pack', p} | {k:'sty', s} */
+  function whoOf(sel){ if (sel.k === 'pack') return sel.p.who; var a = sel.s.a; return a === 'k' ? 'child' : a === 'c' ? 'couple' : a === 'y' ? 'family' : 'adult'; }
+  function title(sel){ return sel.k === 'pack' ? T(sel.p.ru, sel.p.en) : sel.s.t; }
+  function blocked(sel){ if (!CFG.photoshoot) return 'off'; if (sel.k === 'sty') { if (!CFG.sty) return 'sty'; if (sel.s.a && !CFG.styAud) return 'aud'; } return ''; }
+  function whoOpts(sel){ var w = whoOf(sel), WF = ['wf', T('Женщина','Woman'), 'f', 'adult'], WM = ['wm', T('Мужчина','Man'), 'm', 'adult'], GF = ['gf', T('Девочка','Girl'), 'f', 'child'], GM = ['gm', T('Мальчик','Boy'), 'm', 'child'];
+    if (sel.k === 'pack' && sel.p.royal) return [['gf', T('Принцесса','Princess'), 'f', 'child'], ['gm', T('Принц','Prince'), 'm', 'child']];
+    if (w === 'any') return [WF, WM, GF, GM]; if (w === 'child') return [GF, GM];
+    if (w === 'adult') { if (sel.k === 'sty' && (sel.s.g === 'f' || sel.s.g === 'm')) return []; return [WF, WM]; }
+    return []; }
+  function whoCur(sel){ var o = whoOpts(sel); if (!o.length) return null; for (var i = 0; i < o.length; i++) if (o[i][0] === S.who) return o[i];
+    var want = (o[0][3] === 'child' ? 'g' : 'w') + S.gs; for (var j = 0; j < o.length; j++) if (o[j][0] === want) return o[j]; return o[0]; }
+  function subj(sel){ var o = whoCur(sel); if (o) return o[3]; var w = whoOf(sel); return w === 'any' ? 'adult' : w; }
+  function gender(sel){ var o = whoCur(sel); if (o) return o[2]; if (sel.k === 'sty' && (sel.s.g === 'f' || sel.s.g === 'm')) return sel.s.g; return S.gs; }
+  function kidNeed(sel){ var w = whoOf(sel); return w === 'child' || w === 'family' || subj(sel) === 'child'; }
+  /* ---------- шапка, цена, шаги ---------- */
+  var STEPS = [['Стиль','Style'], ['Фото и данные','Photos & details'], ['Оплата','Payment']];
+  function hdr(){
+    $('psmH').textContent = T('📸 Фотосессия по вашим фото', '📸 Photo session from your photos');
+    $('psmStep').textContent = T('Шаг ', 'Step ') + S.step + T(' из 3 · ', ' of 3 · ') + T(STEPS[S.step - 1][0], STEPS[S.step - 1][1]);
+    document.querySelectorAll('#psModal .psm-bar i').forEach(function(b, i){ b.classList.toggle('on', i < S.step); });
+    $('psmX').setAttribute('aria-label', T('Закрыть', 'Close'));
+    var up = CFG.max > 1 ? T('вы загружаете от 1 до ' + CFG.max + ' своих фото', 'you upload 1 to ' + CFG.max + ' of your photos') : T('вы загружаете 1 своё фото', 'you upload 1 photo of yours');
+    $('psmPrice').innerHTML = '<b>' + esc(T('Любая фотосессия — ', 'Any photo session — ') + rub(PRICE)) + '</b><span>' + esc(T('ровно ' + SHOTS + ' снимков 2K в выбранном стиле · ', 'exactly ' + SHOTS + ' 2K shots in the chosen style · ') + up + T(' · обычно ~' + mins(ETA) + ', затем мы вручную проверяем каждый кадр', ' · usually ~' + mins(ETA) + ', then we check every shot by hand')) + '</span>';
+    $('psmPrice').hidden = S.step === 3; }
+  function step(n){ S.step = n; $('psmS1').hidden = n !== 1; $('psmS2').hidden = n !== 2; $('psmPay').hidden = n !== 3; hdr(); try { $('psmBody').scrollTop = 0; } catch(_){} }
+  /* ---------- шаг 1: разделы и стили ---------- */
+  function legCard(p){ return '<button type="button" class="psm-c" data-pk="' + p.id + '"><span class="psm-m" data-e="' + p.e + '"><img loading="lazy" decoding="async" src="img/ps/' + p.id + '_1.jpg" alt="" width="640" height="800"><span class="psm-ai">AI</span></span><b>' + p.e + ' ' + esc(T(p.ru, p.en)) + '</b><small>' + esc(T(WHO[p.who][0], WHO[p.who][1])) + '</small></button>'; }
+  function styCard(s){ return '<button type="button" class="psm-c" data-sty="' + esc(s.id) + '"><span class="psm-m" data-e="' + esc(s.p.e) + '"><img loading="lazy" decoding="async" src="' + styImg(s) + '" alt="" width="240" height="320"><span class="psm-ai">AI</span></span><b>' + esc(s.t) + '</b><small>' + esc(s.d) + '</small></button>'; }
+  function renderS1(){
+    $('psmGs').setAttribute('aria-label', T('Образы', 'Looks'));
+    $('psmGs').innerHTML = [['f', T('Женские образы', 'Female looks')], ['m', T('Мужские образы', 'Male looks')]].map(function(x){ return '<button type="button" data-gs="' + x[0] + '" aria-pressed="' + (S.gs === x[0]) + '">' + esc(x[1]) + '</button>'; }).join('');
+    $('psmChips').setAttribute('aria-label', T('Разделы', 'Sections'));
+    $('psmChips').innerHTML = CHIPS.map(function(c){ return '<button type="button" data-chip="' + c[0] + '" aria-pressed="' + (S.chip === c[0]) + '">' + esc(T(c[1], c[2])) + '</button>'; }).join('');
+    var h = '', legs = PACKS.filter(legHas), off = !CFG.photoshoot;
+    if (legs.length) h += '<section class="psm-sec"><div class="psm-sh"><h4>' + esc(T('Готовые наборы', 'Ready-made sets')) + '</h4><span class="psm-tag ' + (off ? '' : 'ok') + '">' + esc(off ? T('заказ временно закрыт', 'ordering is paused') : T('можно заказать сейчас', 'available now')) + '</span><span class="psm-n">' + esc(T(legs.length + ' ' + (legs.length === 1 ? 'набор' : legs.length < 5 ? 'набора' : 'наборов'), legs.length + (legs.length === 1 ? ' set' : ' sets'))) + '</span></div><div class="psm-grid">' + legs.map(legCard).join('') + '</div></section>';
+    if (!S.cat) {
+      h += S.catErr ? '<div class="psm-note"><button type="button" class="btn btn-ghost" data-catretry>' + esc(T('Не удалось загрузить каталог стилей — нажмите, чтобы повторить', 'Could not load the style catalogue — tap to retry')) + '</button></div>' : '<p class="psm-note">' + esc(T('Загружаем каталог стилей…', 'Loading the style catalogue…')) + '</p>';
+      $('psmRows').innerHTML = h;
+      if (!S.catErr) loadCat().then(function(){ if (S.step === 1) renderS1(); }, function(){ S.catErr = true; if (S.step === 1) renderS1(); });
+      return; }
+    var po = packOrder(), secs = '', nSec = 0, nSty = 0, tot = 0;
+    S.cat.packs.forEach(function(p){ tot += visSty(p).length; });
+    po.list.forEach(function(p){ if (!chipHas(p.id)) return; var vs = visSty(p); if (!vs.length) return; nSec++; nSty += vs.length;
+      var aud = vs.some(function(s){ return s.a; }), soon = off || !CFG.sty || (aud && !CFG.styAud);
+      secs += '<section class="psm-sec" data-sec="' + p.id + '"><div class="psm-sh"><h4>' + p.e + ' ' + esc(pkName(p)) + '</h4>' + (p.id === po.hot ? '<span class="psm-tag hot">' + esc(T('скоро праздник', 'holiday soon')) + '</span>' : '') +
+        '<span class="psm-n">' + esc(T(vs.length + ' стилей', vs.length + ' styles')) + '</span>' + (soon ? '<span class="psm-tag">' + esc(T('заказ — скоро', 'ordering soon')) + '</span>' : '') +
+        '<span class="psm-arr"><button type="button" data-scr="-1" aria-label="' + esc(T('Назад', 'Back')) + '">‹</button><button type="button" data-scr="1" aria-label="' + esc(T('Ещё', 'More')) + '">›</button></span></div><div class="psm-row" data-fill="' + p.id + '"></div></section>'; });
+    if (nSec) h += '<p class="psm-note">' + esc(!CFG.sty ? T('Ниже — новый каталог: ' + tot + ' стилей. Посмотреть их можно уже сейчас, а заказ по ним откроется совсем скоро — мы заканчиваем проверку качества. Сейчас можно заказать любой готовый набор выше.', 'Below is the new catalogue: ' + tot + ' styles. You can browse them now; ordering opens very soon — we are finishing the quality checks. Any ready-made set above can be ordered right now.') : T('Каталог стилей: ' + tot + '. Нажмите на стиль — покажем пример и что нужно для заказа.', 'Style catalogue: ' + tot + '. Tap a style to see an example and what is needed.')) + '</p>' + secs;
+    else if (!legs.length) h += '<p class="psm-note">' + esc(T('В этом разделе пока нет стилей для выбранного образа — переключите «Женские / Мужские образы» или выберите другой раздел.', 'No styles for this look in this section yet — switch the look or choose another section.')) + '</p>';
+    $('psmRows').innerHTML = h; fillRows(); }
+  function fillRows(){
+    var fill = function(el){ var p = S.cat.packs.filter(function(x){ return x.id === el.getAttribute('data-fill'); })[0]; if (p && !el.childElementCount) el.innerHTML = visSty(p).map(styCard).join(''); };
+    if (S.io) S.io.disconnect(); var rows = document.querySelectorAll('#psmRows [data-fill]');
+    if ('IntersectionObserver' in window) { S.io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { fill(e.target); S.io.unobserve(e.target); } }); }, {root: $('psmBody'), rootMargin: '700px 0px'}); rows.forEach(function(el){ S.io.observe(el); }); }
+    else rows.forEach(fill); }
+  /* ---------- шаг 2: стиль + фото + данные ---------- */
+  function choose(sel){ S.sel = sel; S.who = ''; step(2); renderS2(); }
+  function why(sel, b){
+    var alt = PACKS, w = whoOf(sel);
+    if (sel.k === 'sty' && w !== 'adult') alt = PACKS.filter(function(p){ return w === 'child' ? p.who === 'child' || p.who === 'any' : w === 'couple' ? p.who === 'couple' : p.who === 'family'; });
+    var txt = b === 'off' ? T('Заказ фотосессий сейчас временно закрыт: мы заканчиваем последние проверки. Загляните, пожалуйста, через час.', 'Photo session ordering is paused for a moment: we are finishing the last checks. Please come back in an hour.')
+      : b === 'aud' ? T('Детские, парные и семейные стили каталога откроются чуть позже: генерацию для детей и нескольких людей по новым стилям мы ещё настраиваем. Уже сейчас можно заказать готовый набор:', 'Kids, couple and family styles of the catalogue open a little later: we are still tuning them. You can already order a ready-made set:')
+      : T('Этот стиль — из нового каталога. Заказ по нему откроется совсем скоро: сейчас мы заканчиваем проверку качества, чтобы на каждом кадре были именно вы. Уже сейчас можно заказать готовый набор:', 'This style is from the new catalogue. Ordering opens very soon: we are finishing the quality checks so that every shot really looks like you. You can already order a ready-made set:');
+    return '<div class="psm-why" role="note"><b>' + esc(T('Почему нельзя заказать этот стиль', 'Why this style cannot be ordered yet')) + '</b><br>' + esc(txt) + (b === 'off' ? '' : '<div class="psm-alt">' + alt.map(function(p){ return '<button type="button" data-pk="' + p.id + '"><img src="img/ps/' + p.id + '_1.jpg" alt="" loading="lazy"><span>' + p.e + ' ' + esc(T(p.ru, p.en)) + '</span></button>'; }).join('') + '</div>') + '</div>'; }
+  function rulesHTML(sel){ var w = whoOf(sel), sj = subj(sel), r = [];
+    if (CFG.max > 1) r.push(T('Лучше 3–4 разных фото: для сходства мы берём первые ' + USE + ', первое — главное (нажмите на фото, чтобы сделать его главным).', 'Best: 3–4 different photos. We use the first ' + USE + ' for likeness; the first one is the main photo (tap a photo to make it main).'));
+    r.push(w === 'couple' ? T('Общие фото пары: оба лица хорошо видны, без тёмных очков.', 'Photos of the couple together: both faces clearly visible, no sunglasses.')
+      : w === 'family' ? T('Общие фото семьи (до 5 человек): все лица хорошо видны.', 'Family photos (up to 5 people): all faces clearly visible.')
+      : T('Лицо крупно и хорошо освещено, без тёмных очков и масок; на фото — только ' + (sj === 'child' ? 'этот ребёнок' : 'этот человек') + '.', 'Face close and well lit, no sunglasses or masks; only ' + (sj === 'child' ? 'this child' : 'this person') + ' in the photo.'));
+    if (sj === 'child' || w === 'child' || w === 'family') r.push(T('Фото ребёнка загружает родитель (законный представитель).', 'A child\'s photo is uploaded by a parent (legal guardian).'));
+    r.push(T('Фото удаляются после выдачи фотосессии.', 'Photos are deleted after the photo session is delivered.'));
+    return r.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join(''); }
+  function renderS2(){
+    var sel = S.sel; if (!sel) return step(1); var b = blocked(sel), w = whoOf(sel), h = '<button type="button" class="psm-back" data-psm-go="1">← ' + esc(T('Все стили', 'All styles')) + '</button><div class="psm-d"><div class="psm-pv">';
+    if (sel.k === 'pack') { h += '<div class="psm-gal" id="psmGal">'; for (var i = 1; i <= SHOTS; i++) h += '<figure><img ' + (i > 2 ? 'loading="lazy" ' : '') + 'src="img/ps/' + sel.p.id + '_' + i + '.jpg" alt="' + esc(title(sel) + ' — ' + i + '/' + SHOTS) + '"><span class="psm-ai">AI</span></figure>'; h += '</div><div class="psm-dots" id="psmDots">' + new Array(SHOTS + 1).join('<i></i>') + '</div>'; }
+    else h += '<div class="psm-gal"><figure><span class="psm-m noimgwrap" data-e="' + esc(sel.s.p.e) + '" style="aspect-ratio:auto;height:100%"><img src="' + styImg(sel.s, true) + '" alt="' + esc(title(sel)) + '"></span><span class="psm-ai">AI</span></figure></div>';
+    h += '<p class="psm-cap">' + esc(sel.k === 'pack' ? T('6 примеров из набора · на вымышленных людях, созданы с помощью ИИ', '6 examples from the set · fictional people, made with AI') : T('Пример стиля · на вымышленном человеке, создан с помощью ИИ', 'Style example · a fictional person, made with AI')) + '</p></div><div class="psm-f">';
+    h += '<h4 class="psm-t">' + (sel.k === 'pack' ? sel.p.e + ' ' : '') + esc(title(sel)) + '</h4>';
+    if (sel.k === 'sty') h += '<p class="psm-sub">' + esc(sel.s.p.e + ' ' + pkName(sel.s.p) + ' · ' + sel.s.d) + '</p>';
+    h += '<ul class="psm-facts"><li><span class="ic" aria-hidden="true">🎁</span><span>' + esc(T('Вы получите ровно ' + SHOTS + ' снимков 2K в этом стиле (JPG + архив).', 'You get exactly ' + SHOTS + ' 2K shots in this style (JPG + archive).')) + '</span></li>' +
+      '<li><span class="ic" aria-hidden="true">👤</span><span>' + esc(T('Кто на фото: ', 'Who: ') + T(WHO[w][0], WHO[w][1])) + '</span></li>' +
+      '<li><span class="ic" aria-hidden="true">⏱</span><span>' + esc(T('Обычно ~' + mins(ETA) + ', затем мы вручную проверяем каждый кадр.', 'Usually ~' + mins(ETA) + ', then we check every shot by hand.')) + '</span></li></ul>';
+    if (b) { h += why(sel, b) + '</div></div>'; $('psmS2').innerHTML = h; galDots(); return; }
+    var o = whoOpts(sel), cur = whoCur(sel);
+    if (o.length) h += '<div class="psm-blk"><h5 id="psmWhoL">' + esc(sel.k === 'pack' && sel.p.royal ? T('Кем будет ребёнок?', 'Who will your child be?') : T('Кто на фото?', 'Who is in the photo?')) + '</h5><div class="psm-who" role="group" aria-labelledby="psmWhoL">' + o.map(function(x){ return '<button type="button" data-who="' + x[0] + '" aria-pressed="' + (cur && cur[0] === x[0]) + '">' + esc(x[1]) + '</button>'; }).join('') + '</div></div>';
+    h += '<div class="psm-blk" id="psmPhRow"><h5>' + esc(T('Ваши фото', 'Your photos')) + '</h5>' +
+      '<label class="psm-drop" id="psmDrop"><input type="file" id="psmFile" class="vh" accept="image/*,.heic,.heif"' + (CFG.max > 1 ? ' multiple' : '') + '><b id="psmDropT"></b><small>' + esc((CFG.max > 1 ? T('от 1 до ' + CFG.max + ' фото', '1 to ' + CFG.max + ' photos') : T('1 фото', '1 photo')) + T(' · JPG, PNG, HEIC или WEBP · до 15 МБ', ' · JPG, PNG, HEIC or WEBP · up to 15 MB')) + '</small></label>' +
+      '<div class="psm-th" id="psmTh"></div><span class="psm-cnt" id="psmCnt" aria-live="polite"></span><ul class="psm-rules" id="psmRules">' + rulesHTML(sel) + '</ul></div>';
+    h += '<div class="psm-blk"><label for="psmEm">' + esc(T('E-mail — для чека и готовой фотосессии', 'Email — for the receipt and the finished photo session')) + '</label><input type="email" id="psmEm" autocomplete="email" inputmode="email" maxlength="120" placeholder="mama@mail.ru" spellcheck="false" autocapitalize="off" value="' + esc(S.email) + '"></div>';
+    h += '<div class="psm-blk"><label class="consent" id="psmOkRow"><input type="checkbox" id="psmOk"' + (S.ok ? ' checked' : '') + '><span>' + esc(T('На фото — я или человек, который согласен на фотосессию. Согласен(на) на обработку фото для её создания —', 'The photo shows me or a person who agreed to the photo session. I consent to processing the photos to create it —')) + ' <a href="/privacy" target="_blank" rel="noopener">' + esc(T('политика конфиденциальности', 'privacy policy')) + '</a>.</span></label>';
+    if (kidNeed(sel)) h += '<label class="consent" id="psmKidRow"><input type="checkbox" id="psmKid"' + (S.kid ? ' checked' : '') + '><span>' + esc(T('Я — родитель (законный представитель) ребёнка на фото и даю согласие на обработку фото для создания фотосессии. Фото удаляется после выдачи.', 'I am the parent (legal guardian) of the child in the photo and I consent to processing the photo to create the photo session. The photo is deleted after delivery.')) + '</span></label>';
+    h += '</div><span class="err" id="psmErr" role="alert" hidden></span><div class="psm-acts"><button type="button" class="btn btn-gold" id="psmNext">' + esc(T('Далее: оплата', 'Next: payment')) + '</button><button type="button" class="btn btn-ghost" data-psm-go="1">' + esc(T('Другой стиль', 'Another style')) + '</button></div>' +
+      '<p class="hint" style="margin:8px 0 0">' + esc(T('На следующем шаге — цена, промокод и оплата в этом же окне.', 'Next step: price, promo code and payment in this same window.')) + '</p></div></div>';
+    $('psmS2').innerHTML = h; renderThumbs(); galDots(); }
+  function galDots(){ var g = $('psmGal'), d = $('psmDots'); if (!g || !d) return; var set = function(){ var w = g.clientWidth || 1, i = Math.round(g.scrollLeft / w); d.querySelectorAll('i').forEach(function(x, j){ x.className = j === i ? 'on' : ''; }); }; set(); g.addEventListener('scroll', set, {passive: true}); }
+  /* ---------- фото ---------- */
+  function isImg(f){ return /^image\//.test(f.type || '') || /\.(jpe?g|png|heic|heif|webp)$/i.test(f.name || ''); }
+  function renderThumbs(){
+    var th = $('psmTh'); if (!th) return; S.urls.forEach(function(u){ try { URL.revokeObjectURL(u); } catch(_){} }); S.urls = [];
+    th.innerHTML = S.files.map(function(f, i){ var u = ''; try { u = URL.createObjectURL(f); S.urls.push(u); } catch(_){}
+      return '<div class="psm-tile' + (i === 0 ? ' main' : '') + '"><button type="button" class="psm-tm" data-main="' + i + '" aria-label="' + esc(i === 0 ? T('Главное фото', 'Main photo') : T('Сделать главным: фото ' + (i + 1), 'Make main: photo ' + (i + 1))) + '">' + (u ? '<img src="' + u + '" alt="" data-fn="' + esc(f.name) + '">' : '<span>' + esc(f.name) + '</span>') + '</button>' + (i === 0 ? '<span class="psm-ml">' + esc(T('главное', 'main')) + '</span>' : '') + '<button type="button" class="psm-tx" data-rm="' + i + '" aria-label="' + esc(T('Удалить фото ' + (i + 1), 'Remove photo ' + (i + 1))) + '">✕</button></div>'; }).join('');
+    var n = S.files.length; $('psmCnt').textContent = n ? T('Фото: ' + n + ' из ' + CFG.max, 'Photos: ' + n + ' of ' + CFG.max) : '';
+    $('psmDropT').textContent = n ? (n >= CFG.max ? (CFG.max === 1 ? T('Заменить фото', 'Replace the photo') : T('Достигнут предел — ' + CFG.max + ' фото', 'Limit reached — ' + CFG.max + ' photos')) : T('＋ Добавить ещё фото', '＋ Add more photos')) : T('Перетащите фото сюда или нажмите, чтобы выбрать', 'Drop photos here or tap to choose'); }
+  function phErr(msg){ var r = $('psmPhRow'); if (!r) return; r.querySelectorAll('.ferr').forEach(function(x){ x.remove(); }); if (!msg) return; var s = document.createElement('span'); s.className = 'ferr'; s.setAttribute('role', 'alert'); s.textContent = msg; r.appendChild(s); }
+  function addFiles(list){
+    var bad = [], over = false, add = [];
+    Array.prototype.forEach.call(list || [], function(f){
+      if (!isImg(f)) { bad.push(T('«' + f.name + '» — не фото. Подойдут JPG, PNG, HEIC или WEBP.', '“' + f.name + '” is not a photo. JPG, PNG, HEIC or WEBP will do.')); return; }
+      if (f.size > MAXB) { bad.push(T('«' + f.name + '» больше 15 МБ — пришлите файл поменьше.', '“' + f.name + '” is over 15 MB — please send a smaller file.')); return; }
+      if (S.files.concat(add).some(function(x){ return x.name === f.name && x.size === f.size && x.lastModified === f.lastModified; })) return;
+      add.push(f); });
+    if (CFG.max === 1 && add.length) { S.files = [add[0]]; if (add.length > 1) over = true; }
+    else add.forEach(function(f){ if (S.files.length >= CFG.max) { over = true; return; } S.files.push(f); });
+    if (over) bad.push(CFG.max === 1 ? T('Сейчас можно отправить только 1 фото — взяли первое.', 'Only 1 photo can be sent right now — we took the first one.') : T('Можно не больше ' + CFG.max + ' фото — лишние не добавлены.', 'Up to ' + CFG.max + ' photos — the extra ones were not added.'));
+    renderThumbs(); phErr(bad.join(' ')); var dz = $('psmDrop'); if (dz) dz.removeAttribute('aria-invalid'); }
+  /* ---------- проверка и заказ ---------- */
+  function clearErr(){ var e = $('psmErr'); if (e) { e.hidden = true; e.textContent = ''; } document.querySelectorAll('#psmS2 .ferr').forEach(function(x){ x.remove(); }); document.querySelectorAll('#psmS2 [aria-invalid=true]').forEach(function(x){ x.removeAttribute('aria-invalid'); }); }
+  function ferr(where, msg){
+    clearErr(); var row = where === 'ph' ? $('psmPhRow') : where === 'em' ? ($('psmEm') || {}).parentNode : where === 'ok' ? $('psmOkRow') : where === 'kid' ? $('psmKidRow') : null;
+    if (!row) { var e = $('psmErr'); if (e) { e.textContent = msg; e.hidden = false; try { e.scrollIntoView({block: 'center', behavior: 'smooth'}); } catch(_){} } return; }
+    if (where === 'ph') return (phErr(msg), $('psmDrop').setAttribute('aria-invalid', 'true'), row.scrollIntoView({block: 'center', behavior: 'smooth'}));
+    var s = document.createElement('span'); s.className = 'ferr'; s.setAttribute('role', 'alert'); s.textContent = msg; row.parentNode.insertBefore(s, row.nextSibling);
+    if (where === 'em') $('psmEm').setAttribute('aria-invalid', 'true');
+    try { row.scrollIntoView({block: 'center', behavior: 'smooth'}); } catch(_){} }
+  function emWhy(c){ c = String(c || '').trim(); if (!c) return T('Укажите e-mail — на него придут чек и фотосессия.', 'Enter your email — the receipt and the photo session will be sent there.');
+    if (!c.includes('@')) return T('Почта указана с ошибкой: нет символа @. Пример: name@mail.ru', 'The email has a mistake: there is no @ sign. Example: name@mail.com');
+    if (/\s/.test(c)) return T('В почте не должно быть пробелов — уберите их.', 'An email cannot contain spaces — please remove them.');
+    var d = c.split('@')[1] || ''; if (/[а-яё]/i.test(d)) return T('После @ пишите латиницей, например mail.ru или gmail.com.', 'After @ use Latin letters, for example gmail.com.');
+    if (!EM_RE.test(c)) return T('Проверьте e-mail: пример name@mail.ru', 'Check your email: example name@mail.com'); return ''; }
+  function check(){ var sel = S.sel;
+    if (!S.files.length) return ['ph', T('Загрузите хотя бы 1 фото — без него фотосессию не сделать.', 'Upload at least 1 photo — we need it for the photo session.')];
+    if (S.files.length > CFG.max) return ['ph', T('Сейчас можно отправить не больше ' + CFG.max + ' фото — уберите лишние.', 'You can send up to ' + CFG.max + ' photos — please remove the extra ones.')];
+    var ew = emWhy(S.email); if (ew) return ['em', ew];
+    if (!S.ok) return ['ok', T('Отметьте согласие на обработку фото — без него мы не можем сделать фотосессию.', 'Tick the consent to process the photos — we cannot make the photo session without it.')];
+    if (kidNeed(sel) && !S.kid) return ['kid', T('Фото ребёнка — только с согласием родителя: отметьте согласие.', 'A child\'s photo needs a parent\'s consent: please tick the box.')];
+    return null; }
+  var PM = {nudity:['На фото видно обнажённое тело — пришлите другое фото.','The photo shows nudity — please send another one.'], sexual:['Фото не подходит для подарка — пришлите другое.','This photo is not suitable for a gift — please send another.'], gesture:['На фото неприличный жест — пришлите другое.','The photo has an obscene gesture — please send another.'], text:['На фото есть недопустимая надпись — пришлите другое.','The photo has unacceptable text — please send another.'], violence:['На фото кровь или насилие — пришлите другое.','The photo shows blood or violence — please send another.'], weapon:['На фото оружие — пришлите другое фото.','The photo shows a weapon — please send another.'], drugs:['На фото курение или наркотики — пришлите другое.','The photo shows smoking or drugs — please send another.'], noperson:['На фото не видно лица человека — пришлите портрет, где лицо хорошо видно.','We cannot see a person\'s face — please send a portrait with the face clearly visible.'], unsafe:['Фото не прошло проверку безопасности — пришлите другое.','The photo did not pass the safety check — please send another.']};
+  function srvWhy(d, st, n){ d = String(d || '');   /* коды site_api /api/orders → понятная причина у нужного поля (№140) */
+    if (d.indexOf('photo_mod:') === 0) { var pp = d.split(':'), m = PM[pp[1]] || PM.unsafe, no = parseInt(pp[2], 10); return ['ph', (n > 1 && no >= 1 ? T('Фото ' + no + ': ', 'Photo ' + no + ': ') : '') + T(m[0], m[1])]; }
+    if (st === 429 || d === 'too_many') return [null, T('Слишком много попыток подряд — подождите несколько минут и нажмите ещё раз.', 'Too many attempts in a row — please wait a few minutes and try again.')];
+    var M = {photo_count: ['ph', T('Нужно от 1 до ' + CFG.max + ' фото.', 'You need 1 to ' + CFG.max + ' photos.')], photo_type: ['ph', T('Один из файлов не похож на фото. Пришлите JPG, PNG, HEIC или WEBP.', 'One of the files does not look like a photo. Please send JPG, PNG, HEIC or WEBP.')],
+      photo_too_large: ['ph', T('Одно из фото больше 15 МБ — пришлите файл поменьше.', 'One of the photos is over 15 MB — please send a smaller file.')], photo_small: ['ph', T('Фото слишком маленькое: нужно хотя бы 400 px по короткой стороне.', 'The photo is too small: at least 400 px on the short side.')],
+      bad_contact: ['em', T('Проверьте e-mail: пример name@mail.ru', 'Check your email: example name@mail.com')], consent_child: ['kid', T('Нужно согласие родителя на фото ребёнка.', 'A parent\'s consent is required for a child\'s photo.')], consent: ['ok', T('Нужно согласие на обработку фото.', 'We need your consent to process the photo.')],
+      unavailable: [null, T('Фотосессии сейчас временно недоступны — попробуйте через несколько минут.', 'Photo sessions are temporarily unavailable — please try again in a few minutes.')], ps_style: [null, T('Этот стиль пока нельзя заказать — выберите готовый набор.', 'This style cannot be ordered yet — please choose a ready-made set.')], ps_pack: [null, T('Этот набор сейчас недоступен — выберите другой.', 'This set is not available right now — please choose another.')]};
+    if (M[d]) return M[d];
+    return [null, T('Не получилось создать заказ (код ' + (st || '?') + '). Попробуйте ещё раз через минуту или напишите нам: support@talemir.com.', 'Could not create the order (code ' + (st || '?') + '). Try again in a minute or write to us: support@talemir.com.')]; }
+  function formData(){ var sel = S.sel, w = whoOf(sel), fd = new FormData();
+    fd.append('product', 'photoshoot'); fd.append('bundle', 'photoshoot'); fd.append('child_name', T('Фотосессия', 'Photo session')); fd.append('contact', S.email.trim());
+    fd.append('consent', 'true'); fd.append('consent_ver', '1.5/26.10.2026'); fd.append('consent_kind', 'photoshoot'); fd.append('site_lang', (typeof lang !== 'undefined' && lang) ? lang : L());
+    if (sel.k === 'sty') { fd.append('ps_pack', 'sty'); fd.append('ps_style', sel.s.id); } else fd.append('ps_pack', sel.p.id);
+    fd.append('ps_gender', gender(sel)); fd.append('ps_who', w); if (w === 'any' || (sel.k === 'sty' && w === 'child')) fd.append('ps_subject', subj(sel));
+    if (kidNeed(sel)) fd.append('consent_child', S.kid ? 'true' : 'false');
+    S.files.forEach(function(f, i){ fd.append('photos', f, f.name || ('photo' + (i + 1) + '.jpg')); });
+    return fd; }
+  async function submit(){
+    if (S.busy) return; clearErr(); var bl = blocked(S.sel); if (bl) return renderS2();
+    var bad = check(); if (bad) return ferr(bad[0], bad[1]);
+    var fd = formData(), P = window.PAYUX, sig = (P && P.sig) ? P.sig(fd) : '';
+    if (P && P.last && P.last.tok && sig && P.last.sig === sig) return goPay(P.last.tok, sig);   /* тот же состав и фото — тот же заказ, без второй заявки */
+    var btn = $('psmNext'); S.busy = true; btn.disabled = true; btn.textContent = T('Создаём заказ…', 'Creating the order…');
+    try {
+      var r = await fetch(API_ + '/api/orders', {method: 'POST', body: fd}); var j = {}; try { j = await r.json(); } catch(_){}
+      if (r.status === 201 && j.token) { try { localStorage.setItem('tm_order', j.token); } catch(_){} try { window.tmMyAdd && tmMyAdd(j.token); } catch(_){} goPay(j.token, sig); }
+      else { var w = srvWhy(j.detail, r.status, S.files.length); ferr(w[0], w[1]); }
+    } catch(_) { ferr(null, T('Нет связи с сервером. Проверьте интернет (и выключите VPN) и нажмите ещё раз.', 'No connection to the server. Check your internet (and turn off VPN) and try again.')); }
+    finally { S.busy = false; var b2 = $('psmNext'); if (b2) { b2.disabled = false; b2.textContent = T('Далее: оплата', 'Next: payment'); } } }
+  function goPay(tok, sig){
+    var P = window.PAYUX, fp = $('formPay');
+    if (!P || !fp) { location.href = API_ + '/api/start/' + encodeURIComponent(tok); return; }   /* запасной путь — прежняя страница оформления (та же вкладка) */
+    if (fp.parentNode !== $('psmPay')) $('psmPay').appendChild(fp);
+    try { $('payEm').value = S.email.trim(); } catch(_){}
+    step(3); P.after(tok, ['photoshoot'], sig);
+    try { $('payTitle').textContent = '📸 ' + T('Фотосессия «', 'Photo session “') + title(S.sel) + T('» · ', '” · ') + T(SHOTS + ' снимков 2K', SHOTS + ' 2K shots'); $('payHeroRow').hidden = true; } catch(_){} }
+  function restorePay(){ var fp = $('formPay'), f = $('form'); if (fp && f && fp.parentNode !== f) f.insertBefore(fp, $('formDone')); if (fp) fp.hidden = true; }
+  /* ---------- открыть / закрыть ---------- */
+  function isOpen(){ return !$('psModal').hidden; }
+  function open(o){ o = o || {}; var m = $('psModal');
+    if (typeof modal !== 'undefined' && modal && !modal.hidden) modal.hidden = true;
+    if (m.hidden) { m.hidden = false; document.documentElement.classList.add('psm-lock'); try { if (!(history.state && history.state.psm)) { history.pushState({psm: 1}, ''); S.pushed = true; } } catch(_){} }
+    restorePay();
+    if (o.pk && pk(o.pk)) choose({k: 'pack', p: pk(o.pk)}); else { step(1); renderS1(); }
+    loadCfg().then(function(){ if (!isOpen()) return; hdr(); if (S.step === 1) renderS1(); else if (S.step === 2) renderS2(); });
+    setTimeout(function(){ try { $('psmX').focus({preventScroll: true}); } catch(_){} }, 30); }
+  function close(fromPop){ var m = $('psModal'); if (m.hidden) return; m.hidden = true; document.documentElement.classList.remove('psm-lock'); restorePay(); if (S.step === 3) step(2);
+    if (!fromPop && S.pushed) { S.pushed = false; try { history.back(); } catch(_){} } }
+  window.PS3 = {open: open, close: close};
+  addEventListener('popstate', function(){ if (isOpen()) { S.pushed = false; close(true); } });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && isOpen()) close(); });
+  /* кнопки на странице: заголовок, карточки наборов, «Выбрать стиль», «Фотосессии» в фильтре — открывают это окно (без перехода в Mini App) */
+  document.addEventListener('click', function(e){ var t = e.target; if (!t || !t.closest) return;
+    var c = t.closest('#photo a.ps-c[data-pk]'); if (c) { if (e.ctrlKey || e.metaKey || e.shiftKey) return; e.preventDefault(); open({pk: c.getAttribute('data-pk')}); return; }
+    if (t.closest('[data-psopen]')) { e.preventDefault(); open(); } });
+  /* «Назад» на шаге оплаты в этом окне — к фото и данным (а не к сводке основной формы) */
+  document.addEventListener('click', function(e){ var b = e.target && e.target.closest && e.target.closest('#payBack'); if (!b || !$('psmPay').contains(b)) return; e.preventDefault(); e.stopImmediatePropagation(); step(2); renderS2(); }, true);
+  if (typeof openModal === 'function') { var _om = openModal; openModal = function(){ if (isOpen()) close(); restorePay(); return _om.apply(this, arguments); }; }
+  var m = $('psModal');
+  m.addEventListener('click', function(e){ var t = e.target;
+    if (t === m || t.closest('#psmX')) return close();
+    var x;
+    if ((x = t.closest('[data-gs]'))) { S.gs = x.getAttribute('data-gs'); try { localStorage.setItem('tm_app_gs', S.gs); } catch(_){} return renderS1(); }
+    if ((x = t.closest('[data-chip]'))) { S.chip = x.getAttribute('data-chip'); renderS1(); try { $('psmBody').scrollTop = 0; } catch(_){} return; }
+    if (t.closest('[data-catretry]')) { S.catErr = false; return renderS1(); }
+    if ((x = t.closest('[data-scr]'))) { var row = x.closest('.psm-sec').querySelector('.psm-row'); if (row) row.scrollBy({left: (row.clientWidth - 60) * parseInt(x.getAttribute('data-scr'), 10), behavior: 'smooth'}); return; }
+    if ((x = t.closest('[data-pk]'))) return choose({k: 'pack', p: pk(x.getAttribute('data-pk'))});
+    if ((x = t.closest('[data-sty]'))) { var s = S.cat && S.cat.byId[x.getAttribute('data-sty')]; if (s) choose({k: 'sty', s: s}); return; }
+    if (t.closest('[data-psm-go="1"]')) { step(1); renderS1(); return; }
+    if ((x = t.closest('[data-who]'))) { S.who = x.getAttribute('data-who'); var kidWas = !!$('psmKid'); S.email = ($('psmEm') || {}).value || S.email;
+      if (kidWas !== kidNeed(S.sel)) return renderS2();
+      document.querySelectorAll('#psmS2 [data-who]').forEach(function(b){ b.setAttribute('aria-pressed', String(b === x)); }); $('psmRules').innerHTML = rulesHTML(S.sel); return; }
+    if ((x = t.closest('[data-rm]'))) { e.preventDefault(); S.files.splice(parseInt(x.getAttribute('data-rm'), 10), 1); renderThumbs(); phErr(''); return; }
+    if ((x = t.closest('[data-main]'))) { e.preventDefault(); var i = parseInt(x.getAttribute('data-main'), 10); if (i > 0) { var f = S.files.splice(i, 1)[0]; S.files.unshift(f); renderThumbs(); } return; }
+    if (t.closest('#psmNext')) return submit(); });
+  m.addEventListener('change', function(e){ var t = e.target;
+    if (t.id === 'psmFile') { addFiles(t.files); t.value = ''; }
+    else if (t.id === 'psmOk') { S.ok = t.checked; clearErr(); } else if (t.id === 'psmKid') { S.kid = t.checked; clearErr(); } });
+  m.addEventListener('input', function(e){ if (e.target.id === 'psmEm') { S.email = e.target.value; var r = e.target.parentNode; e.target.removeAttribute('aria-invalid'); var n = r.nextSibling; if (n && n.className === 'ferr') n.remove(); } });
+  m.addEventListener('keydown', function(e){ if (e.key === 'Enter' && e.target.id === 'psmEm') { e.preventDefault(); submit(); } });
+  m.addEventListener('error', function(e){ var im = e.target; if (im && im.tagName === 'IMG') { var w = im.closest('.psm-m'); if (w) { w.classList.add('noimg'); im.remove(); } else if (im.closest('.psm-tm')) { var sp = document.createElement('span'); sp.textContent = im.getAttribute('data-fn') || 'HEIC'; im.replaceWith(sp); } } }, true);
+  ['dragenter', 'dragover'].forEach(function(ev){ m.addEventListener(ev, function(e){ if (!isOpen()) return; e.preventDefault(); var d = $('psmDrop'); if (d && e.target.closest && e.target.closest('#psmDrop')) d.classList.add('drag'); }); });
+  m.addEventListener('dragleave', function(e){ var d = $('psmDrop'); if (d && !(e.relatedTarget && d.contains(e.relatedTarget))) d.classList.remove('drag'); });
+  m.addEventListener('drop', function(e){ e.preventDefault(); var d = $('psmDrop'); if (d) d.classList.remove('drag'); if (!d || S.step !== 2) return; if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+  try { new MutationObserver(function(){ if (!isOpen()) return; hdr(); if (S.step === 1) renderS1(); else if (S.step === 2) renderS2(); }).observe(document.documentElement, {attributes: true, attributeFilter: ['lang']}); } catch(_){}
+  var hp = (location.hash || '').replace('#', ''); if (hp === 'photoshoot' || hp.indexOf('ps-') === 0) setTimeout(function(){ open({pk: hp.indexOf('ps-') === 0 ? hp.slice(3) : ''}); }, 300);
+})();
+</script>
+
 <!-- MASCOT1: мультяшки (Амелия). Грузится только после load + idle; уважает prefers-reduced-motion. -->
 <script>(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}function go(){var s=document.createElement('script');s.src='mascot/mascot.js?v=2';s.setAttribute('data-set','family');s.async=true;document.body.appendChild(s)}function idle(){(window.requestIdleCallback||function(f){setTimeout(f,1200)})(go,{timeout:5000})}if(document.readyState==='complete')idle();else addEventListener('load',idle)})();</script>
 </body>
