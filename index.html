@@ -589,6 +589,9 @@ section.e-sheetw{position:relative;margin-top:-130px;padding:0;scroll-margin-top
 .e-ph svg{width:56px;height:56px;opacity:.9}
 #products .e-soon .body{grid-template-rows:1fr auto}
 .e-soonn{font-size:13px;font-weight:800;color:var(--muted)}
+.e-sr{font-size:13px;line-height:1.35;color:var(--muted);margin-top:6px}
+.prod.e-flash{outline:3px solid var(--gold);outline-offset:3px;transition:outline-color .3s}
+.dm4l{margin:10px 0 0;font-weight:700;line-height:1.4}.dm4l a{display:inline-block;margin-top:4px;color:inherit;text-decoration:underline;text-underline-offset:3px}
 #products .e-inv .media img{object-position:50% 35%}
 #products .e-inv .body>.pp{grid-column:1/-1}
 #products .e-inv .body>.e-act{grid-column:1/-1;justify-self:start}
@@ -805,6 +808,7 @@ if(!on){var im=document.getElementById('cartHeroImg');if(im)im.src='img/hero_v3_
       <span class="dmkick" data-i="dm_kick"></span>
       <h2 id="dmH" data-i="dm_h"></h2>
       <p data-i="dm_p"></p>
+      <p class="dm4l" id="dm4Line" hidden><span data-i="dm4_line"></span><br><a href="/app/?p=ny" data-i="dm4_go"></a></p>
       <div class="e-dmrow"><p class="dmfree" data-i="dm_free"></p><p class="dmor" id="dmOr"></p></div>
       <div class="dmacts"><button type="button" class="btn btn-gold" id="dmAdd" aria-pressed="false"></button><button type="button" class="btn dmghost" id="dmSolo" data-i="dm_solo"></button></div>
     </div>
@@ -1137,8 +1141,9 @@ function t(k){ return (I18N[lang] && I18N[lang][k]) ?? I18N.en[k] ?? I18N.ru[k] 
 
 const STYLES = [["st_3d", "st_3d"], ["st_water", "st_water"], ["st_pencil", "st_pencil"], ["st_paper", "st_paper"], ["st_clay", "st_clay"], ["st_khokh", "st_khokh"], ["st_gzhel", "st_gzhel"], ["st_palekh", "st_palekh"], ["st_lubok", "st_lubok"], ["st_film", "st_film"], ["st_kaz", "st_kaz"], ["st_minia", "st_minia"], ["st_arab", "st_arab"]];
 
+try { Object.assign(I18N.ru, {"h4_cartoon_t": "Мультфильм по вашей истории", "h4_sing_t": "Поющее фото", "h4_tree_t": "Семейное древо", "h4_painting_t": "Картина из семейного фото", "h4_d_tree": "До 15 человек и 2–4 поколения, PDF для печати", "h4_d_painting": "Семейное фото — картина в выбранном стиле", "h4_sr_cartoon": "Заказ пока закрыт: проверяем качество видео на пилотных заказах. Откроем, когда каждый мультфильм будет проходить нашу приёмку.", "h4_sr_sing": "Заказ пока закрыт: не каждый ролик проходит нашу проверку качества. Откроем, когда результат будет стабильным.", "h4_sr_pet_live": "Заказ пока закрыт: видеосервис, который оживляет фото питомцев, временно недоступен. Откроем, как только он снова заработает.", "h4_sr_pet_sing": "Заказ пока закрыт: видеосервис, который оживляет фото питомцев, временно недоступен. Откроем, как только он снова заработает.", "h4_sr_tree": "Заказ пока закрыт: идёт финальная проверка перед запуском.", "h4_sr_painting": "Заказ пока закрыт: идёт финальная проверка перед запуском.", "dm4_line": "✉️ Новинка: Дед Мороз прочитает письмо ребёнка и покажет его оживший рисунок — письмо +190 ₽, рисунок +290 ₽, вместе +390 ₽.", "dm4_go": "Добавить письмо и рисунок →"}); Object.assign(I18N.en, {"h4_cartoon_t": "A cartoon of your story", "h4_sing_t": "Singing photo", "h4_tree_t": "Family tree", "h4_painting_t": "Painting from a family photo", "h4_d_tree": "Up to 15 people, 2–4 generations, print PDF", "h4_d_painting": "Your family photo as a painting", "h4_sr_cartoon": "Ordering is closed for now: we are checking video quality on pilot orders.", "h4_sr_sing": "Ordering is closed for now: not every video passes our quality check yet. We will open it once results are stable.", "h4_sr_pet_live": "Ordering is closed for now: the video service that animates pet photos is temporarily unavailable.", "h4_sr_pet_sing": "Ordering is closed for now: the video service that animates pet photos is temporarily unavailable.", "h4_sr_tree": "Ordering is closed for now: final checks before launch.", "h4_sr_painting": "Ordering is closed for now: final checks before launch.", "dm4_line": "", "dm4_go": ""}); } catch(_){}   /* DEPLOY9 витрина */
 const PRODS = [['cartoon','cartoon'],['book','pdf'],['song','song'],['clip','clip'],['live','live'],['sing','sing'],['ny','ny'],['pet_live','pet_live'],['pet_sing','pet_sing']];   /* 29.10 C6a: + питомцы */
-const cartOn = () => cur === 'RUB' && lang === 'ru';   /* 28.10 MULT1: мультфильм — только RU/RUB */
+const cartOn = () => false;   /* DEPLOY9 31.10 витрина 11.11 (COUNCIL2): мультфильм — «Скоро», было: cur === 'RUB' && lang === 'ru' */   /* 28.10 MULT1: мультфильм — только RU/RUB */
 function syncCartHero(){   /* 29.10 HOME4: главный экран — мультфильм (RU/RUB) или общий ролик; видео грузится после обложки */
   const h = document.getElementById('eCine'); if (!h) return;
   const on = cartOn(); h.setAttribute('data-mode', on ? 'cart' : 'gen');
@@ -1150,7 +1155,8 @@ function syncCartHero(){   /* 29.10 HOME4: главный экран — мул�
   if (v.dataset.src !== src) { v.dataset.src = src; try { v.pause(); } catch(_){} v.muted = true; if (rm) v.removeAttribute('src'); else v.setAttribute('src', src); }
   if (!rm && v.paused && v.muted && v.getAttribute('src')) { const pr = v.play(); if (pr && pr.catch) pr.catch(()=>{}); }
 }
-const GRID = () => PRODS.filter(([k]) => k !== 'ny' && !k.startsWith('pet_') && (k !== 'cartoon' || cartOn()));   /* 24.10.2026 указ владельца: Дед Мороз — не в списке, а акционным баннером */
+const SOON_K = ['cartoon', 'sing', 'pet_live', 'pet_sing'];   /* DEPLOY9 31.10 витрина 11.11: «Скоро» — карточка видна, заказ закрыт, причина на карточке (№140) */
+const GRID = () => PRODS.filter(([k]) => k !== 'ny' && !k.startsWith('pet_') && !SOON_K.includes(k) && (k !== 'cartoon' || cartOn()));   /* 24.10.2026 указ владельца: Дед Мороз — не в списке, а акционным баннером */
 const ICONS = {"cartoon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M7 5v4M12 5v4M17 5v4M7 15v4M12 15v4M17 15v4\"/></svg>", "book": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z\"/><path d=\"M4 19V5\"/></svg>", "song": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M9 18V5l11-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"17\" cy=\"16\" r=\"3\"/></svg>", "clip": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M10 9l5 3-5 3z\"/></svg>", "live": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z\"/><path d=\"M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z\"/></svg>", "sing": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><rect x=\"9\" y=\"2\" width=\"6\" height=\"11\" rx=\"3\"/><path d=\"M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8\"/></svg>", "ny": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M12 2v20M4.9 6l14.2 12M19.1 6L4.9 18\"/><path d=\"M9 3.5l3 2 3-2M9 20.5l3-2 3 2\"/></svg>"};
 function media(k){
   if (k==='book') return `<div class="media"><img src="img/ex/ex_book.jpg" alt="${t('ex_book')}" loading="lazy" width="1056" height="592" style="object-position:72% 50%"><span class="e-tag">${t('h4_tag_pv')}</span></div>`;   /* 29.10 HOME4: стили книги — в разделе «Стили» и в конструкторе */
@@ -1159,19 +1165,26 @@ function media(k){
   return `<div class="media pm"><video playsinline preload="none" poster="img/ex/${v[1]}" src="img/ex/${v[0]}" ${k==='live'||k==='pet_live'?'loop':''}></video><button type="button" class="play" data-play aria-label="${t('p_'+k+'_t')}">${PM_IC.play}</button><span class="pm-dur">${PM_IC.play}${PM_D[k]}</span>${pmBar(true)}</div>`;
 }
 /* 29.10 HOME4: карточки по макету E. Классы .prod/.body/.pp и кнопка [data-open] прямо в .body — как раньше (комплект, недоступность, ?order=) */
-const H4_AUD = {cartoon:'adult', book:'kids', song:'kids adult', clip:'kids adult', live:'adult', sing:'kids adult', invite:'kids', uzi:'adult', pet_live:'pets', pet_sing:'pets'};
-const H4_TYP = {cartoon:'video', book:'books', song:'music', clip:'video', live:'video', sing:'video music', invite:'hol', uzi:'', pet_live:'video', pet_sing:'video music'};
-const H4_IC = {uzi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.5-9-9.5C1.6 8 3.6 4.5 7 4.5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.4 0 5.4 3.5 4 7-2 5-9 9.5-9 9.5z"/><circle cx="12" cy="11.5" r="2.2"/></svg>',
+const SOON_RU = ['cartoon', 'tree', 'painting'];
+const H4_AUD = {tree:'kids adult', painting:'kids adult', cartoon:'adult', book:'kids', song:'kids adult', clip:'kids adult', live:'adult', sing:'kids adult', invite:'kids', uzi:'adult', pet_live:'pets', pet_sing:'pets'};
+const H4_TYP = {tree:'', painting:'', cartoon:'video', book:'books', song:'music', clip:'video', live:'video', sing:'video music', invite:'hol', uzi:'', pet_live:'video', pet_sing:'video music'};
+const H4_IC = {tree:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="13" r="2.2"/><circle cx="18" cy="13" r="2.2"/><circle cx="12" cy="20" r="2.2"/><path d="M12 7.2v10.6M7.6 11.6 10.4 6.6M16.4 11.6 13.6 6.6"/></svg>',
+  painting:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="1.5"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="8.5" r="1.5"/><path d="M8 21h8"/></svg>',
+  uzi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.5-9-9.5C1.6 8 3.6 4.5 7 4.5c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 3.4 0 5.4 3.5 4 7-2 5-9 9.5-9 9.5z"/><circle cx="12" cy="11.5" r="2.2"/></svg>',
   pet_live:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 3-4 2-2 1-4 0-4-2z"/></svg>',
   pet_sing:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>'};
 function h4Price(k, p){ return ['ny','song','sing','pet_live','pet_sing'].includes(k) ? money(PRICES[cur][p]) : t('p_from').replace('{p}', money(PRICES[cur][p])); }
 function h4Card(k, p){ return `<article class="prod${k==='cartoon' ? ' e-off' : ''}" id="p-${k}" data-k="${k}" data-aud="${H4_AUD[k]||''}" data-type="${H4_TYP[k]||''}">${media(k)}<p class="exc" title="${t('ex_'+k)}">${t('ex_'+k)}</p><div class="body"><div class="e-txt"><h3>${t('p_'+k+'_t')}</h3><p>${t('h4_d_'+k)}</p>${k==='book' ? `<a class="pvlink" href="/preview.html">${t('p_book_pv')}</a>` : ''}<p class="e-eta" data-eta="${k}"></p></div><span class="pp">${h4Price(k, p)}</span><button type="button" class="btn btn-gold" data-open="${k}">${t('p_order')}</button></div></article>`; }
 /* DEPLOY5 30.10 FAM2: «Календарь семьи 2027» — конструктор в Mini App (/app/?p=calendar), карточка в стиле приглашения; только на русском (сетка — производственный календарь РФ) */
 function calCard(){ return `<article class="prod e-cal" id="p-calendar" data-k="calendar" data-aud="kids adult" data-type="hol"${lang === 'ru' ? '' : ' hidden'}><a class="media" href="/app/?p=calendar" tabindex="-1" aria-hidden="true"><img src="img/ex/ex_calendar.jpg" alt="" loading="lazy" width="1280" height="720"><span class="e-tag e-tag-new">${t('h4_new')}</span></a><p class="exc">Пример: календарь семьи на 2027 год</p><div class="body"><div class="e-txt"><h3>Календарь семьи 2027</h3><p>13 листов с вашими фото: обложка и 12 месяцев, даты семьи на сетке · PDF для печати A3/A4</p></div><span class="pp">990&nbsp;₽</span><a class="btn btn-gold e-act" href="/app/?p=calendar">Создать календарь</a></div></article>`; }
+function soonGo(k){ if (!SOON_K.includes(k)) return false; try { closeModal(); } catch(_){}   /* DEPLOY9: заказ «Скоро» закрыт — показываем причину */
+  const c = document.getElementById('s-' + k); if (c) { c.hidden = false; c.scrollIntoView({block:'center', behavior:'smooth'}); c.classList.add('e-flash'); setTimeout(() => c.classList.remove('e-flash'), 1600); }
+  let d = document.getElementById('soonToast'); if (!d) { d = document.createElement('div'); d.id = 'soonToast'; d.setAttribute('role', 'status'); d.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;max-width:min(92vw,520px);background:#2E1F4F;color:#fff;padding:12px 16px;border-radius:14px;font:600 14px/1.4 inherit;box-shadow:0 6px 24px rgba(0,0,0,.25)'; document.body.appendChild(d); }
+  d.textContent = t('h4_sr_' + k); d.hidden = false; clearTimeout(soonGo.t); soonGo.t = setTimeout(() => { d.hidden = true; }, 5000); return true; }
 function h4Extra(){   /* приглашение (как раньше: только при INVITE_LIVE и на русском) и подарки «Скоро» — без цены и без кнопки */
-  const soon = k => `<article class="prod e-soon" id="s-${k}" data-k="${k}" data-aud="${H4_AUD[k]}" data-type="${H4_TYP[k]}"><div class="media e-ph" role="img" aria-label="${t('h4_'+k+'_t')}">${H4_IC[k]}<span class="e-tag e-tag-soon">${t('h4_soon_b')}</span></div><div class="body"><div class="e-txt"><h3>${t('h4_'+k+'_t')}</h3><p>${t('h4_d_'+k)}</p></div><span class="e-soonn">${t('h4_soon_n')}</span></div></article>`;
-  return `<article class="prod e-inv" id="invite" data-k="invite" data-aud="kids" data-type="hol"${INVITE_LIVE && lang === 'ru' ? '' : ' hidden'}><a class="media" href="/invite.html" tabindex="-1" aria-hidden="true"><img src="img/st_water.jpg" alt="" loading="lazy" width="600" height="600"><span class="e-tag e-tag-new">${t('h4_new')}</span></a><p class="exc">${t('h4_ex_inv')}</p><div class="body"><div class="e-txt"><h3>${t('p_inv_t')}</h3><p>${t('h4_d_inv')}</p><p class="e-eta" data-eta="inv"></p></div><span class="pp">${t('h4_inv_pp')}</span><a class="btn btn-gold e-act" href="/invite.html">${t('h4_inv_btn')}</a></div></article>`
-    + calCard() + soon('uzi') + h4Card('pet_live', 'pet_live') + h4Card('pet_sing', 'pet_sing'); }   /* 29.10 C6a: питомцы — в продаже (было «Скоро») */
+  const soon = k => `<article class="prod e-soon" id="s-${k}" data-k="${k}" data-aud="${H4_AUD[k]}" data-type="${H4_TYP[k]}"${SOON_RU.includes(k) && lang !== 'ru' ? ' hidden' : ''}><div class="media e-ph" role="img" aria-label="${t('h4_'+k+'_t')}">${H4_IC[k] || ICONS[k] || ''}<span class="e-tag e-tag-soon">${t('h4_soon_b')}</span></div><div class="body"><div class="e-txt"><h3>${t('h4_'+k+'_t')}</h3><p>${t('h4_d_'+k)}</p><p class="e-sr">${t('h4_sr_'+k) || t('h4_soon_n')}</p></div><span class="e-soonn">${t('h4_soon_n')}</span></div></article>`;
+  return soon('uzi') + `<article class="prod e-inv" id="invite" data-k="invite" data-aud="kids" data-type="hol"${INVITE_LIVE && lang === 'ru' ? '' : ' hidden'}><a class="media" href="/invite.html" tabindex="-1" aria-hidden="true"><img src="img/st_water.jpg" alt="" loading="lazy" width="600" height="600"><span class="e-tag e-tag-new">${t('h4_new')}</span></a><p class="exc">${t('h4_ex_inv')}</p><div class="body"><div class="e-txt"><h3>${t('p_inv_t')}</h3><p>${t('h4_d_inv')}</p><p class="e-eta" data-eta="inv"></p></div><span class="pp">${t('h4_inv_pp')}</span><a class="btn btn-gold e-act" href="/invite.html">${t('h4_inv_btn')}</a></div></article>`
+    + soon('cartoon') + soon('sing') + soon('pet_live') + soon('pet_sing') + soon('tree') + soon('painting'); }   /* DEPLOY9 31.10 витрина 11.11: УЗИ (карточку заменяет блок УЗИ) и приглашения — второй ряд; дальше «Скоро» */
 const PM_IC = {play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>', pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>', fs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>', note:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17V5l11-2v12a3 3 0 1 1-2-2.8V6.3L11 7.6V17a3 3 0 1 1-2-2.8z"/></svg>'};
 const PM_D = {cartoon:'0:58', song:'0:38', clip:'0:38', live:'0:08', sing:'0:19', ny:'1:53', pet_live:'0:05', pet_sing:'0:09'};
 function pmBar(video){ return `<div class="pm-bar"><button type="button" class="pm-pp" aria-label="${t('pm_pause')}">${PM_IC.pause}</button><div class="pm-track" aria-hidden="true"><i></i></div><span class="pm-time">0:00</span>${video ? `<button type="button" class="pm-fs" aria-label="${t('pm_full')}">${PM_IC.fs}</button>` : ''}</div>`; }
@@ -1258,7 +1271,7 @@ function occValue(){
 document.addEventListener('change', e => { if (e.target && e.target.id === 'fOcc') { const own = document.getElementById('fOccOwn'); if (own) { own.hidden = e.target.value !== 'own'; if (!own.hidden) own.focus(); } } });
 fetch('/occasions.json', {cache: 'no-cache'}).then(r => r.ok ? r.json() : null).then(j => { if (j && j.items) { OCCS = j; fillOcc(); } }).catch(() => {});
 function fillSelects(){
-  const fp = document.getElementById('fProd'); fp.innerHTML = PRODS.filter(([k]) => k !== 'cartoon' || cartOn() || curProd === 'cartoon').map(([k]) => `<option value="${k}">${tE('p_'+k+'_t')}</option>`).join(''); fp.value = curProd;
+  const fp = document.getElementById('fProd'); fp.innerHTML = PRODS.filter(([k]) => !SOON_K.includes(k) && (k !== 'cartoon' || cartOn() || curProd === 'cartoon')).map(([k]) => `<option value="${k}">${tE('p_'+k+'_t')}</option>`).join(''); fp.value = curProd;
   fillOcc();
   const fg = document.getElementById('fGenre'), gv = fg.value || 'g_kids';
   fg.innerHTML = Object.keys(GENRES).map(g => `<option value="${g}">${tE(g)}</option>`).join(''); fg.value = gv; fillStyles();
@@ -1361,7 +1374,7 @@ function render(){ try { syncCartHero(); } catch(_){}
   { const hz = document.getElementById('heroes'); hz.style.gridTemplateColumns = SUP.length < 5 ? `repeat(${SUP.length}, minmax(0, 260px))` : ''; hz.style.justifyContent = SUP.length < 5 ? 'center' : ''; }
   document.getElementById('heroes').innerHTML = SUP.map(l => `<button type="button" data-l="${l}" aria-pressed="${l===lang}" lang="${l}"><img src="${IMG['hero_'+l]}" alt="${I18N[l]['lang_'+l]}"><span>${I18N[l]['lang_'+l]}</span></button>`).join('');
   { const pc = document.getElementById('pchips'); if (pc) pc.innerHTML = GRID().map(([k,p]) => `<a class="pchip" href="#p-${k}"><i>${ICONS[k]}</i><span>${t('c_'+k)} <small>${['ny','song','sing'].includes(k) ? money(PRICES[cur][p]) : t('p_from').replace('{p}', money(PRICES[cur][p]))}</small></span></a>`).join(''); }
-  document.getElementById('prods').innerHTML = GRID().map(([k,p]) => h4Card(k, p)).join('') + h4Extra();   /* 29.10 HOME4 */
+  document.getElementById('prods').innerHTML = calCard() + GRID().map(([k,p]) => h4Card(k, p)).join('') + h4Extra();   /* 29.10 HOME4; DEPLOY9: первый ряд «Новый год» — календарь, книга */
   renderStyles();
   document.getElementById('occ').innerHTML = (I18N[lang].oc || I18N.en.oc).map(o => `<span>${o}</span>`).join('');
   document.getElementById('fLang').innerHTML = SUP.map(l => `<option value="${l}" ${l===lang?'selected':''}>${I18N[l]['lang_'+l]}</option>`).join('');
@@ -1379,7 +1392,7 @@ document.addEventListener('click', e => {
 document.getElementById('curSel').addEventListener('change', e => { cur = e.target.value; try { localStorage.setItem('tm_cur', cur); } catch(_){} render(); });
 
 const modal = document.getElementById('modal');
-function openModal(prod, sty){ curProd = PRODS.some(p=>p[0]===prod) ? prod : 'book'; document.getElementById('fProd').value = curProd; syncForm(); if (sty) document.getElementById('fStyle').value = sty; markSty(); if (sty) { const sb = document.querySelector('#fStyGrid [aria-pressed=true]'); if (sb) setTimeout(()=>sb.scrollIntoView({block:'nearest'}), 40); } document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true; document.getElementById('formSum').hidden = true; document.getElementById('fCover').hidden = true; document.getElementById('fErr').hidden = true; modal.hidden = false; setTimeout(()=>document.getElementById('fName').focus(), 30); }
+function openModal(prod, sty){ if (soonGo(prod)) return; curProd = PRODS.some(p=>p[0]===prod) ? prod : 'book'; document.getElementById('fProd').value = curProd; syncForm(); if (sty) document.getElementById('fStyle').value = sty; markSty(); if (sty) { const sb = document.querySelector('#fStyGrid [aria-pressed=true]'); if (sb) setTimeout(()=>sb.scrollIntoView({block:'nearest'}), 40); } document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true; document.getElementById('formSum').hidden = true; document.getElementById('fCover').hidden = true; document.getElementById('fErr').hidden = true; modal.hidden = false; setTimeout(()=>document.getElementById('fName').focus(), 30); }
 function closeModal(){ modal.hidden = true; }
 function markSty(){ const v = document.getElementById('fStyle').value; document.querySelectorAll('#fStyGrid [data-fsty]').forEach(b => { b.setAttribute('aria-pressed', b.dataset.fsty === v); b.setAttribute('aria-checked', b.dataset.fsty === v); }); renderStyPv(); }
 function renderStyPv(){ const pv = document.getElementById('fStyPv'); if (!pv) return; const v = document.getElementById('fStyle').value || 'st_3d';
@@ -1617,7 +1630,8 @@ var BUNDLE=[];
 var KORDER=['book','clip','live','sing','song','ny','pet_sing','pet_live'];   /* 29.10 C6a: поющий питомец первым — в форме спрашиваем ударение клички */
 function bundleFor(p){ return (BUNDLE.length && BUNDLE.indexOf(p)>=0) ? KORDER.filter(function(k){return BUNDLE.indexOf(k)>=0;}) : [p]; }
 function kPrice(k){ var pk=(PRODS.find(function(x){return x[0]===k;})||[k,k])[1]; return PRICES[cur][pk]; }
-function applyBundle(){
+function applyBundle(){ try { for (var _i = BUNDLE.length - 1; _i >= 0; _i--) if (SOON_K.indexOf(BUNDLE[_i]) >= 0) BUNDLE.splice(_i, 1); } catch(_){}   /* DEPLOY9 */
+
   document.querySelectorAll('#prods .prod').forEach(function(card){
     var k=card.id.replace('p-',''); var on=BUNDLE.indexOf(k)>=0; card.classList.toggle('sel',on);
     var b=card.querySelector('.body > [data-open]'); if(b){ b.textContent=k==='cartoon'?t('h4_cart_btn'):(on?t('p_added'):t('p_order')); b.setAttribute('aria-pressed',on?'true':'false'); }
@@ -1658,6 +1672,9 @@ applyBundle();
   document.getElementById('dmSolo').addEventListener('click',function(){ openModal('ny'); });
   document.querySelector('#dm video').addEventListener('play',function(){ document.querySelectorAll('.prod video, .prod audio').forEach(function(x){ x.pause(); }); if (typeof heroVid!=='undefined' && heroVid && !heroVid.muted) { heroVid.muted=true; } });
   dmSync();
+    (function(){ var el = document.getElementById('dm4Line'); if (!el) return; var on = false;   /* DEPLOY9: письмо и рисунок — по флагу dm4 сервера */
+      function sync(){ el.hidden = !(on && lang === 'ru'); } var _r = render; render = function(){ var x = _r.apply(this, arguments); sync(); return x; };
+      try { fetch(API + '/api/miniapp/config').then(function(r){ return r.json(); }).then(function(j){ on = !!(j && j.flags && j.flags.dm4); sync(); }).catch(function(){}); } catch(_){} })();
 })();
 </script>
 <script>
@@ -2248,7 +2265,7 @@ var PAYUX = (function(){
     var a = (c.getAttribute('data-aud') || '').split(' '), ty = (c.getAttribute('data-type') || '').split(' ');
     if (aud !== 'all' && a.indexOf(aud) < 0) return false;
     if (type !== 'all' && ty.indexOf(type) < 0) return false;
-    if (c.getAttribute('data-k') === 'cartoon' && aud === 'all' && type === 'all') return false;   /* мультфильм уже на главном экране */
+    if (c.id === 'p-cartoon' && aud === 'all' && type === 'all') return false;   /* мультфильм уже на главном экране; DEPLOY9: карточка «Скоро» (s-cartoon) видна */
     return true; }
   function count(aud, type){ return cards().filter(function(c){ return vis(c, aud, type); }).length; }
   function filter(){
@@ -2423,7 +2440,7 @@ var PAYUX = (function(){
   }, true);
 
   function prodOpts(){ var fp = $('fProd'); if (!fp) return; var pet = isPet(curProd);
-    var want = PRODS.filter(function(x){ return isPet(x[0]) === pet && (x[0] !== 'cartoon' || cartOn() || curProd === 'cartoon'); }).map(function(x){ return x[0]; });
+    var want = PRODS.filter(function(x){ return isPet(x[0]) === pet && SOON_K.indexOf(x[0]) < 0 && (x[0] !== 'cartoon' || cartOn() || curProd === 'cartoon'); }).map(function(x){ return x[0]; });
     if ([].map.call(fp.options, function(o){ return o.value; }).join() !== want.join()) fp.innerHTML = want.map(function(k){ return '<option value="' + k + '">' + tE('p_' + k + '_t') + '</option>'; }).join('');
     fp.value = curProd; }
   function setI(el, key){ if (!el) return; el.dataset.i = key; el.textContent = t(key); }

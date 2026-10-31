@@ -482,6 +482,7 @@ var I = {ru:{
  hero_h:"1 фото → подарки, в которых живёт любовь", hero_p:"Фотосессии, сказки, песни и мультфильмы — для детей, взрослых и питомцев.", hero_cta:"Фотосессия по одному фото",
  foot:"Сделано с любовью · Talemir · все изображения созданы с помощью ИИ",
  d_photo:"Фотосессии", d_kids:"Детям", d_adult:"Взрослым", d_pets:"Питомцам", d_cart:"Мультфильмы",
+ d_ny:"Новый год", d_more:"Ещё подарки", d_soon:"Скоро", dn_ny:"Дед Мороз теперь читает письмо ребёнка и оживляет рисунок. Новогодние фотосессии, календарь 2027 и книга-сказка.", dn_more:"Песня и клип, живые фото, малыш по УЗИ, приглашения.", dn_soon:"Готовим к запуску. Откройте карточку — там написано, почему заказ пока закрыт.",
  dn_photo:"От 1 до 10 фото → 6 снимков 2K в стиле на выбор. Новогодние семейные — уже здесь.", dn_kids:"Ребёнок — главный герой сказки, песни и поздравления.", dn_adult:"Песни, поющие и живые фото, мультфильм о вас.", dn_pets:"Кошка или собака оживает и поёт песню с кличкой.", dn_cart:"Мультфильм по вашей истории: сначала утверждаете героев.",
  ph_h:"Фотосессии по вашим фото", ph_p:"Загрузите от 1 до 10 фото — получите 6 снимков 2K в выбранном стиле. Взрослым, детям, парам и семьям.", ph_packs:"Стили",
  pk_ex_note:"Пример на вымышленных людях · создано с помощью ИИ", per_shots:"6 фото · {p} ₽ за фото", soon:"Скоро", new_:"Новинка", season:"Сезон",
@@ -523,6 +524,7 @@ en:{
  hero_h:"1 photo → gifts full of love", hero_p:"Photo sessions, fairy tales and songs — for kids, grown-ups and pets.", hero_cta:"Photo session from one photo",
  foot:"Made with love · Talemir · all images are created with AI",
  d_photo:"Photo sessions", d_kids:"Kids", d_adult:"Grown-ups", d_pets:"Pets", d_cart:"Cartoons",
+ d_ny:"New Year", d_more:"More gifts", d_soon:"Coming soon", dn_ny:"Ded Moroz, New Year photo sessions and a fairy-tale book.", dn_more:"Songs, clips and living photos.", dn_soon:"Getting ready to launch. Open a card to see why ordering is closed.",
  dn_photo:"1 to 10 photos → 6 shots in 2K in the style you choose. New Year family sets are here.", dn_kids:"Your child is the hero of a fairy tale, a song and a greeting.", dn_adult:"Songs, singing and living photos, photo sessions for you.", dn_pets:"Your cat or dog comes alive and sings a song with its name.", dn_cart:"A cartoon of your story: approve the heroes first.",
  ph_h:"Photo sessions from your photos", ph_p:"Upload 1 to 10 photos — get 6 shots in 2K in the chosen style. For adults, kids, couples and families.", ph_packs:"Styles",
  pk_ex_note:"Example with fictional people · created with AI", per_shots:"6 photos · {p} ₽ per photo", soon:"Soon", new_:"New", season:"Season",
@@ -608,23 +610,26 @@ function psN(p){ return p.mf ? (S.gs === "m" ? (p.nm || 6) : (p.nf || 6)) : 6; }
 function pkTitle(p){ return lang === "en" ? p.en : p.ru; }
 /* Подарки (не фотосессии): цены = chain.py PRICE; оформление — существующие конструкторы (бот / сайт). */
 var PROD = {
- ny:{ru:"Дед Мороз поздравит по имени", en:"Ded Moroz greets your child by name", sru:"Видео по имени, с фото ребёнка", sen:"A video greeting by name", price:490, img:"ex_ny_v6.jpg", dir:["kids"], via:"bot", eta:10, badge:"season"},
+ ny:{ru:"Дед Мороз поздравит по имени", en:"Ded Moroz greets your child by name", sru:"Видео по имени, с фото ребёнка", sen:"A video greeting by name", sru4:"Видео по имени · теперь прочитает письмо и оживит рисунок", price:490, img:"ex_ny_v6.jpg", dir:["kids"], via:"bot", eta:10, badge:"season"},
  book:{ru:"Книга-сказка", en:"Fairy-tale book", sru:"Ребёнок — герой сказки, PDF", sen:"Your child is the hero, PDF", price:990, from:true, img:"ex_book.jpg", dir:["kids"], via:"bot", eta:15},
  song:{ru:"Песня с именем", en:"Song with a name", sru:"Поют имя — MP3", sen:"A song that sings the name, MP3", price:490, img:"ex_song.jpg", dir:["kids","adult"], via:"bot", eta:5},
- sing:{ru:"Поющее фото", en:"Singing photo", sru:"Фото поёт песню с именем", sen:"The photo sings a song with the name", price:1490, img:"ex_sing.jpg", dir:["kids","adult"], via:"bot", eta:35},
+ sing:{ru:"Поющее фото", en:"Singing photo", sru:"Фото поёт песню с именем", sen:"The photo sings a song with the name", price:1490, img:"ex_sing.jpg", dir:["kids","adult"], via:"bot", eta:35, soon:{ru:"Заказ пока закрыт: не каждый ролик проходит нашу проверку качества. Откроем, когда результат будет стабильным.", en:"Ordering is closed for now: not every video passes our quality check yet. We will open it once results are stable."}},
  clip:{ru:"Клип из фото", en:"Photo clip", sru:"Ваши фото под вашу песню", sen:"Your photos with your own song", price:790, from:true, img:"ex_clip.jpg", dir:["kids","adult"], via:"bot", eta:10},
  live:{ru:"Живые фото", en:"Living photos", sru:"Фото оживают под песню", sen:"Photos come alive with a song", price:1990, from:true, img:"ex_live2.jpg", dir:["adult"], via:"bot", eta:20},
- cartoon:{ru:"Мультфильм по вашей истории", en:"A cartoon of your story", sru:"30 с · 1 мин · 2 мин, сначала — герои", sen:"30 s · 1 min · 2 min, heroes first", price:2190, from:true, img:"ex_cartoon.jpg", dir:["cart","adult"], via:"site", eta:15, ruOnly:1},   /* FIX1 (QA1 P3): как на сайте — только RU/RUB */
+ cartoon:{ru:"Мультфильм по вашей истории", en:"A cartoon of your story", sru:"30 с · 1 мин · 2 мин, сначала — герои", sen:"30 s · 1 min · 2 min, heroes first", price:2190, from:true, img:"ex_cartoon.jpg", dir:["cart","adult"], via:"site", eta:15, ruOnly:1, soon:{ru:"Заказ пока закрыт: проверяем качество видео на пилотных заказах. Откроем, когда каждый мультфильм будет проходить нашу приёмку.", en:"Ordering is closed for now: we are checking video quality on pilot orders."}},   /* FIX1 (QA1 P3): как на сайте — только RU/RUB */
  inv:{ru:"Приглашения на праздник", en:"Party invitations", sru:"Открытка-приглашение с вашим текстом и местом", sen:"An invitation card with your text", price:290, from:true, icon:"💌", dir:["kids"], link:"/invite.html", ruOnly:1},   /* FIX1: ссылкой на сайт */
  preg:{ru:"Малыш по УЗИ", en:"Baby from an ultrasound", sru:"Каким будет малыш — по снимку УЗИ", sen:"Your baby's portrait from an ultrasound", price:990, from:true, img:"ex_preg_1.jpg", dir:["adult"], link:"/#uzi", ruOnly:1},   /* FIX1: ссылкой на сайт (там — предзапись/заказ) */
- pet_live:{ru:"Живое фото питомца", en:"Living pet photo", sru:"Кошка или собака оживает", sen:"Your cat or dog comes alive", price:390, img:"ex_pet_live.jpg", dir:["pets"], via:"bot", eta:5},
- pet_sing:{ru:"Поющий питомец", en:"Singing pet", sru:"Песня с кличкой", sen:"A song with the pet's name", price:590, img:"ex_pet_sing.jpg", dir:["pets"], via:"bot", eta:40},
+ pet_live:{ru:"Живое фото питомца", en:"Living pet photo", sru:"Кошка или собака оживает", sen:"Your cat or dog comes alive", price:390, img:"ex_pet_live.jpg", dir:["pets"], via:"bot", eta:5, soon:{ru:"Заказ пока закрыт: видеосервис, который оживляет фото питомцев, временно недоступен. Откроем, как только он снова заработает.", en:"Ordering is closed for now: the video service that animates pet photos is temporarily unavailable."}},
+ pet_sing:{ru:"Поющий питомец", en:"Singing pet", sru:"Песня с кличкой", sen:"A song with the pet's name", price:590, img:"ex_pet_sing.jpg", dir:["pets"], via:"bot", eta:40, soon:{ru:"Заказ пока закрыт: видеосервис, который оживляет фото питомцев, временно недоступен. Откроем, как только он снова заработает.", en:"Ordering is closed for now: the video service that animates pet photos is temporarily unavailable."}},
+ tree:{ru:"Семейное древо", en:"Family tree", sru:"До 15 человек и 2–4 поколения, PDF для печати", sen:"Up to 15 people, 2–4 generations", icon:"🌳", dir:[], ruOnly:1, soon:{ru:"Заказ пока закрыт: идёт финальная проверка перед запуском.", en:"Ordering is closed for now: final checks before launch."}},
+ painting:{ru:"Картина из семейного фото", en:"Painting from a family photo", sru:"Семейное фото — картина в выбранном стиле", sen:"Your family photo as a painting", icon:"🖼", dir:[], ruOnly:1, soon:{ru:"Заказ пока закрыт: идёт финальная проверка перед запуском.", en:"Ordering is closed for now: final checks before launch."}},
  calendar:{ru:"Календарь семьи 2027", en:"Family calendar 2027", sru:"Ребёнок в теме каждого месяца: 13 листов A3, PDF для печати + 12 фото", sen:"Your child in every month's theme: 13 A3 pages, print PDF + 12 photos", price:990, img:"ex_calendar.jpg", dir:["kids","photo"], via:"site", eta:8, badge:"new", flag:"calendar"}
 };
-var DIRS = [["photo","📸"],["kids","🧸"],["adult","💛"],["pets","🐾"],["cart","🎬"]];
+var DIRS = [["ny","🎄"],["more","🎁"],["photo","📸"],["kids","🧸"],["adult","💛"],["pets","🐾"],["cart","🎬"],["soon","⏳"]];   /* DEPLOY9 31.10 витрина 11.11 (COUNCIL2): «Новый год» первым, «Ещё подарки» вторым, «Скоро» последним */
+var ROW_NY = ["ny", "pk:ny_family", "pk:winter_tale", "pk:christmas", "calendar", "book"], ROW_MORE = ["song", "clip", "live", "preg", "inv"], ROW_SOON = ["cartoon", "sing", "pet_live", "pet_sing", "tree", "painting"];
 
 /* ---------------- состояние ---------------- */
-var S = {tab:"home", stack:[], token:null, user:null, flags:{photoshoot:false, plus:false}, pp:null, ppUrl:null, pack:null, files:[], psMax:1, usePP:false, tok:null, payUrl:null, gender:"f", dir:"photo", wallet:null, ref:null, plus:null, plusSel:null};
+var S = {tab:"home", stack:[], token:null, user:null, flags:{photoshoot:false, plus:false}, pp:null, ppUrl:null, pack:null, files:[], psMax:1, usePP:false, tok:null, payUrl:null, gender:"f", dir:"ny", wallet:null, ref:null, plus:null, plusSel:null};
 try { S.token = sessionStorage.getItem("tm_app_tok"); } catch(e){}
 
 function toast(m){ var e = $("toast"); e.textContent = m; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ e.hidden = true; }, 2600); }
@@ -691,7 +696,7 @@ document.addEventListener("click", function(e){
 /* ---------------- главная ---------------- */
 function card(k){
   var p = PROD[k];
-  return '<button class="pc" type="button" data-prod="' + k + '"><div class="m">' + (p.img ? '<img loading="lazy" src="' + EX + p.img + '" alt="">' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px">' + p.icon + '</div>') + (p.link ? '<span class="ai">↗</span>' : '') + (p.badge ? '<span class="badge new">' + esc(t(p.badge === "season" ? "season" : "new_")) + '</span>' : '') + '</div><div class="b"><span class="t">' + esc(lang === "en" ? p.en : p.ru) + '</span><span class="s">' + esc(lang === "en" ? p.sen : p.sru) + '</span><span class="p">' + (p.from ? (lang === "en" ? "from " : "от ") : "") + money(p.price) + '</span></div></button>';
+  return '<button class="pc" type="button" data-prod="' + k + '"><div class="m">' + (p.img ? '<img loading="lazy" src="' + EX + p.img + '" alt="">' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px">' + p.icon + '</div>') + (p.link ? '<span class="ai">↗</span>' : '') + (p.soon ? '<span class="badge soon">' + esc(t("soon")) + '</span>' : p.badge ? '<span class="badge new">' + esc(t(p.badge === "season" ? "season" : "new_")) + '</span>' : '') + '</div><div class="b"><span class="t">' + esc(lang === "en" ? p.en : p.ru) + '</span><span class="s">' + esc(lang === "en" ? p.sen : (p.sru4 && S.flags && S.flags.dm4 ? p.sru4 : p.sru)) + '</span><span class="p">' + (p.soon ? esc(t("soon")) : (p.from ? (lang === "en" ? "from " : "от ") : "") + money(p.price)) + '</span></div></button>';
 }
 function packCard(p){
   var img = p.soon ? "" : '<img loading="lazy" src="' + psImg(p, 1) + '" alt="">';
@@ -703,8 +708,11 @@ function renderHome(){   /* FIX2 31.10: направление без проду
   var html = "", shown = [];
   DIRS.forEach(function(d){
     var k = d[0], items;
-    if (k === "photo") items = PACKS.filter(function(p){ return !p.soon; }).slice(0, 6).map(packCard);
-    else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0 && (!PROD[x].flag || S.flags[PROD[x].flag]) && !(PROD[x].ruOnly && lang === "en"); }).map(card);   /* FAM2: продукт за флагом; FIX1: RU-only скрыт в EN */
+    var okP = function(x){ var p = PROD[x]; return p && (!p.flag || S.flags[p.flag]) && !(p.ruOnly && lang === "en"); };   /* DEPLOY9 */
+    var rowOf = function(L){ return L.map(function(x){ if (x.indexOf("pk:") === 0) { var q = pk(x.slice(3)); return q && !q.soon ? packCard(q) : ""; } return okP(x) ? card(x) : ""; }).filter(Boolean); };
+    if (k === "ny") items = rowOf(ROW_NY); else if (k === "more") items = rowOf(ROW_MORE); else if (k === "soon") items = rowOf(ROW_SOON);
+    else if (k === "photo") items = PACKS.filter(function(p){ return !p.soon; }).slice(0, 6).map(packCard);
+    else items = Object.keys(PROD).filter(function(x){ return PROD[x].dir.indexOf(k) >= 0 && !PROD[x].soon && okP(x); }).map(card);   /* FAM2: продукт за флагом; FIX1: RU-only скрыт в EN */
     if (k === "kids") items.splice(1, 0, packCard(pk("kids_fairy")), packCard(pk("kids_prof")));
     if (k === "adult") items.push(packCard(pk("jet")), packCard(pk("business")), packCard(pk("love_story")));
     if (!items.length) return;
@@ -1762,7 +1770,14 @@ document.addEventListener("visibilitychange", function(){ if (!document.hidden) 
 function openProd(k){
   var p = PROD[k]; if (!p) return;
   if (p.ruOnly && lang === "en") { toast("This gift is available in Russian only for now."); return; }   /* FIX1: причина, а не пустой экран (№140) */
+  if (p.soon) {   /* DEPLOY9 витрина: карточка видна, заказ закрыт — причина (№140) */
+    S.prod = null; $("prTitle").textContent = lang === "en" ? p.en : p.ru;
+    $("prMedia").innerHTML = '<div style="border-radius:18px;overflow:hidden;border:1px solid var(--line)">' + (p.img ? '<img src="' + EX + p.img + '" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover">' : '<div style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;font-size:64px;background:var(--card2)">' + p.icon + '</div>') + '</div>';
+    $("prPrice").textContent = t("soon"); $("prFacts").innerHTML = fact("🎁", t("f_get"), lang === "en" ? p.sen : p.sru) + fact("⏳", lang === "en" ? "Why it is closed" : "Почему пока нельзя заказать", lang === "en" ? p.soon.en : p.soon.ru);
+    $("prGo").hidden = true; $("prHow").textContent = ""; $("prBot").hidden = true; show("prod", true); return;
+  }
   if (p.link) { openExt(SITE + p.link); return; }                                                     /* FIX1: «Приглашения», «УЗИ» — на сайте */
+  $("prGo").hidden = false;
   S.prod = k;
   $("prTitle").textContent = lang === "en" ? p.en : p.ru;
   $("prMedia").innerHTML = '<div style="border-radius:18px;overflow:hidden;border:1px solid var(--line)"><img src="' + EX + p.img + '" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover"></div>';
@@ -1775,7 +1790,7 @@ function openProd(k){
   $("prBot").hidden = !(p.via === "bot" && inTG); $("prBot").textContent = t("w_bot");
   show("prod", true);
 }
-$("prGo").addEventListener("click", function(){ haptic("ok"); wizStart(S.prod); });
+$("prGo").addEventListener("click", function(){ if (!S.prod || (PROD[S.prod] && PROD[S.prod].soon)) return; haptic("ok"); wizStart(S.prod); });
 $("prBot").addEventListener("click", function(){
   var k = S.prod; haptic("ok");
   openTg(BOT + "?start=p_" + k); try { setTimeout(function(){ tg.close(); }, 400); } catch(e){}
@@ -1926,7 +1941,8 @@ async function boot(){
   }
   applyI18n();
   var a = await auth();
-  try { var c = await apiJ("/api/miniapp/config"); if (c.ok) { S.flags = c.j.flags || S.flags; S.plus = c.j.plus || null; S.psMax = c.j.ps_max || 1; } } catch(e){}   /* BLOOM4: flags.sty — заказ по каталогу 528 стилей (после выкладки diff API); ps_max — до 10 фото */   /* PS2: ps_max — сколько фото принимает сервер */
+  try { var c = await apiJ("/api/miniapp/config"); if (c.ok) { S.flags = c.j.flags || S.flags; S.plus = c.j.plus || null; S.psMax = c.j.ps_max || 1; } } catch(e){}
+  try { renderHome(); } catch(e){}   /* DEPLOY9: флаги пришли — перерисовать витрину */   /* BLOOM4: flags.sty — заказ по каталогу 528 стилей (после выкладки diff API); ps_max — до 10 фото */   /* PS2: ps_max — сколько фото принимает сервер */
   giftRefresh();
   if (S.token) {
     await loadPP(); renderPPMini();
