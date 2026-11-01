@@ -662,6 +662,7 @@ async function auth(){
 /* ---------------- навигация ---------------- */
 var SCR = ["home","photo","style","pack","wiz","wait","prod","orders","profile"];
 function show(id, push){
+  try{ if ((id === "prod" || id === "wiz") && window.tmPx) tmPx("shelf", (window.W && W.prod) || ""); }catch(_e){}
   SCR.forEach(function(s){ $("s-" + s).hidden = s !== id; });
   if (push) S.stack.push(id);
   var root = {home:1, photo:1, orders:1, profile:1}[id];
@@ -1961,6 +1962,12 @@ async function boot(){
 }
 boot();
 })();
+</script>
+<script>
+/* DASH1 31.10: анонимный счётчик для офисного экрана — без cookie, без localStorage, без персональных данных.
+   Шлёт только канал и шаг: view (открыл), shelf (открыл конструктор), hb (раз в минуту, пока вкладка видна). */
+(function(C){var U='https://ru.api.talemir.com/api/px',n=0;function px(s,p){try{var b=JSON.stringify({c:C,s:s,p:p||''});if(navigator.sendBeacon&&navigator.sendBeacon(U,new Blob([b],{type:'text/plain'})))return;fetch(U,{method:'POST',body:b,mode:'no-cors',keepalive:true,credentials:'omit'}).catch(function(){});}catch(e){}}
+window.tmPx=px;px('view');setInterval(function(){if(document.visibilityState==='visible'&&n++<90)px('hb');},60000);})('app');
 </script>
 </body>
 </html>

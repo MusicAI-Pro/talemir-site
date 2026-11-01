@@ -1392,7 +1392,7 @@ document.addEventListener('click', e => {
 document.getElementById('curSel').addEventListener('change', e => { cur = e.target.value; try { localStorage.setItem('tm_cur', cur); } catch(_){} render(); });
 
 const modal = document.getElementById('modal');
-function openModal(prod, sty){ if (soonGo(prod)) return; curProd = PRODS.some(p=>p[0]===prod) ? prod : 'book'; document.getElementById('fProd').value = curProd; syncForm(); if (sty) document.getElementById('fStyle').value = sty; markSty(); if (sty) { const sb = document.querySelector('#fStyGrid [aria-pressed=true]'); if (sb) setTimeout(()=>sb.scrollIntoView({block:'nearest'}), 40); } document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true; document.getElementById('formSum').hidden = true; document.getElementById('fCover').hidden = true; document.getElementById('fErr').hidden = true; modal.hidden = false; setTimeout(()=>document.getElementById('fName').focus(), 30); }
+function openModal(prod, sty){ try{window.tmPx&&tmPx('shelf',prod)}catch(_e){} if (soonGo(prod)) return; curProd = PRODS.some(p=>p[0]===prod) ? prod : 'book'; document.getElementById('fProd').value = curProd; syncForm(); if (sty) document.getElementById('fStyle').value = sty; markSty(); if (sty) { const sb = document.querySelector('#fStyGrid [aria-pressed=true]'); if (sb) setTimeout(()=>sb.scrollIntoView({block:'nearest'}), 40); } document.getElementById('formBody').hidden = false; document.getElementById('formDone').hidden = true; document.getElementById('formSum').hidden = true; document.getElementById('fCover').hidden = true; document.getElementById('fErr').hidden = true; modal.hidden = false; setTimeout(()=>document.getElementById('fName').focus(), 30); }
 function closeModal(){ modal.hidden = true; }
 function markSty(){ const v = document.getElementById('fStyle').value; document.querySelectorAll('#fStyGrid [data-fsty]').forEach(b => { b.setAttribute('aria-pressed', b.dataset.fsty === v); b.setAttribute('aria-checked', b.dataset.fsty === v); }); renderStyPv(); }
 function renderStyPv(){ const pv = document.getElementById('fStyPv'); if (!pv) return; const v = document.getElementById('fStyle').value || 'st_3d';
@@ -3367,5 +3367,11 @@ function seasonLeft(code, now){
 
 <!-- MASCOT1: мультяшки (Амелия). Грузится только после load + idle; уважает prefers-reduced-motion. -->
 <script>(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}function go(){var s=document.createElement('script');s.src='mascot/mascot.js?v=2';s.setAttribute('data-set','family');s.async=true;document.body.appendChild(s)}function idle(){(window.requestIdleCallback||function(f){setTimeout(f,1200)})(go,{timeout:5000})}if(document.readyState==='complete')idle();else addEventListener('load',idle)})();</script>
+<script>
+/* DASH1 31.10: анонимный счётчик для офисного экрана — без cookie, без localStorage, без персональных данных.
+   Шлёт только канал и шаг: view (открыл), shelf (открыл конструктор), hb (раз в минуту, пока вкладка видна). */
+(function(C){var U='https://ru.api.talemir.com/api/px',n=0;function px(s,p){try{var b=JSON.stringify({c:C,s:s,p:p||''});if(navigator.sendBeacon&&navigator.sendBeacon(U,new Blob([b],{type:'text/plain'})))return;fetch(U,{method:'POST',body:b,mode:'no-cors',keepalive:true,credentials:'omit'}).catch(function(){});}catch(e){}}
+window.tmPx=px;px('view');setInterval(function(){if(document.visibilityState==='visible'&&n++<90)px('hb');},60000);})('site');
+</script>
 </body>
 </html>
