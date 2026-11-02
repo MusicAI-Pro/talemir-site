@@ -943,6 +943,7 @@ function stressVar(ch, i){ return ch.slice(0, i + 1).join("") + "́" + ch.slice(
    Бэкенд: POST /api/dm_letter/prepare → dm_letter.prepare() (выпрямление, распознавание Gemini, чистка адресов/телефонов/школ, ≤60 слов, имена для ударений). */
 var DM4_LMAX = 60, DM4_PII = /(\+7|8)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}|[\w.+-]+@[\w-]+\.[\w.]+|(?:^|[^А-Яа-яЁё])(ул\.|улиц[аеуы]|проспект|переул|бульвар|шоссе|микрорайон|квартир|кв\.|дом\s*№?\s*\d|корпус|подъезд|этаж)|(?:^|[^А-Яа-яЁё])(школ\w*|гимнази\w*|лице\w*|садик\w*|детск\w+\s+сад\w*)\s*(№\s*)?\d+|№\s*\d+/i;
 function dm4W(n){ var d = n % 10, h = n % 100; return d === 1 && h !== 11 ? "слово" : d >= 2 && d <= 4 && (h < 12 || h > 14) ? "слова" : "слов"; }
+function areaCnt(s, v){ v = String(v || ""); if (s.words) { var n = dm4Words(v); return n + " / " + s.words + " " + L2(dm4W(s.words), "words"); } return v.length + (s.min ? " / " + s.min + "–" : " / ") + (s.max || 600); }   /* DMAUDIT1: письмо считаем в словах */
 function dm4Words(s){ return (String(s || "").match(/[А-Яа-яЁёA-Za-z0-9-]+/g) || []).length; }
 function dm4Addon(a){ if (!(S.flags && S.flags.dm4)) return 0; var l = a.l_mode === "photo" || a.l_mode === "typed", d = a.d_mode === "photo"; return (l ? 190 : 0) + (d ? (l ? 200 : 290) : 0); }
 function dm4Sents(s){ return String(s || "").replace(/\s*\n\s*/g, " ").split(/(?<=[.!?…])\s+/).filter(function(x){ return x.trim(); }); }
@@ -1002,7 +1003,7 @@ function DM4_STEPS(){ return [
   stPhotos("nyl", {min:1, max:1, when:function(a){ return a.l_mode === "photo"; }, sec:["Письмо","Letter"], q:["Сфотографируйте письмо","Photograph the letter"],
    sub:["Положите лист на тёмный стол и снимите сверху при дневном свете — так, чтобы были видны все 4 угла.","Put the sheet on a dark table and shoot from above in daylight, all 4 corners visible."],
    valid:function(a){ return a.l_err && a.l_err.letter_photo ? a.l_err.letter_photo : ""; }}),       /* причины: «Не видим все 4 угла…», «Слишком темно…», «Это не похоже на письмо…» */
-  {id:"l_text", type:"area", field:"l_text", max:600, when:function(a){ return a.l_mode === "photo" || a.l_mode === "typed"; }, sec:["Письмо","Letter"],
+  {id:"l_text", type:"area", field:"l_text", max:600, words:60, when:function(a){ return a.l_mode === "photo" || a.l_mode === "typed"; }, sec:["Письмо","Letter"],
    q:function(){ return W.a.l_mode === "photo" ? L2("Проверьте текст письма","Check the letter text") : L2("Как написал ребёнок?","What did the child write?"); },
    sub:function(){ return W.a.l_mode === "photo" ? L2("Мы распознали письмо. Исправьте ошибки только здесь — на листе в видео останется почерк ребёнка, а Дед Мороз прочтёт этот текст.","We recognised the letter. Fix mistakes here — the video keeps the child's handwriting.")
      : L2("До 60 слов, как написал ребёнок. В видео лист будет напечатан детским шрифтом — мы честно подпишем это в кадре.","Up to 60 words. Shown in a child-like print font, labelled as such."); },
@@ -1307,7 +1308,7 @@ function bodyOf(s){
     case "tiles": return '<div class="tiles' + (s.cols === 1 ? " c1" : s.cols === 3 ? " c3" : "") + '" role="group">' + s.opts().map(function(o){ return tileHtml(o, a[s.field]); }).join("") + '</div>';
     case "img": return '<div class="tiles c3" role="group">' + s.opts().map(function(o){ return '<button type="button" class="tile img" data-v="' + o.v + '" aria-pressed="' + (a[s.field] === o.v) + '"><img loading="lazy" src="' + o.img + '" alt=""><span>' + esc(o.t) + '</span></button>'; }).join("") + '</div>';
     case "text": return '<input class="wfield" type="text" id="wIn" maxlength="' + (s.max || 80) + '" autocomplete="off" placeholder="' + esc(tx(typeof s.ph === "function" ? s.ph() : s.ph)) + '" value="' + esc(a[s.field || s.id] || "") + '">';
-    case "area": var v = String(a[s.field] || ""); return '<textarea class="wfield" id="wIn" maxlength="' + (s.max || 600) + '" placeholder="' + esc(tx(s.ph)) + '">' + esc(v) + '</textarea><div class="wcount" id="wCntA">' + v.length + (s.min ? " / " + s.min + "–" : " / ") + (s.max || 600) + '</div>';
+    case "area": var v = String(a[s.field] || ""); return '<textarea class="wfield" id="wIn" maxlength="' + (s.max || 600) + '" placeholder="' + esc(tx(s.ph)) + '">' + esc(v) + '</textarea><div class="wcount" id="wCntA">' + areaCnt(s, v) + '</div>';
     case "age": var h = '<div class="tiles c6" role="group">'; for (var n = 0; n <= 17; n++) h += '<button type="button" class="tile num" data-v="' + n + '" aria-pressed="' + (String(a.age) === String(n)) + '">' + (n === 0 ? "&lt;1" : n) + '</button>'; h += '</div>';
       if (s.adult) h += '<div class="tiles c1" style="margin-top:10px">' + tileHtml({v:"adult", e:"🧑", t:L2("Взрослый (18+)","An adult (18+)")}, a.age) + '</div>'; return h;
     case "occ": var ol = occList(); return '<div class="tiles" role="group">' + ol.slice(0, 11).map(function(o){ return tileHtml(o, a.occ); }).join("") + tileHtml({v:"own", e:"✍️", t:L2("Свой повод","Another occasion")}, a.occ) + '</div><input class="wfield" type="text" id="wOccOwn" maxlength="60" placeholder="' + esc(L2("Например: Выпускной в садике","For example: kindergarten graduation")) + '" value="' + esc(a.occOwn || "") + '" style="margin-top:12px"' + (a.occ === "own" ? "" : " hidden") + '>';
@@ -1344,7 +1345,7 @@ function mountOf(s){
     hapticSel(); W.tok = null; W.quoted = false; wizFoot();
   });
   if (s.type === "text" || s.type === "area" || s.type === "occ" || s.type === "email") b.addEventListener("input", function(e){
-    if (e.target.id === "wIn") { a[s.field || s.id] = e.target.value; if (s.type === "area") $("wCntA").textContent = e.target.value.length + (s.min ? " / " + s.min + "–" : " / ") + (s.max || 600); W.soft[s.id] = 0; $("wHint").hidden = true; }
+    if (e.target.id === "wIn") { a[s.field || s.id] = e.target.value; if (s.type === "area") $("wCntA").textContent = areaCnt(s, e.target.value); W.soft[s.id] = 0; $("wHint").hidden = true; }
     if (e.target.id === "wOccOwn") a.occOwn = e.target.value;
     if (e.target.id === "wEm") a.email = e.target.value;
     wizFoot();
