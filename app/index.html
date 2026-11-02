@@ -129,6 +129,7 @@ input::placeholder{color:#857a9a}
 .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
 .th{position:relative;aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:var(--card2);margin:0;cursor:pointer}
 .th img{width:100%;height:100%;object-fit:cover}
+.th .thx{display:flex;align-items:center;justify-content:center;height:100%;padding:40px 8px 8px;text-align:center;font-size:11px;line-height:1.3;color:var(--muted)}
 .th.main{box-shadow:0 0 0 2px var(--gold) inset}
 .th.main img{border-radius:12px;padding:2px}
 .th .mk{position:absolute;left:4px;bottom:4px;background:var(--gold);color:var(--gold-ink);font-size:10px;font-weight:800;border-radius:6px;padding:2px 6px}
@@ -1314,7 +1315,9 @@ function bodyOf(s){
     case "occ": var ol = occList(); return '<div class="tiles" role="group">' + ol.slice(0, 11).map(function(o){ return tileHtml(o, a.occ); }).join("") + tileHtml({v:"own", e:"✍️", t:L2("Свой повод","Another occasion")}, a.occ) + '</div><input class="wfield" type="text" id="wOccOwn" maxlength="60" placeholder="' + esc(L2("Например: Выпускной в садике","For example: kindergarten graduation")) + '" value="' + esc(a.occOwn || "") + '" style="margin-top:12px"' + (a.occ === "own" ? "" : " hidden") + '>';
     case "stress": var si = stressInfo(a.name); if (a.stress == null && si.sug >= 0) a.stress = si.sug;
       return '<div class="tiles c1" role="radiogroup">' + si.idx.map(function(i){ return '<button type="button" class="tile" role="radio" data-v="' + i + '" aria-pressed="' + (a.stress === i && !a.stressUnk) + '" aria-checked="' + (a.stress === i && !a.stressUnk) + '"><span style="font-size:20px">' + esc(stressVar(si.ch, i)) + '</span>' + (i === si.sug ? '<small>' + esc(L2("обычно так","usually like this")) + '</small>' : '') + '</button>'; }).join("") + '<button type="button" class="tile" role="radio" data-v="-1" aria-pressed="' + !!a.stressUnk + '" aria-checked="' + !!a.stressUnk + '"><span>🤔 ' + esc(L2("Не знаю — поставьте сами","Not sure — you decide")) + '</span></button></div>';
-    case "photos": return '<div id="wPh"></div>' + (s.key === "pet" ? '' : '<p class="tips">' + t(s.key === "ph" && W.ctx.pack && (W.ctx.pack.who === "couple" || W.ctx.pack.who === "family") ? "tips_grp" : "tips") + '</p>');
+    case "photos": return '<div id="wPh"></div>' + (s.key === "pet" ? '' : '<p class="tips">' + (s.key === "nyl" ? L2("<b>✓</b> весь лист, видны 4 угла, дневной свет · <i>✕</i> блики, тень от телефона, размытые кадры", "<b>✓</b> the whole sheet, all 4 corners, daylight · <i>✕</i> glare, phone shadow, blurry shots")   /* QA2: у письма и рисунка — подсказка про лист, а не про портрет */
+      : s.key === "nyd" ? L2("<b>✓</b> весь рисунок, видны 4 угла листа, дневной свет · <i>✕</i> дети в кадре, блики, размытые кадры", "<b>✓</b> the whole drawing, all 4 corners, daylight · <i>✕</i> children in the frame, glare, blurry shots")
+      : t(s.key === "ph" && W.ctx.pack && (W.ctx.pack.who === "couple" || W.ctx.pack.who === "family") ? "tips_grp" : "tips")) + '</p>');
     case "email": return '<input class="wfield" type="email" id="wEm" autocomplete="email" inputmode="email" maxlength="120" placeholder="name@mail.ru" value="' + esc(a.email || "") + '" spellcheck="false" autocapitalize="off"><label class="f" for="wCode">' + esc(t("w_code")) + '</label><input type="text" id="wCode" maxlength="40" autocomplete="off" value="' + esc(a.code || "") + '" autocapitalize="characters" spellcheck="false">';
     case "enh": return enhBody();
     case "calprev": return calPrevBody();
@@ -1390,6 +1393,8 @@ function renderPh(s, msg){
   }
   else h = '<div class="dz" id="oDz"><button type="button" class="upl" id="oUp"><span class="ic" aria-hidden="true">📷</span><span>' + esc(t("o_upload").replace(/^📷\s*/, "")) + '</span><small>' + esc((max > 1 ? t("o_drop_many") : t("o_drop")).replace("{m}", max)) + '</small></button></div>';
   box.innerHTML = h + '<div class="msg bad" id="oPhErr" role="alert"' + (msg ? '' : ' hidden') + '>' + esc(msg || "") + '</div>';
+  box.querySelectorAll(".th img").forEach(function(im){ var bad = function(){ if (!im.parentNode) return; var sp = document.createElement("span"); sp.className = "thx"; sp.textContent = L2("📷 Фото добавлено (превью здесь не показать)", "📷 Photo added (no preview here)"); im.replaceWith(sp); };
+    if (im.complete && !im.naturalWidth) bad(); else im.addEventListener("error", bad); });   /* QA2 02.11: HEIC в Chrome/Android/Windows — без «битой» картинки */
   $("wFile").multiple = max > 1; wizFoot();
 }
 $("wStage").addEventListener("click", function(e){
