@@ -611,7 +611,7 @@ function psN(p){ return p.mf ? (S.gs === "m" ? (p.nm || 6) : (p.nf || 6)) : 6; }
 function pkTitle(p){ return lang === "en" ? p.en : p.ru; }
 /* Подарки (не фотосессии): цены = chain.py PRICE; оформление — существующие конструкторы (бот / сайт). */
 var PROD = {
- ny:{ru:"Дед Мороз поздравит по имени", en:"Ded Moroz greets your child by name", sru:"Видео по имени, с фото ребёнка", sen:"A video greeting by name", sru4:"Видео по имени · теперь прочитает письмо и оживит рисунок", price:480, img:"ex_ny_v6.jpg", dir:["kids"], via:"bot", eta:10, badge:"season"},
+ ny:{ru:"Дед Мороз поздравит по имени", en:"Ded Moroz greets your child by name", sru:"Видео по имени, с фото ребёнка", sen:"A video greeting by name", sru4:"Видео по имени · теперь прочитает письмо и оживит рисунок", price:490, img:"ex_ny_v6.jpg", dir:["kids"], via:"bot", eta:10, badge:"season"},
  book:{ru:"Книга-сказка", en:"Fairy-tale book", sru:"Ребёнок — герой сказки, PDF", sen:"Your child is the hero, PDF", price:990, from:true, img:"ex_book.jpg", dir:["kids"], via:"bot", eta:15},
  song:{ru:"Песня с именем", en:"Song with a name", sru:"Поют имя — MP3", sen:"A song that sings the name, MP3", price:490, img:"ex_song.jpg", dir:["kids","adult"], via:"bot", eta:5},
  sing:{ru:"Поющее фото", en:"Singing photo", sru:"Фото поёт песню с именем", sen:"The photo sings a song with the name", price:1490, img:"ex_sing.jpg", dir:["kids","adult"], via:"bot", eta:35, soon:{ru:"Заказ пока закрыт: не каждый ролик проходит нашу проверку качества. Откроем, когда результат будет стабильным.", en:"Ordering is closed for now: not every video passes our quality check yet. We will open it once results are stable."}},
@@ -1578,6 +1578,8 @@ function sumBody(){
   }
   var from = !W.quoted && (PROD[W.prod] && PROD[W.prod].from && W.prod !== "cartoon");
   h += '<div class="card" style="margin-top:12px"><div class="kv"><span>' + esc(t("f_eta")) + '</span><b>' + esc(etaTxt()) + '</b></div><div class="kv"><span>' + esc(W.quoted ? t("w_total") : t("w_price")) + '</span><b id="wTotal">' + (from ? esc(t("w_price_from").replace("{p}", money(basePrice()))) : money(W.price || basePrice())) + '</b></div><div class="msg info small" id="wQuote" hidden></div></div>';
+  if (W.prod === "ny") h += '<p class="small" id="wGuar" style="margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid rgba(231,197,110,.6);background:rgba(231,197,110,.12)">' +
+    esc(L2("🤍 Гарантия: не понравилось или ошибка (имя, ударение) — переделаем бесплатно.", "🤍 Guarantee: if you don’t like it or there is a mistake (name, stress), we will redo it for free.")) + '</p>';   /* DMQA3 п. 11 */
   h += '<p class="small muted" style="margin-top:10px">' + esc(t("o_bank")) + '</p></div>';
   return h;
 }
