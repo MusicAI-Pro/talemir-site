@@ -982,6 +982,7 @@ function dm4StressHtml(a){
   return h + '</div><p class="tips">' + esc(L2("Нажмите, как слово звучит дома. Мы подсветили имена и клички из письма — Дед Мороз прочтёт их именно так.", "Tap how the word sounds at home.")) + '</p>';
 }
 function dm4SetSt(i, j){ var a = W.a, it = a.l_stress[i], si = stressInfo(it.w); a.l_st = a.l_st || {}; a.l_st[it.w] = stressVar(si.ch, j); wizDraw(); }
+window.dm4SetSt = dm4SetSt;   /* DMQA3 (Айрис): кнопки ударения слов из письма вызываются из onclick — функция должна быть видна снаружи замыкания, иначе ReferenceError и ударение не сохранялось */
 /* DMAUDIT1 02.11.2026: лимиты полей Деда Мороза — одни в Mini App, на главной, в боте и на сервере (chain.NY_LIM; расчёт под формат видео — README sre/DMAUDIT1) */
 var NY_LIM = {name:[2,20], wish:[5,120], pet:[2,30], from:[2,40]}, NY_NAME_RE = /^[A-Za-zА-Яа-яЁёӘәҒғҚқҢңӨөҰұҮүҺһІіԱ-Ֆա-ֆ' \-]+$/;
 function plRu(n, a, b, c){ n = Math.abs(n) % 100; var m = n % 10; return (n > 10 && n < 20) ? c : m === 1 ? a : (m >= 2 && m <= 4) ? b : c; }
