@@ -3,11 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Talemir — Мои подарки (прототип)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1640">
+<title>Мои подарки — Talemir</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+
 :root{
   --bg:#2a1640; --surface:#3a2152; --deep:#1d0f2c; --gold:#e7c56e; --gold2:#f3dc9a;
   --plum:#7b2d5b; --text:#f6ebdd; --muted:#d9c8e2; --line:rgba(231,197,110,.18);
@@ -213,21 +216,49 @@ li.now .dot{border-color:var(--gold);animation:pulse 1.2s infinite}
   .minipromo b{color:var(--gold2)}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.login{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.lbox{width:min(400px,100%);text-align:center}
+.lbox .big{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#f3dc9a;box-shadow:0 10px 30px rgba(231,197,110,.35)}
+.lbox h2{font:700 30px 'Cormorant Garamond',serif;color:var(--gold2);margin:6px 0}
+.lbox p{color:var(--muted);font-size:14.5px;margin:4px 0 16px}
+.lbox .btn{width:100%;margin-bottom:10px;display:block;text-align:center;text-decoration:none}
+.inp{width:100%;background:var(--deep);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:13px 14px;font:inherit;font-size:16px;margin-bottom:10px;outline:none}
+.inp:focus{border-color:var(--gold)}
+.err{color:var(--warn);font-size:13px;min-height:18px;margin:4px 0}
+.link{color:var(--gold);text-decoration:underline;font-size:13.5px;background:none}
+.menu{position:absolute;right:12px;top:58px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px;z-index:30;display:none;min-width:220px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.menu.on{display:block}
+.menu a,.menu button{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;color:var(--text);text-decoration:none;font-size:14px}
+.menu a:hover,.menu button:hover{background:rgba(255,255,255,.06)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-weight:800;color:var(--gold);border:1px solid var(--line)}
+.dl{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.dl a{text-decoration:none}
+.media{width:100%;border-radius:14px;margin-bottom:8px;background:#000;max-height:360px}
+audio.media{background:none}
+.top h1{white-space:nowrap;font-size:22px}
+.top .newbtn{padding:8px 12px;white-space:nowrap}
+a.btn{text-decoration:none;display:inline-block;text-align:center}
+.emptybox{text-align:center;padding:40px 20px;color:var(--muted)}
+.emptybox .btn{display:inline-block;margin-top:12px;text-decoration:none}
+
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <aside class="list" id="list">
     <div class="top">
-      <div class="logo">T</div>
+      <a class="logo" href="https://talemir.com/" style="text-decoration:none" aria-label="На главную">T</a>
       <h1>Мои подарки</h1>
-      <button class="newbtn" id="newBtn">+ Новый</button>
+      <a class="newbtn" href="https://talemir.com/#products" style="text-decoration:none">+ Новый</a>
+      <button class="avatar" id="meBtn" aria-label="Меню">·</button>
     </div>
-    <div class="search">🔎 Поиск по подаркам</div>
-    <div class="proto">Прототип: имена и данные условные, [N] и [ЦЕНА] заполним реальными цифрами</div>
-    <button class="promo" id="promo"><span class="pi">🎁</span><span class="pt"><b>Добрая пятница · 27 ноября</b><small>Скидка на подарки, и часть каждого заказа — детям</small></span><span class="px" id="promoX" aria-label="Скрыть">✕</span></button>
+    <div class="menu" id="menu">
+      <a href="https://ru.api.talemir.com/cabinet">🎁 Бонусы, друзья и настройки</a>
+      <a href="https://t.me/Talemir_bot" target="_blank" rel="noopener">✈️ Talemir в Telegram</a>
+      <button id="logout">↩︎ Выйти</button>
+    </div>
+    <button class="promo" id="promo" style="display:none"><span class="pi">🎁</span><span class="pt"><b id="promoT"></b><small id="promoS"></small></span><span class="px" id="promoX" aria-label="Скрыть">✕</span></button>
     <div class="items" id="items"></div>
-    <div class="fund" id="fundLine">💛 <span>Часть каждого заказа — в фонд <b>[название фонда]</b>. Покажем точную сумму, как только подключим фонд.</span></div>
   </aside>
 
   <div class="empty show" id="empty"><div><div style="font-size:42px">✨</div><p>Выберите подарок слева,<br>чтобы открыть его историю</p></div></div>
@@ -242,345 +273,256 @@ li.now .dot{border-color:var(--gold);animation:pulse 1.2s infinite}
     </header>
     <div class="msgs" id="msgs"></div>
     <div class="comp" id="comp">
-      <button class="ib" id="clip" aria-label="Прикрепить">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.9-8.9a3.7 3.7 0 015.2 5.2l-8.9 8.9a1.8 1.8 0 01-2.6-2.6l8.2-8.2"/></svg>
-      </button>
-      <input type="file" id="file" accept="image/*" multiple hidden>
-      <div class="field" id="field" contenteditable="true" role="textbox" data-ph="Сообщение"></div>
+      <div class="field" id="field" contenteditable="true" role="textbox" aria-label="Сообщение" data-ph="Напишите вопрос о заказе"></div>
       <button class="ib" id="act" aria-label="Голосовое"></button>
-      <div class="rec" id="rec"><span class="rdot"></span><b id="rtime">0:00</b><span class="hint" id="rhint">‹ влево — отмена</span><button class="btn gold" id="rstop" style="display:none;min-height:36px;padding:6px 12px">Отправить</button></div>
-      <div class="lockbadge" id="lockb">🔒<br>вверх —<br>без рук</div>
     </div>
   </section>
 
   <aside class="info" id="info"></aside>
 
+  <div class="login" id="login" style="display:none"></div>
+
   <div class="shade" id="shade"></div>
   <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody" style="display:flex;flex-direction:column;min-height:0;flex:1"></div></div>
-  <div class="modal" id="pay"></div>
   <div class="toast" id="toast"></div>
 </div>
 
 <script>
+(function(){
+const API='https://ru.api.talemir.com';
 const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function api(path,opt){
+  opt=opt||{}; const o={credentials:'include',headers:{'Accept':'application/json'}};
+  if(opt.body){o.method='POST';o.headers['Content-Type']='application/json';o.body=JSON.stringify(opt.body)}
+  const r=await fetch(API+path,o); let j=null; try{j=await r.json()}catch(e){}
+  if(!r.ok){const e=new Error((j&&j.detail)||('http_'+r.status));e.status=r.status;throw e}
+  return j;
+}
 const MIRA=`<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#f3dc9a"/><circle cx="32" cy="36" r="17" fill="#f6d2b8"/><path d="M14 34c0-14 8-22 18-22s18 8 18 22c-3-6-8-10-18-10S17 28 14 34z" fill="#5a3320"/><circle cx="25.5" cy="37" r="2.4" fill="#2a1640"/><circle cx="38.5" cy="37" r="2.4" fill="#2a1640"/><path d="M27 44q5 4 10 0" stroke="#b34a6a" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="21" cy="42" r="2.6" fill="#f2a3b3" opacity=".6"/><circle cx="43" cy="42" r="2.6" fill="#f2a3b3" opacity=".6"/><path d="M45 16l3-5 1 6z" fill="#e7c56e"/></svg>`;
-const ICON={
+const IC={
  ded:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linecap="round"><path d="M5 11l7-7 7 7"/><path d="M6 11h12v2a6 6 0 01-12 0z" fill="#fff"/><circle cx="12" cy="3.5" r="1.3" fill="#fff"/></svg>`,
  song:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linecap="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>`,
- book:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5M9 7h6"/></svg>`
+ book:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5M9 7h6"/></svg>`,
+ video:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg>`,
+ photo:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/></svg>`,
+ card:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h8"/></svg>`,
+ paw:`<svg viewBox="0 0 24 24" fill="#1d0f2c"><circle cx="7" cy="9" r="2"/><circle cx="12" cy="6.5" r="2"/><circle cx="17" cy="9" r="2"/><path d="M7.5 17c0-3 2-5 4.5-5s4.5 2 4.5 5c0 1.5-1.5 2-2.5 1.6-1.3-.5-2.7-.5-4 0C9 19 7.5 18.5 7.5 17z"/></svg>`,
+ gift:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="9" width="18" height="11" rx="1.5"/><path d="M3 13h18M12 9v11M12 9c-2-4-6-4-6-1.5S10 9 12 9zm0 0c2-4 6-4 6-1.5S14 9 12 9z"/></svg>`
 };
-const BG={ded:'linear-gradient(145deg,#f7d9d9,#e7c56e)',song:'linear-gradient(145deg,#f3dc9a,#e7a96e)',book:'linear-gradient(145deg,#e6d6f5,#e7c56e)'};
+const BGS={ded:'linear-gradient(145deg,#f7d9d9,#e7c56e)',song:'linear-gradient(145deg,#f3dc9a,#e7a96e)',book:'linear-gradient(145deg,#e6d6f5,#e7c56e)',video:'linear-gradient(145deg,#e7c56e,#c98bb0)',photo:'linear-gradient(145deg,#f3dc9a,#b9a3e6)',card:'linear-gradient(145deg,#fbe6c8,#e7c56e)',paw:'linear-gradient(145deg,#f3dc9a,#d8c1a0)',gift:'linear-gradient(145deg,#f3dc9a,#e7c56e)'};
+/* название, иконка, варианты правки (правило собственника 17.11: у Деда Мороза нет «не похож» и замены фото) */
+const P={
+ ny:{t:'Поздравление от Деда Мороза',i:'ded',redo:['name','stress','tech']},
+ song:{t:'Песня с именем',i:'song',redo:['name','stress','tech']},
+ clip:{t:'Видеоклип',i:'video',redo:['name','stress','tech']},
+ book:{t:'Книга-сказка',i:'book',redo:['nameText','face','tech']},
+ live:{t:'Живая сказка',i:'video',redo:['nameText','face','tech']},
+ cartoon:{t:'Мультфильм',i:'video',redo:['nameText','face','tech']},
+ photoshoot:{t:'Фотосессия',i:'photo',redo:['face','tech']},
+ inv:{t:'Приглашение на праздник',i:'card',redo:['nameText','tech']},
+ invkit:{t:'Набор праздника',i:'card',redo:['nameText','tech']},
+ pet_live:{t:'Живое фото питомца',i:'paw',redo:['petFace','tech']},
+ pet_sing:{t:'Поющий питомец',i:'paw',redo:['name','stress','tech']},
+ preg:{t:'Малыш по УЗИ',i:'photo',redo:['tech']}
+};
+const REDO={name:['name','✍️','Имя написано или звучит не так','проверим по вашей анкете'],nameText:['name','✍️','Ошибка в имени','проверим по вашей анкете'],
+ stress:['stress','🔊','Неверное ударение','отметьте момент'],face:['face','🙂','Герой не похож','сравним с фото из заказа'],petFace:['face','🐾','Питомец не похож','сравним с фото из заказа'],
+ tech:['tech','⚙️','Технический сбой','звук, картинка, файл не открывается']};
+const MEDIA_KINDS=['ny','song','clip','live','cartoon','pet_live','pet_sing'];
+function prod(o){return P[o.product]||{t:'Подарок',i:'gift',redo:['tech']}}
+function title(o){const p=prod(o);return p.t+(o.hero?' — '+o.hero:'')}
+const ST={ready:['готово ✓','ready'],rework:['дорабатываем','prog'],in_work:['готовится','prog'],quality:['проверяем','prog'],paid:['оплачен','prog'],queued:['в очереди','wait'],wish_fix:['нужно ваше действие','pay'],heroes:['утвердите героев','pay'],wait:['ждёт оплаты','pay']};
+function stage(o){return o.stage||o.status}
+function pct(o){if(stage(o)==='ready')return 100;if(o.eta_min&&o.elapsed!=null){return Math.max(5,Math.min(95,Math.round(o.elapsed/(o.eta_min*60)*100)))}return null}
+function chip(o){const s=ST[stage(o)]||['в работе','prog'];const p=pct(o);return `<span class="chip ${s[1]}">${s[1]==='prog'&&p!=null?'готовится '+p+'%':s[0]}</span>`}
+function ring(o){const p=pct(o);if(p==null||p>=100||(ST[stage(o)]||[])[1]!=='prog')return '';const c=2*Math.PI*29;return `<svg class="ring" viewBox="0 0 62 62"><circle cx="31" cy="31" r="29" fill="none" stroke="rgba(231,197,110,.2)" stroke-width="3"/><circle cx="31" cy="31" r="29" fill="none" stroke="#e7c56e" stroke-width="3" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 31 31)"/></svg>`}
+function lastLine(o){const s=stage(o);
+ if(s==='ready')return o.expired?'Срок хранения файлов истёк':'Готово ✨ Откройте и поделитесь';
+ if(s==='wish_fix')return 'Нужно изменить пожелание';
+ if(s==='heroes')return 'Посмотрите героев и утвердите';
+ if(s==='rework')return 'Дорабатываем — пришлём сюда';
+ if(s==='queued')return 'Оплачен, в очереди';
+ if(s==='quality')return 'Проверяем качество';
+ return 'Создаём ваш подарок'+(o.eta?' · '+o.eta.replace(/^Обычно\s*—\s*/,''):'')}
+function dshow(d){if(!d)return '';const t=new Date(d+'T12:00:00');const now=new Date();if(t.toDateString()===now.toDateString())return 'сегодня';const y=new Date(now-864e5);if(t.toDateString()===y.toDateString())return 'вчера';return t.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}
 
-const orders=[
- {id:'TM-24817',kind:'ded',name:'Дед Мороз для Миры',time:'04:12',status:'prog',pct:64,price:490,
-  last:'Монтируем видео — уже 64%'},
- {id:'TM-24790',kind:'song',name:'Песня для Мирона',time:'вчера',status:'ready',price:490,
-  last:'Песня готова ✨ Послушайте!'},
- {id:'TM-24855',kind:'book',name:'Книга «Мира и Лунный кит»',time:'03:58',status:'pay',price:'[ЦЕНА]',
-  last:'Пример готов. Осталось оплатить'},
-];
-let cur=null, redoLeft={'TM-24790':1,'TM-24817':1,'TM-24855':1};
-
-function chipFor(o){
- if(o.status==='ready')return `<span class="chip ready">готово ✓</span>`;
- if(o.status==='prog')return `<span class="chip prog">готовится ${o.pct}%</span>`;
- if(o.status==='pay')return `<span class="chip pay">ждёт оплаты</span>`;
- return `<span class="chip wait">нужны фото</span>`;
-}
-function ringFor(o){
- if(o.status!=='prog')return '';
- const c=2*Math.PI*29, off=c*(1-o.pct/100);
- return `<svg class="ring" viewBox="0 0 62 62"><circle cx="31" cy="31" r="29" fill="none" stroke="rgba(231,197,110,.2)" stroke-width="3"/><circle cx="31" cy="31" r="29" fill="none" stroke="#e7c56e" stroke-width="3" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 31 31)" style="transition:stroke-dashoffset .6s"/></svg>`;
-}
+let orders=[],cur=null,me=null;
 function renderList(){
- setTimeout(renderInfo,0);
- $('#items').innerHTML=orders.map(o=>`
-  <div class="item ${cur&&cur.id===o.id?'active':''}" data-id="${o.id}">
-   <div class="thumb" style="background:${BG[o.kind]}">${ICON[o.kind]}${ringFor(o)}</div>
-   <div class="meta"><div class="row1"><span class="name">${o.name}</span><span class="time">${o.time}</span></div>
-   <div class="row2"><span class="last">${o.last}</span>${chipFor(o)}</div></div>
-  </div>`).join('');
- document.querySelectorAll('.item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));
+ const el=$('#items');
+ if(!orders.length){el.innerHTML=`<div class="emptybox"><div style="font-size:40px">🎁</div><p>Здесь будут ваши подарки — каждый в своём чате, как в мессенджере.</p><a class="btn gold" href="https://talemir.com/#products">Создать подарок</a></div>`;return}
+ el.innerHTML=orders.map(o=>{const p=prod(o);return `<div class="item ${cur&&cur.num===o.num?'active':''}" data-n="${esc(o.num)}" role="button" tabindex="0">
+  <div class="thumb" style="background:${BGS[p.i]}">${IC[p.i]}${ring(o)}</div>
+  <div class="meta"><div class="row1"><span class="name">${esc(title(o))}</span><span class="time">${dshow(o.date)}</span></div>
+  <div class="row2"><span class="last">${esc(lastLine(o))}</span>${chip(o)}</div></div></div>`}).join('');
+ el.querySelectorAll('.item').forEach(n=>{n.onclick=()=>openChat(n.dataset.n);n.onkeydown=e=>{if(e.key==='Enter')openChat(n.dataset.n)}});
+ renderInfo();
 }
-
-/* ---------- chat ---------- */
-function now(){const d=new Date();return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')}
-function add(html){const m=$('#msgs');m.insertAdjacentHTML('beforeend',html);requestAnimationFrame(()=>m.scrollTop=m.scrollHeight);return m.lastElementChild}
-function mira(text,t){return add(`<div class="who"><div class="mira">${MIRA}</div><div class="m in">${text}<span class="t">${t||now()}</span></div></div>`)}
-function me(text,t){return add(`<div class="m out">${text}<span class="t">${t||now()} ✓✓</span></div>`)}
-function sys(text){return add(`<div class="sys">${text}</div>`)}
-const PH=`<div class="photos"><div class="ph">🙂</div><div class="ph">😊</div><div class="ph">😄</div></div>`;
-
-function stepsCard(o){
- const st=[['Проверили фото и анкету','done'],['Озвучили имя «Ми́ра»','done'],['Монтируем видео','now'],['Проверка качества','']];
- return add(`<div class="card" id="progCard"><h4>Готовим подарок</h4>
-  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Готово <b id="pctTxt" style="color:var(--gold)">${o.pct}%</b></span><span>осталось ≈ [N] мин</span></div>
-  <div class="bar"><i id="pctBar" style="width:${o.pct}%"></i></div>
-  <ul class="steps">${st.map(s=>`<li class="${s[1]}"><span class="dot">${s[1]==='done'?'✓':''}</span>${s[0]}</li>`).join('')}</ul>
-  <p class="note">Пришлём сюда, на почту и в Telegram, как только будет готово. Можно закрыть страницу.</p></div>`);
+function add(h){const m=$('#msgs');m.insertAdjacentHTML('beforeend',h);requestAnimationFrame(()=>m.scrollTop=m.scrollHeight);return m.lastElementChild}
+function mira(t){return add(`<div class="who"><div class="mira">${MIRA}</div><div class="m in">${t}<span class="t">${hhmm()}</span></div></div>`)}
+function meMsg(t){return add(`<div class="m out">${t}<span class="t">${hhmm()} ✓</span></div>`)}
+function sys(t){return add(`<div class="sys">${t}</div>`)}
+function hhmm(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function steps(o){const s=stage(o);const L=['Оплачено','Создаём подарок','Проверяем качество','Готово'];
+ const i={paid:1,queued:1,in_work:1,rework:1,heroes:1,wish_fix:1,quality:2,ready:4}[s]??1;
+ return L.map((t,k)=>`<li class="${k<i?'done':k===i?'now':''}"><span class="dot">${k<i?'✓':''}</span>${k===1&&s==='rework'?'Дорабатываем':t}</li>`).join('')}
+function fileUrl(f){return /^https?:/.test(f)?f:API+f}
+function ext(f){const m=String(f).toLowerCase().match(/\.([a-z0-9]{2,4})(?:$|\?)/);return m?m[1]:''}
+function resultCard(o){
+ if(o.expired)return add(`<div class="card"><h4>Подарок был готов</h4><p class="note" style="margin-top:0">Файлы хранятся 30 дней после выдачи — этот срок прошёл. Напишите в «Помощь», если нужно восстановить.</p></div>`);
+ const fs=(o.files||[]).map(fileUrl);
+ let media='';const v=fs.find(f=>['mp4','mov','webm'].includes(ext(f)));const a=fs.find(f=>['mp3','m4a','wav','ogg'].includes(ext(f)));const im=fs.find(f=>['jpg','jpeg','png','webp'].includes(ext(f)));
+ if(v)media=`<video class="media" src="${esc(v)}" controls playsinline preload="metadata"></video>`;
+ else if(a)media=`<audio class="media" src="${esc(a)}" controls preload="none"></audio>`;
+ else if(im)media=`<img class="media" src="${esc(im)}" alt="Ваш подарок" style="object-fit:contain">`;
+ const btns=fs.map((f,k)=>`<a class="btn ${k?'ghost':'gold'}" href="${esc(f)}" target="_blank" rel="noopener">Скачать${fs.length>1?' '+(ext(f)||'файл').toUpperCase():''}</a>`).join('');
+ return add(`<div class="card">${media}<div class="dl">${btns||''}<a class="btn ghost" href="${esc(API+o.link)}" target="_blank" rel="noopener">Страница заказа</a><button class="btn ghost" id="redoBtn">Нужна правка</button></div>
+  ${o.keep_until?`<p class="note">Файлы хранятся до ${esc(new Date(o.keep_until).toLocaleDateString('ru-RU'))} — скачайте себе.</p>`:''}<p class="note">Не понравилось или ошибка в имени — переделаем бесплатно.</p></div>`);
 }
-function resultCard(o,cap){
- return add(`<div class="card"><div class="video"><div class="play">▶</div><div class="cap">${cap}</div></div>
-  <div class="acts"><button class="btn gold" onclick="toast('Файл сохраняется… (в прототипе — без скачивания)')">Скачать</button>
-  <button class="btn ghost" onclick="toast('Ссылка-подарок скопирована (прототип)')">Поделиться</button>
-  <button class="btn ghost" onclick="openRedo()">Нужна правка</button></div>
-  <p class="note">Не понравилось или ошибка в имени — переделаем бесплатно.</p></div>`);
-}
-
-function openChat(id){
- const o=orders.find(x=>x.id===id); cur=o;
- $('#cThumb').style.background=BG[o.kind]; $('#cThumb').innerHTML=ICON[o.kind];
- $('#cName').textContent=o.name; $('#cSub').textContent=`Заказ № ${o.id} · ${o.status==='ready'?'готово':o.status==='prog'?'готовится':'ждёт оплаты'}`;
- $('#msgs').innerHTML='';
- $('#empty').classList.remove('show'); $('#chat').classList.add('open'); renderList();
- if(o.kind==='ded'){
-  add('<div class="day">Сегодня</div>');
-  mira('Привет! Я Мира 💫 Давайте подготовим поздравление от Дедушки Мороза. Пришлите 3–4 фото для его волшебного альбома.','04:02');
-  me(PH+'Вот фото','04:04');
-  mira('Отличные фото! Лицо хорошо видно ✓ Как зовут ребёнка и куда ставить ударение?','04:04');
-  me('Ми́ра, 5 лет','04:05');
-  sys('Оплачено <b>490 ₽</b> · 04:12 · чек отправлен на почту');
-  stepsCard(o); tick();
-  hint('Спросите что-нибудь — я рядом');
- } else if(o.kind==='song'){
-  add('<div class="day">Вчера</div>');
-  mira('Расскажите про Мирона: что он любит, чем удивляет? Это попадёт в куплеты 🎵','18:20');
-  me('Любит динозавров и строить замки из кубиков','18:22');
-  mira('Чудесно! Жанр — весёлый поп, голос — женский. Верно?','18:22');
-  me('Да 👍','18:23');
-  sys('Оплачено <b>490 ₽</b> · 18:25');
-  mira('Песня готова ✨ Послушайте и поделитесь с бабушкой!','18:29');
-  resultCard(o,'Мирон — строитель замков');
-  hint('Напишите, если нужна помощь');
+function openChat(n){
+ const o=orders.find(x=>x.num===n);if(!o)return;cur=o;
+ const p=prod(o);$('#cThumb').style.background=BGS[p.i];$('#cThumb').innerHTML=IC[p.i];
+ $('#cName').textContent=title(o);$('#cSub').textContent='Заказ № '+o.num+' · '+((ST[stage(o)]||['в работе'])[0]);
+ $('#msgs').innerHTML='';$('#empty').classList.remove('show');$('#chat').classList.add('open');document.body.classList.add('in-chat');
+ add(`<div class="day">${o.date?new Date(o.date+'T12:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long'}):''}</div>`);
+ mira(`Это чат вашего подарка «${esc(p.t)}»${o.hero?'. Главный герой — '+esc(o.hero):''} 💫 Здесь видно, как он готовится, а когда будет готов — он появится прямо тут.`);
+ sys(`Заказ № <b>${esc(o.num)}</b> оплачен`);
+ const s=stage(o);
+ if(s==='ready'){mira('Ваш подарок готов! ✨ Смотрите, скачивайте и делитесь.');resultCard(o)}
+ else if(s==='wish_fix'||s==='heroes'){
+  mira(s==='heroes'?'Мы нарисовали героев — посмотрите и утвердите, после этого создадим подарок.':'Нам нужно ваше участие: пожелание стоит немного изменить. Это займёт минуту.');
+  add(`<div class="card"><div class="acts"><a class="btn gold" href="${esc(API+o.link)}" target="_blank" rel="noopener">${s==='heroes'?'Посмотреть героев':'Открыть и изменить'}</a></div></div>`);
  } else {
-  add('<div class="day">Сегодня</div>');
-  mira('Пример вашей книги готов! Обложка и первые страницы — ниже 📖','03:58');
-  add(`<div class="card"><div class="video" style="aspect-ratio:4/3"><div class="cap" style="position:static;font-size:26px">Мира и Лунный кит</div></div>
-   <p class="note" style="margin-top:0">Пример с водяным знаком. Полная книга — сразу после оплаты.</p>
-   <div class="acts"><button class="btn gold" id="payBtn">Купить электронную · [ЦЕНА]</button></div></div>`);
-  $('#payBtn').onclick=openPay;
-  hint('Вопрос по книге? Напишите');
+  const pc=pct(o);
+  add(`<div class="card"><h4>${s==='rework'?'Дорабатываем подарок':s==='queued'?'Подарок в очереди':'Готовим подарок'}</h4>
+   ${pc!=null?`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Готово <b style="color:var(--gold)">${pc}%</b></span></div><div class="bar"><i style="width:${pc}%"></i></div>`:''}
+   <ul class="steps">${steps(o)}</ul>${o.eta?`<p class="note">${esc(o.eta)}</p>`:''}
+   <p class="note">Пришлём сюда, на почту и в Telegram, как только будет готово. Страницу можно закрыть.</p>
+   <div class="acts" style="margin-top:8px"><a class="btn ghost" href="${esc(API+o.link)}" target="_blank" rel="noopener">Страница заказа</a></div></div>`);
  }
+ const rb=$('#redoBtn');if(rb)rb.onclick=openRedo;
+ hint(s==='ready'?'Вопрос по подарку? Напишите':'Спросите что-нибудь — я рядом');
+ renderList();
 }
 function hint(t){$('#field').dataset.ph=t}
-let timer=null;
-function tick(){
- clearInterval(timer);
- timer=setInterval(()=>{
-  const o=orders[0]; if(o.status!=='prog'){clearInterval(timer);return}
-  o.pct=Math.min(100,o.pct+4); o.last=o.pct<100?`Монтируем видео — уже ${o.pct}%`:'Видео готово ✨';
-  if(cur&&cur.id===o.id&&$('#pctBar')){$('#pctBar').style.width=o.pct+'%';$('#pctTxt').textContent=o.pct+'%'}
-  if(o.pct>=100){o.status='ready';o.time=now();
-   if(cur&&cur.id===o.id){
-    document.querySelectorAll('#progCard .steps li').forEach(li=>{li.className='done';li.querySelector('.dot').textContent='✓'});
-    $('#cSub').textContent=`Заказ № ${o.id} · готово`;
-    mira('Готово! Дедушка Мороз записал поздравление для Миры 🎅✨');resultCard(o,'С Новым годом, Мира!');}
-   clearInterval(timer);}
-  renderList();
- },1500);
-}
-$('#back').onclick=()=>{$('#chat').classList.remove('open');cur=null;renderList()};
+$('#back').onclick=()=>{$('#chat').classList.remove('open');document.body.classList.remove('in-chat');cur=null;renderList()};
 
-/* ---------- composer: Telegram-like ---------- */
+/* ---- composer: Telegram-like (микрофон → стрелка) ---- */
 const MIC=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>`;
 const SEND=`<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.5-7.5a1 1 0 000-1.8L3.4 3.6a.9.9 0 00-1.3 1l2 6.4 9 1-9 1-2 6.4a.9.9 0 001.3 1z"/></svg>`;
-const act=$('#act'), field=$('#field');
-let mode='mic';
+const act=$('#act'),field=$('#field');let mode='mic';act.innerHTML=MIC;
 function setMode(m){if(m===mode)return;mode=m;act.innerHTML=m==='mic'?MIC:SEND;act.classList.toggle('send',m==='send');act.setAttribute('aria-label',m==='mic'?'Голосовое':'Отправить');act.classList.remove('swap');void act.offsetWidth;act.classList.add('swap')}
-act.innerHTML=MIC;
 field.addEventListener('input',()=>{if(!field.textContent.trim())field.innerHTML='';setMode(field.textContent.trim()?'send':'mic')});
 field.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText()}});
-function sendText(){const t=field.textContent.trim();if(!t)return;field.innerHTML='';setMode('mic');me(esc(t));replyTo(t)}
-function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
-function replyTo(t){
- const low=t.toLowerCase();
- setTimeout(()=>{
-  if(/^.{0,2}$/.test(t)) mira('Не совсем поняла 🙈 Уточните, пожалуйста, — что нужно сделать?');
-  else if(/когда|сколько|долго|где/.test(low)) mira(cur.status==='ready'?'Подарок уже готов — он выше в этом чате ✨':`Сейчас готово ${cur.pct||0}%. Пришлю сюда сразу, как закончим.`);
-  else mira('Поняла! Если нужно что-то изменить в подарке — нажмите «Нужна правка» под результатом, а с любым вопросом — «Помощь» вверху.');
- },700);
+act.onclick=()=>{if(mode==='send')sendText();else toast('Голосовые сообщения скоро — пока напишите текстом 🙏')};
+function sendText(){const t=field.textContent.trim();if(!t||!cur)return;field.innerHTML='';setMode('mic');meMsg(esc(t));setTimeout(()=>answer(t,mira,true),500)}
+function answer(q,say,offer){
+ const o=cur,s=stage(o),low=q.toLowerCase();let a=null;
+ if(/где|когда|сколько|долго|готов/.test(low))a=s==='ready'?'Подарок уже готов — он здесь, в чате ✨ А ещё — у вас на почте и в Telegram.':'Подарок готовится'+(pct(o)!=null?' — уже '+pct(o)+'%':'')+'. '+(o.eta?o.eta+' ':'')+'Пришлём сюда сразу, как закончим.';
+ else if(/почт|письм|e-?mail/.test(low))a='Письмо уходит сразу, как подарок готов. Загляните в «Спам» и «Промоакции». Если и там нет — нажмите «Помощь» → «Позвать человека».';
+ else if(/вернуть|возврат|деньг/.test(low))a='Расскажите, что не так — часто быстрее и лучше переделать. Если нужен возврат — нажмите «Помощь» → «Позвать человека», ответим в течение 24 часов.';
+ else if(/исправ|перед|ошиб|не так|не похож|ударен/.test(low))a=s==='ready'?'Нажмите «Нужна правка» под подарком и выберите, что не так — если ошибка наша, переделаем бесплатно.':'Пока подарок готовится, напишите в «Помощь» → «Позвать человека», что изменить — успеем учесть.';
+ if(a){say(a);return}
+ say('Передаю ваш вопрос команде — ответим в Telegram или на почту в течение 24 часов 💛');
+ sendAsk('question','',q,'');
 }
-$('#clip').onclick=()=>$('#file').click();
-$('#file').onchange=e=>{const n=e.target.files.length;if(!n)return;me(`<div class="photos">${'<div class="ph">🖼️</div>'.repeat(Math.min(n,6))}</div>${n} фото`);e.target.value='';setTimeout(()=>mira('Фото получила ✓ Лицо хорошо видно.'),700)};
+async function sendAsk(kind,reason,text,at){try{await api('/api/me/ask',{body:{kind,reason,text,at,num:cur?cur.num:''}});return true}catch(e){toast(e.status===429?'Слишком много обращений — попробуйте через час':'Не получилось отправить. Напишите нам в Telegram @Talemir_bot');return false}}
 
-/* voice: hold → record, release → send, up → lock, left → cancel */
-let rec=null;
-act.addEventListener('pointerdown',e=>{
- if(mode==='send'){return}
- e.preventDefault(); act.setPointerCapture(e.pointerId);
- rec={x:e.clientX,y:e.clientY,t0:Date.now(),locked:false,int:null};
- $('#rec').classList.add('on');$('#lockb').classList.add('on');act.classList.add('micbig');$('#rstop').style.display='none';$('#rhint').textContent='‹ влево — отмена';
- rec.int=setInterval(()=>{const s=Math.floor((Date.now()-rec.t0)/1000);$('#rtime').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},250);
-});
-act.addEventListener('pointermove',e=>{
- if(!rec||rec.locked)return;
- if(rec.x-e.clientX>90){stopRec(false);toast('Запись отменена')}
- else if(rec.y-e.clientY>60){rec.locked=true;act.classList.remove('micbig');$('#lockb').classList.remove('on');$('#rhint').textContent='Запись без рук — нажмите, чтобы отправить';$('#rstop').style.display='inline-block'}
-});
-act.addEventListener('pointerup',e=>{if(mode==='send'){sendText();return}if(rec&&!rec.locked)stopRec(true)});
-act.addEventListener('pointercancel',()=>{if(rec&&!rec.locked)stopRec(false)});
-$('#rstop').onclick=()=>stopRec(true);
-function stopRec(send){
- if(!rec)return;clearInterval(rec.int);const d=Math.max(1,Math.round((Date.now()-rec.t0)/1000));rec=null;
- $('#rec').classList.remove('on');$('#lockb').classList.remove('on');act.classList.remove('micbig');$('#rtime').textContent='0:00';
- if(!send)return;
- if(d<1){toast('Удерживайте, чтобы записать голосовое');return}
- const bars=Array.from({length:22},()=>`<i style="height:${4+Math.random()*18}px"></i>`).join('');
- me(`<div class="voice">▶ <div class="wave">${bars}</div> 0:${String(d).padStart(2,'0')}</div>`);
- setTimeout(()=>mira('Голосовое получила, расшифровала ✓ Отвечаю здесь же.'),800);
-}
-act.addEventListener('click',e=>{if(mode==='mic'&&!rec)toast('Зажмите микрофон, чтобы записать голосовое')});
-
-/* ---------- sheets ---------- */
-function openSheet(html){$('#sheetBody').innerHTML=html;$('#shade').classList.add('on');$('#sheet').classList.add('on')}
-function closeAll(){$('#shade').classList.remove('on');$('#sheet').classList.remove('on');$('#pay').classList.remove('on')}
+/* ---- sheets ---- */
+function openSheet(h){$('#sheetBody').innerHTML=h;$('#shade').classList.add('on');$('#sheet').classList.add('on')}
+function closeAll(){$('#shade').classList.remove('on');$('#sheet').classList.remove('on')}
 $('#shade').onclick=closeAll;
-window.closeAll=closeAll;
-
-/* support: chat inside chat */
-$('#helpBtn').onclick=()=>{
- const o=cur;
- openSheet(`<div class="sh-h"><h3>Помощь</h3><p>Отвечаем сразу. Видим ваш заказ — ничего объяснять заново не нужно.</p></div>
- <div class="sh-b supp"><div class="ctx"><div class="thumb" style="width:34px;height:34px;border-radius:10px;background:${BG[o.kind]}">${ICON[o.kind]}</div><div><b>${o.name}</b><br>№ ${o.id} · ${o.status==='ready'?'готово':o.status==='prog'?'готовится':'ждёт оплаты'}</div></div>
- <div class="chips">${['Где мой подарок?','Не пришло на почту','Изменить данные','Вернуть деньги'].map(q=>`<button class="qc" onclick="ask('${q}')">${q}</button>`).join('')}</div>
- <div class="msgs" id="smsgs"><div class="who"><div class="mira">${MIRA}</div><div class="m in">Здравствуйте! Чем помочь с заказом № ${o.id}?<span class="t">${now()}</span></div></div></div>
- <div style="display:flex;gap:6px;margin-top:8px"><input id="sin" class="ta" style="min-height:44px" placeholder="Ваш вопрос"><button class="btn gold" onclick="ask(document.getElementById('sin').value)">→</button></div>
- <button class="btn ghost" style="margin-top:8px" onclick="human()">Позвать человека</button></div>`);
+$('#helpBtn').onclick=()=>{const o=cur;if(!o)return;const p=prod(o);
+ openSheet(`<div class="sh-h"><h3>Помощь</h3><p>Видим ваш заказ — объяснять заново не нужно.</p></div>
+ <div class="sh-b supp"><div class="ctx"><div class="thumb" style="width:34px;height:34px;border-radius:10px;background:${BGS[p.i]}">${IC[p.i]}</div><div><b>${esc(title(o))}</b><br>№ ${esc(o.num)} · ${(ST[stage(o)]||['в работе'])[0]}</div></div>
+ <div class="chips">${['Где мой подарок?','Не пришло на почту','Хочу что-то исправить','Вернуть деньги'].map(q=>`<button class="qc" data-q="${q}">${q}</button>`).join('')}</div>
+ <div class="msgs" id="smsgs"><div class="who"><div class="mira">${MIRA}</div><div class="m in">Здравствуйте! Чем помочь с заказом № ${esc(o.num)}?<span class="t">${hhmm()}</span></div></div></div>
+ <div style="display:flex;gap:6px;margin-top:8px"><input id="sin" class="inp" style="margin:0" placeholder="Ваш вопрос" maxlength="1000"><button class="btn gold" id="sgo" aria-label="Отправить">→</button></div>
+ <button class="btn ghost" style="margin-top:8px" id="human">Позвать человека</button></div>`);
+ const sAdd=h=>{const m=$('#smsgs');m.insertAdjacentHTML('beforeend',h);m.scrollTop=m.scrollHeight};
+ const say=t=>sAdd(`<div class="who"><div class="mira">${MIRA}</div><div class="m in">${t}<span class="t">${hhmm()}</span></div></div>`);
+ const ask=q=>{if(!q||!q.trim())return;$('#sin').value='';sAdd(`<div class="m out">${esc(q)}<span class="t">${hhmm()} ✓</span></div>`);setTimeout(()=>answer(q,say),400)};
+ document.querySelectorAll('#sheetBody .qc').forEach(b=>b.onclick=()=>ask(b.dataset.q));
+ $('#sgo').onclick=()=>ask($('#sin').value);$('#sin').onkeydown=e=>{if(e.key==='Enter')ask($('#sin').value)};
+ $('#human').onclick=async()=>{const t=$('#sin').value.trim();if(await sendAsk('human','',t,''))sAdd(`<div class="sys">Передали команде вместе с заказом № ${esc(o.num)}. Ответим в Telegram или на почту в течение 24 часов.</div>`);$('#human').disabled=true};
 };
-function sAdd(html){const m=$('#smsgs');m.insertAdjacentHTML('beforeend',html);m.scrollTop=m.scrollHeight}
-window.ask=q=>{if(!q||!q.trim())return;const o=cur;$('#sin')&&($('#sin').value='');
- sAdd(`<div class="m out">${esc(q)}<span class="t">${now()} ✓✓</span></div>`);
- let a;
- if(/где/i.test(q))a=o.status==='ready'?'Подарок готов и лежит в этом чате, а ещё у вас на почте и в Telegram ✨':`Готово ${o.pct}%. Как только закончим — сразу пришлём сюда, на почту и в Telegram.`;
- else if(/почт/i.test(q))a='Проверила: письмо отправлено. Загляните в «Спам» или «Промоакции». Отправить ещё раз?';
- else if(/измен/i.test(q))a=o.status==='ready'?'Подарок уже готов. Изменить можно через «Нужна правка» под результатом — если ошибка наша, бесплатно.':'Пока подарок готовится, данные можно поменять. Что исправить: имя, ударение или фото?';
- else if(/верн/i.test(q))a='Понимаю. Расскажите, что не так — часто быстрее и лучше переделать. Если всё же нужен возврат — передам оператору, ответим в течение [N] ч.';
- else a='Поняла вопрос. Если ответ нужен от человека — нажмите «Позвать человека».';
- setTimeout(()=>sAdd(`<div class="who"><div class="mira">${MIRA}</div><div class="m in">${a}<span class="t">${now()}</span></div></div>`),600);
-};
-window.human=()=>{sAdd(`<div class="sys">Передали оператору вместе с заказом № ${cur.id}. Ответим здесь в течение [N] ч.</div>`)};
-
-/* redo flow with abuse protection */
-/* варианты правки зависят от продукта: у Деда Мороза фото клиента идут в альбом как есть — «не похоже» и «заменить фото» не предлагаем */
-const REDO={
- name:['name','✍️','Имя написано или звучит не так','мы проверим по вашей анкете'],
- nameText:['name','✍️','Ошибка в имени','мы проверим по вашей анкете'],
- stress:['stress','🔊','Неверное ударение','отметьте момент в видео'],
- face:['face','🙂','Герой не похож на ребёнка','сравним с фото из заказа'],
- tech:['tech','⚙️','Технический сбой','звук, картинка, обрыв']
-};
-const REDO_BY_KIND={ded:['name','stress','tech'],song:['name','stress','tech'],book:['nameText','face','tech']};
-function redoOptions(kind,left){return REDO_BY_KIND[kind].map(k=>{const r=REDO[k].slice();if(k==='stress'&&kind==='song')r[3]='отметьте момент в песне';if(k==='tech'&&kind==='book')r[3]='файл не открывается, страницы перепутаны';return r}).concat([['other','🎨','Хочу по-другому','бесплатных правок: '+left+' из 1']])}
-window.openRedo=()=>{
- const o=cur, left=redoLeft[o.id];
- openSheet(`<div class="sh-h"><h3>Что исправить?</h3><p>Ошибка наша — переделаем бесплатно и быстро.</p></div><div class="sh-b" id="rb">
- ${redoOptions(o.kind,left).map(r=>`<button class="opt" onclick="redoStep('${r[0]}')"><span class="ic">${r[1]}</span><span><b>${r[2]}</b><small>${r[3]}</small></span></button>`).join('')}
- </div>`);
-};
-window.redoStep=k=>{
- const o=cur; const rb=$('#rb');
- if(k==='other'){
-  const left=redoLeft[o.id];
-  rb.innerHTML=left>0?`<p>Опишите, что хотите изменить. Это ваша бесплатная правка (осталась <b>1 из 1</b>).</p><textarea class="ta" id="wish" placeholder="Например: сделайте музыку спокойнее"></textarea>
-   <div class="acts" style="margin-top:10px"><button class="btn gold" onclick="redoDone('free')">Отправить правку</button></div>
-   <p class="note">Следующие правки — по себестоимости: [ЦЕНА]. Честно: так нам хватит сил на всех.</p>`
-  :`<p>Бесплатная правка уже использована.</p><p class="note">Новая версия — по себестоимости: [ЦЕНА].</p><div class="acts"><button class="btn gold" onclick="redoDone('paid')">Сделать за [ЦЕНА]</button></div>`;
-  return;
- }
- rb.innerHTML=`<p><b>Покажите, где ошибка</b></p>
-  ${o.kind!=='book'?`<div class="tl">0:00<input type="range" min="0" max="60" value="12" id="tc" oninput="document.getElementById('tcv').textContent='0:'+String(this.value).padStart(2,'0')"><span id="tcv">0:12</span></div>`:''}
-  <textarea class="ta" id="cm" placeholder="Что не так? (необязательно)"></textarea>
-  <div class="acts" style="margin-top:10px"><button class="btn gold" onclick="check('${k}')">Проверить</button></div>
-  <p class="note">Проверка занимает пару секунд: сверяем с вашей анкетой.</p>`;
-};
-window.check=k=>{
- const rb=$('#rb'); rb.insertAdjacentHTML('beforeend',`<div class="verdict" id="vd">⏳ Сверяем с анкетой…</div>`);
- setTimeout(()=>{
-  const ourFault = k==='stress'||k==='tech'||k==='face';
-  $('#vd').className='verdict '+(ourFault?'ok':'no');
-  $('#vd').innerHTML= ourFault
-   ? `<b>Вы правы — это наша ошибка.</b> Переделаем бесплатно, срок ≈ [N] мин. Пришлём новую версию сюда.<div class="acts" style="margin-top:10px"><button class="btn gold" onclick="redoDone('ours')">Хорошо</button></div>`
-   : `<b>В подарке имя «${cur.kind==='song'?'Мирон':'Мира'}» — так же, как в вашей анкете.</b><br>Если в анкете опечатка — исправьте имя, и мы переделаем. Это засчитается как ваша бесплатная правка.<div class="acts" style="margin-top:10px"><button class="btn gold" onclick="redoStep('other')">Исправить анкету</button><button class="btn ghost" onclick="closeAll()">Всё верно</button></div>`;
- },900);
-};
-window.redoDone=t=>{
- if(t==='free')redoLeft[cur.id]=0;
- closeAll();
- me(t==='ours'?'Нашла ошибку — отметила в видео':t==='paid'?'Хочу новую версию (платно)':'Отправила правку');
- setTimeout(()=>{mira(t==='ours'?'Спасибо, что заметили! Уже переделываем — бесплатно 💛':'Приняла! Уже делаем новую версию ✨');
-  cur.status='prog';cur.pct=10;cur.last='Переделываем — 10%';cur.time=now();$('#cSub').textContent=`Заказ № ${cur.id} · готовится`;renderList();
- },600);
-};
-
-/* payment popup + Mira kiss */
-function openPay(){
- $('#pay').innerHTML=`<h3>Оплата</h3><p class="note" style="margin-top:0">Книга «Мира и Лунный кит» · электронная</p>
- <div class="sum"><span>К оплате</span><b>[ЦЕНА]</b></div>
- <div class="cards"><div class="sel">💳 Карта</div><div>СБП</div><div>SberPay</div></div>
- <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:12px"><input type="checkbox" id="agree" style="width:22px;height:22px;accent-color:#e7c56e;flex:none"> Принимаю условия оферты</label>
- <div class="acts"><button class="btn gold" id="doPay" style="flex:1">Оплатить</button><button class="btn ghost" onclick="closeAll()">Отмена</button></div>
- <p class="note" id="payErr"></p><p class="note">Прототип: деньги не списываются.</p>`;
- $('#shade').classList.add('on');$('#pay').classList.add('on');
- $('#doPay').onclick=()=>{
-  if(!$('#agree').checked){$('#payErr').textContent='Отметьте согласие с офертой — без него оплата невозможна.';$('#payErr').style.color='var(--warn)';return}
-  closeAll(); paid();
- };
+function openRedo(){const o=cur;const p=prod(o);
+ const opts=p.redo.map(k=>REDO[k]).concat([['other','🎨','Хочу по-другому','одну правку сделаем бесплатно']]);
+ openSheet(`<div class="sh-h"><h3>Что исправить?</h3><p>Ошибка наша — переделаем бесплатно.</p></div><div class="sh-b" id="rb">
+ ${opts.map(r=>`<button class="opt" data-k="${r[0]}"><span class="ic">${r[1]}</span><span><b>${r[2]}</b><small>${r[3]}</small></span></button>`).join('')}</div>`);
+ document.querySelectorAll('#rb .opt').forEach(b=>b.onclick=()=>redoStep(b.dataset.k));
 }
-function paid(){
- const o=cur; const pb=$('#payBtn'); if(pb){pb.textContent='Оплачено ✓';pb.disabled=true;pb.className='btn ghost';} o.status='prog'; o.pct=5; o.last='Создаём книгу — 5%'; o.time=now();
- sys('Оплачено <b>[ЦЕНА]</b> · '+now()+' · чек на почте');
- const k=add(`<div class="kiss"><div class="big">${MIRA}</div><div style="font-size:13px;color:var(--muted)">Мира посылает вам воздушный поцелуй 💋</div></div>`);
- $('#cSub').textContent=`Заказ № ${o.id} · готовится`;
- setTimeout(()=>{
-  const from=k.querySelector('.big').getBoundingClientRect();
-  const target=(window.innerWidth>=860?document.querySelector('.item[data-id="'+o.id+'"]'):null)||$('#back');
-  const to=target.getBoundingClientRect();
-  const h=document.createElement('div');h.className='heart';h.textContent='💖';document.body.appendChild(h);
-  const x0=from.left+from.width/2-14,y0=from.top+10,x1=to.left+to.width/2-14,y1=to.top+to.height/2-14;
-  h.animate([{transform:`translate(${x0}px,${y0}px) scale(.6)`,opacity:0},{transform:`translate(${(x0+x1)/2}px,${Math.min(y0,y1)-80}px) scale(1.3)`,opacity:1},{transform:`translate(${x1}px,${y1}px) scale(.5)`,opacity:.9}],{duration:1300,easing:'cubic-bezier(.3,.7,.3,1)'}).onfinish=()=>{h.remove();renderList();const t=document.querySelector('.item[data-id="'+o.id+'"]')||$('#back');t.classList.add('glow');setTimeout(()=>t.classList.remove('glow'),1400)};
-  mira('Спасибо! Книга уже создаётся 📖 Как будет готова — пришлю сюда, на почту и в Telegram.');
-  sys('💛 Часть этого заказа уйдёт в фонд <b>[название фонда]</b> — покажем точную сумму, когда фонд будет подключён');
- },500);
+function redoStep(k){const o=cur;const rb=$('#rb');const media=MEDIA_KINDS.includes(o.product);
+ rb.innerHTML=`<p><b>${k==='other'?'Что хотите изменить?':'Покажите, где ошибка'}</b></p>
+ ${media&&k!=='other'&&k!=='face'?`<input class="inp" id="rat" placeholder="Момент в ролике или песне, например 0:12" maxlength="8" inputmode="numeric">`:''}
+ <textarea class="ta" id="rtx" maxlength="1000" placeholder="${k==='other'?'Например: сделайте музыку спокойнее':'Опишите коротко, что не так'}"></textarea>
+ <div class="acts" style="margin-top:10px"><button class="btn gold" id="rsend">Отправить</button></div>
+ <p class="note">${k==='other'?'Одну правку «хочу по-другому» делаем бесплатно. Следующие — по себестоимости, сумму назовём заранее.':'Проверим по вашей анкете. Если ошибка наша — переделаем бесплатно и пришлём новую версию сюда.'}</p>`;
+ $('#rsend').onclick=async()=>{const t=$('#rtx').value.trim();if(k==='other'&&!t){$('#rtx').focus();toast('Напишите, что изменить');return}
+  $('#rsend').disabled=true;if(await sendAsk('redo',k,t,($('#rat')||{}).value||'')){closeAll();meMsg('Отправила запрос на правку');setTimeout(()=>mira('Приняли! Проверим и ответим здесь, в Telegram или на почту в течение 24 часов 💛'),500)}else $('#rsend').disabled=false};
 }
 
+/* ---- desktop info panel ---- */
+function renderInfo(){const el=$('#info');const o=cur;if(!o){el.classList.add('hide');return}el.classList.remove('hide');const p=prod(o);
+ const s=stage(o);const i={paid:1,queued:1,in_work:1,rework:1,heroes:1,wish_fix:1,quality:2,ready:4}[s]??1;
+ el.innerHTML=`<div class="scene" style="background:${BGS[p.i]}">${IC[p.i]}</div><h2>${esc(title(o))}</h2><div class="num">Заказ № ${esc(o.num)} · ${chip(o)}</div>
+ <h5>Как идёт</h5><ul class="tline">${['Оплачено','Создаём подарок','Проверяем качество','Готово'].map((t,k)=>`<li class="${k<i||s==='ready'?'done':k===i?'now':''}">${t}</li>`).join('')}</ul>
+ ${o.eta&&s!=='ready'?`<p class="note">${esc(o.eta)}</p>`:''}
+ <div class="acts" style="margin:14px 0 16px">${s==='ready'&&o.files&&o.files.length&&!o.expired?`<a class="btn gold" href="${esc(fileUrl(o.files[0]))}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Скачать</a>`:''}<a class="btn ghost" href="${esc(API+o.link)}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Страница заказа</a></div>
+ <div class="minipromo" onclick="document.getElementById('helpBtn').click()"><b>💬 Есть вопрос?</b><br>Нажмите — ответим сразу, а если нужно — подключим человека.</div>`}
 
-/* ---------- desktop info panel ---------- */
-const STAGES={ded:['Фото и анкета','Голос с именем','Монтаж видео','Проверка качества','Готово'],song:['История и жанр','Текст песни','Запись','Проверка ударений','Готово'],book:['Пример книги','Оплата','Рисуем страницы','Проверка качества','Готово']};
-const FILES={ded:[['Видео-поздравление','MP4'],['Открытка с именем','PNG']],song:[['Песня','MP3'],['Текст песни','PDF']],book:[['Книга-сказка','PDF'],['Печать (по желанию)','СДЭК']]};
-function stageIdx(o){if(o.status==='ready')return 4;if(o.status==='pay')return 1;if(o.kind==='book')return 2;return o.pct<30?1:o.pct<85?2:3}
-function renderInfo(){
- const el=$('#info'); if(!el)return; const o=cur;
- if(!o){el.classList.add('hide');return} el.classList.remove('hide');
- const si=stageIdx(o);
- const st=o.status==='ready'?'<span class="chip ready">готово ✓</span>':o.status==='pay'?'<span class="chip pay">ждёт оплаты</span>':`<span class="chip prog">готовится ${o.pct}%</span>`;
- const acts=o.status==='ready'?`<button class="btn gold" onclick="toast('Файл сохраняется… (прототип)')">Скачать</button><button class="btn ghost" onclick="openRedo()">Правка</button>`
-   :o.status==='pay'?`<button class="btn gold" onclick="openPay()">Оплатить · [ЦЕНА]</button>`
-   :`<button class="btn ghost" onclick="document.getElementById('helpBtn').click()">Спросить о заказе</button>`;
- el.innerHTML=`<div class="scene" style="background:${BG[o.kind]}">${ICON[o.kind]}</div>
-  <h2>${o.name}</h2><div class="num">Заказ № ${o.id} · ${st}</div>
-  <h5>Как идёт</h5><ul class="tline">${STAGES[o.kind].map((t,i)=>`<li class="${i<si?'done':i===si?(o.status==='ready'?'done':'now'):''}">${t}</li>`).join('')}</ul>
-  <h5>Что вы получите</h5><div class="files">${FILES[o.kind].map(f=>`<div>${f[0]}<span>${f[1]}</span></div>`).join('')}</div>
-  <div class="acts" style="margin:12px 0 16px">${acts}</div>
-  <div class="minipromo" onclick="document.getElementById('promo').click()"><b>🎁 Добрая пятница · 27.11</b><br>Скидка [N]% на подарки, часть заказа — детям</div>`;
+/* ---- login ---- */
+function showLogin(){
+ $('#list').style.display='none';$('#empty').classList.remove('show');$('#info').classList.add('hide');const L=$('#login');L.style.display='flex';
+ L.innerHTML=`<div class="lbox"><div class="big">${MIRA}</div><h2>Мои подарки</h2><p>Войдите, чтобы видеть свои подарки — каждый в своём чате.</p>
+  <button class="btn gold" id="tgGo">Войти через Telegram</button>
+  <button class="btn ghost" id="emGo">Войти по почте</button><div class="err" id="lerr"></div>
+  <p style="font-size:12px">Без паролей: пришлём одноразовый код.</p></div>`;
+ $('#tgGo').onclick=tgFlow;$('#emGo').onclick=emFlow;
 }
-window.openPay=openPay;
+async function tgFlow(){const L=$('#login .lbox');let r;try{r=await api('/api/auth/tg/start',{body:{}})}catch(e){$('#lerr').textContent=e.status===429?'Слишком много попыток — попробуйте через час.':'Не получилось. Попробуйте ещё раз.';return}
+ L.innerHTML=`<div class="big">${MIRA}</div><h2>Код в Telegram</h2><p>1. Откройте бота — он пришлёт код.<br>2. Введите код здесь.</p>
+ <a class="btn gold" href="${esc(r.link)}" target="_blank" rel="noopener">Открыть @Talemir_bot</a>
+ <input class="inp" id="code" inputmode="numeric" autocomplete="one-time-code" placeholder="Код из Telegram" maxlength="8"><button class="btn ghost" id="vgo">Войти</button><div class="err" id="lerr"></div><button class="link" id="lback">← Другой способ</button>`;
+ $('#lback').onclick=showLogin;const go=async()=>{try{await api('/api/auth/tg/verify',{body:{nonce:r.nonce,code:$('#code').value}});start()}catch(e){$('#lerr').textContent=e.status===429?'Слишком много попыток — попробуйте позже.':'Неверный или устаревший код. Проверьте и введите ещё раз.'}};
+ $('#vgo').onclick=go;$('#code').onkeydown=e=>{if(e.key==='Enter')go()};}
+function emFlow(){const L=$('#login .lbox');
+ L.innerHTML=`<div class="big">${MIRA}</div><h2>Вход по почте</h2><p>Пришлём код на почту, которую вы указывали при заказе.</p>
+ <input class="inp" id="em" type="email" autocomplete="email" placeholder="you@mail.ru"><button class="btn gold" id="sgo">Получить код</button><div class="err" id="lerr"></div><button class="link" id="lback">← Другой способ</button>`;
+ $('#lback').onclick=showLogin;
+ const send=async()=>{const em=$('#em').value.trim();if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(em)){$('#lerr').textContent='Проверьте адрес почты.';return}
+  try{await api('/api/auth/email',{body:{email:em}})}catch(e){$('#lerr').textContent=e.status===429?'Слишком много попыток — попробуйте через час.':e.status===503?'Почта временно недоступна — войдите через Telegram.':'Не получилось отправить код.';return}
+  L.innerHTML=`<div class="big">${MIRA}</div><h2>Введите код</h2><p>Отправили на ${esc(em)}. Не видите письмо — загляните в «Спам».</p>
+  <input class="inp" id="code" inputmode="numeric" autocomplete="one-time-code" placeholder="6 цифр" maxlength="6"><button class="btn gold" id="vgo">Войти</button><div class="err" id="lerr"></div><button class="link" id="lback">← Назад</button>`;
+  $('#lback').onclick=emFlow;const go=async()=>{try{await api('/api/auth/email/verify',{body:{email:em,code:$('#code').value.trim()}});start()}catch(e){$('#lerr').textContent='Неверный или устаревший код.'}};
+  $('#vgo').onclick=go;$('#code').onkeydown=e=>{if(e.key==='Enter')go()};};
+ $('#sgo').onclick=send;$('#em').onkeydown=e=>{if(e.key==='Enter')send()};}
 
-function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
-window.toast=toast;
-$('#promoX').onclick=e=>{e.stopPropagation();$('#promo').style.display='none';toast('Акцию можно снова открыть в «Профиле»')};
-$('#promo').onclick=()=>{
- const st=new Date(2026,10,27), en=new Date(2026,10,27,23,59,59), started=new Date()>=st, ms=Math.max(0,(started?en:st)-new Date()), d=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60;
- openSheet(`<div class="sh-h"><h3>Добрая пятница</h3><p>У всех чёрная — у нас добрая 💛 Только 27 ноября</p></div><div class="sh-b">
- <p class="note" style="text-align:center;margin:0">${started?'до конца акции':'до старта акции'}</p><div class="count"><div><b>${d}</b><span>дн</span></div><div><b>${h}</b><span>ч</span></div><div><b>${m}</b><span>мин</span></div></div>
- <p style="margin-top:0">Скидка <b>[N]%</b> на подарки ниже — и часть каждого заказа уходит в фонд <b>[название фонда]</b>, детям, которым нужна помощь.</p>
- ${[['ded','Поздравление от Деда Мороза'],['song','Песня с именем'],['book','Книга-сказка']].map(p=>`<div class="prow"><div class="thumb" style="background:${BG[p[0]]}">${ICON[p[0]]}</div><span style="flex:1">${p[1]}</span><b style="color:var(--gold)">−[N]%</b></div>`).join('')}
- <div class="acts" style="margin-top:12px"><button class="btn gold" style="flex:1" onclick="closeAll();toast('Откроется витрина со скидкой')">Выбрать подарок</button></div>
- <p class="note">Для команды: складывается ли со скидкой комплекта — [решение]. Никаких выдуманных «старых цен»: показываем обычную цену и цену со скидкой.</p></div>`);
-};
-$('#newBtn').onclick=()=>toast('Здесь откроется витрина подарков');
+/* ---- menu, promo, toast ---- */
+$('#meBtn').onclick=e=>{e.stopPropagation();$('#menu').classList.toggle('on')};document.addEventListener('click',()=>$('#menu').classList.remove('on'));
+$('#logout').onclick=async()=>{try{await api('/api/auth/logout',{body:{}})}catch(e){}location.reload()};
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2600)}
+async function loadPromo(){try{const r=await fetch('/my/promo.json',{cache:'no-store'});if(!r.ok)return;const p=await r.json();if(!p||!p.on)return;
+ let hidden=false;try{hidden=localStorage.getItem('tm_promo_x')===p.id}catch(e){}if(hidden)return;
+ $('#promoT').textContent=p.title;$('#promoS').textContent=p.sub;$('#promo').style.display='flex';
+ $('#promoX').onclick=e=>{e.stopPropagation();$('#promo').style.display='none';try{localStorage.setItem('tm_promo_x',p.id)}catch(e){}};
+ $('#promo').onclick=()=>openSheet(`<div class="sh-h"><h3>${esc(p.title)}</h3><p>${esc(p.sub)}</p></div><div class="sh-b"><p style="margin-top:0">${esc(p.text||'')}</p><div class="acts"><a class="btn gold" style="flex:1;text-align:center;text-decoration:none" href="${esc(p.url||'https://talemir.com/')}">${esc(p.cta||'Выбрать подарок')}</a></div></div>`);
+}catch(e){}}
 
-renderList();
-if(window.innerWidth>=860)openChat('TM-24817');
+/* ---- start ---- */
+async function load(){const list=await api('/api/me/orders');const prev=cur&&cur.num;orders=(list||[]).filter(o=>o&&o.num);
+ if(prev){const n=orders.find(o=>o.num===prev);if(n){const ch=stage(n)!==stage(cur);cur=n;if(ch)openChat(n.num);else{$('#cSub').textContent='Заказ № '+n.num+' · '+((ST[stage(n)]||['в работе'])[0])}}}
+ renderList()}
+async function start(){
+ try{me=await api('/api/me')}catch(e){if(e.status===401||e.status===403){showLogin();return}$('#items').innerHTML='<div class="emptybox">Не получилось загрузить. Обновите страницу через минуту.</div>';return}
+ $('#login').style.display='none';$('#list').style.display='';$('#meBtn').textContent=((me.name||me.email||'Я').trim()[0]||'Я').toUpperCase();
+ try{await load()}catch(e){$('#items').innerHTML='<div class="emptybox">Не получилось загрузить подарки. Обновите страницу.</div>';return}
+ if(window.innerWidth>=860&&orders.length)openChat(orders[0].num);
+ setInterval(()=>{if(!document.hidden)load().catch(()=>{})},20000);
+}
+loadPromo();start();
+})();
 </script>
 </body>
+
 </html>
