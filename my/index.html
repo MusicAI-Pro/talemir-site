@@ -238,6 +238,9 @@ audio.media{background:none}
 .top h1{white-space:nowrap;font-size:22px}
 .top .newbtn{padding:8px 12px;white-space:nowrap}
 a.btn{text-decoration:none;display:inline-block;text-align:center}
+html.embed body{padding:0!important;background:var(--bg)}
+html.embed .app{height:100vh;height:100dvh;border:0;border-radius:0;box-shadow:none;max-width:none}
+html.embed .top .logo{display:none}
 .emptybox{text-align:center;padding:40px 20px;color:var(--muted)}
 .emptybox .btn{display:inline-block;margin-top:12px;text-decoration:none}
 
@@ -289,6 +292,8 @@ a.btn{text-decoration:none;display:inline-block;text-align:center}
 
 <script>
 (function(){
+const EMBED=/[?&]embed=1/.test(location.search);
+if(EMBED){document.documentElement.classList.add('embed');const b=document.createElement('base');b.target='_top';document.head.appendChild(b)}
 const API='https://ru.api.talemir.com';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
