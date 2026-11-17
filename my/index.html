@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talemir — Мои подарки (прототип)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#2a1640; --surface:#3a2152; --deep:#1d0f2c; --gold:#e7c56e; --gold2:#f3dc9a;
+  --plum:#7b2d5b; --text:#f6ebdd; --muted:#d9c8e2; --line:rgba(231,197,110,.18);
+  --ok:#7fd1a3; --warn:#f0b35a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--deep);color:var(--text);font-family:Nunito,system-ui,sans-serif}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.app{height:100vh;height:100dvh;display:flex;max-width:1180px;margin:0 auto;background:var(--bg);overflow:hidden;position:relative}
+/* ---------- list pane ---------- */
+.list{width:100%;display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--bg)}
+.top{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(145deg,var(--gold2),var(--gold));display:grid;place-items:center;color:var(--deep);font:700 24px 'Cormorant Garamond',serif;box-shadow:0 4px 14px rgba(231,197,110,.25)}
+.top h1{font:700 24px 'Cormorant Garamond',serif;margin:0;flex:1;letter-spacing:.3px}
+.tabicon{position:relative}
+.newbtn{background:linear-gradient(145deg,var(--gold2),var(--gold));color:var(--deep);font-weight:800;border-radius:999px;padding:9px 14px;font-size:14px;position:relative;overflow:hidden}
+.newbtn:active{transform:scale(.96)}
+.search{margin:10px 16px 6px;background:var(--deep);border-radius:12px;padding:10px 12px;color:var(--muted);font-size:14px;display:flex;gap:8px;align-items:center}
+.items{overflow-y:auto;flex:1;padding:4px 0 20px}
+.item{display:flex;gap:12px;padding:10px 16px;align-items:center;cursor:pointer;transition:background .15s;position:relative}
+.item:hover{background:rgba(255,255,255,.04)}
+.item.active{background:rgba(231,197,110,.10)}
+.item:active{background:rgba(231,197,110,.14)}
+.thumb{width:54px;height:54px;border-radius:16px;flex:none;display:grid;place-items:center;position:relative;box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.thumb svg{width:30px;height:30px}
+.thumb svg.ring{position:absolute;inset:-4px;width:62px;height:62px}
+.meta{flex:1;min-width:0}
+.row1{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.name{font-weight:800;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.time{font-size:12px;color:var(--muted);flex:none}
+.row2{display:flex;justify-content:space-between;gap:8px;margin-top:3px;align-items:center}
+.last{font-size:13.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 8px;flex:none;white-space:nowrap}
+.chip.ready{background:rgba(127,209,163,.16);color:var(--ok)}
+.chip.prog{background:rgba(231,197,110,.16);color:var(--gold)}
+.chip.wait{background:rgba(240,179,90,.16);color:var(--warn)}
+.chip.pay{background:rgba(123,45,91,.55);color:#ffd6ea}
+.promo{display:flex;gap:12px;align-items:center;text-align:left;margin:4px 12px 4px;padding:10px 12px;border-radius:16px;background:linear-gradient(120deg,rgba(231,197,110,.22),rgba(123,45,91,.55));border:1px solid rgba(231,197,110,.45);position:relative;overflow:hidden}
+.promo::after{content:"";position:absolute;top:0;left:-40%;width:30%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:shine 6s infinite}
+.promo:active{transform:scale(.98)}
+.promo .pi{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--gold2),var(--gold));display:grid;place-items:center;font-size:20px;flex:none;animation:wig 3s infinite}
+@keyframes wig{0%,85%,100%{transform:none}90%{transform:rotate(-10deg)}95%{transform:rotate(10deg)}}
+.promo .pt{flex:1;min-width:0}.promo b{display:block;font-size:14.5px;color:var(--gold2)}.promo small{display:block;font-size:12.5px;color:var(--muted)}
+.promo .px{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;color:var(--muted);font-size:13px;flex:none}
+.promo .px:hover{background:rgba(255,255,255,.08)}
+.prow{display:flex;gap:10px;align-items:center;padding:10px;border-radius:12px;background:var(--deep);margin-bottom:8px;font-size:14px}
+.prow .thumb{width:40px;height:40px;border-radius:12px}.prow .thumb svg{width:22px;height:22px}
+.count{display:flex;gap:8px;justify-content:center;margin:6px 0 12px}.count div{background:var(--deep);border-radius:12px;padding:8px 10px;text-align:center;min-width:58px}.count b{display:block;font:700 24px 'Cormorant Garamond',serif;color:var(--gold2)}.count span{font-size:11px;color:var(--muted)}
+.fund{margin:8px 16px 0;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(123,45,91,.45),rgba(58,33,82,.8));font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:center;border:1px solid var(--line)}
+.fund b{color:var(--text)}
+/* ---------- chat pane ---------- */
+.chat{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);z-index:5}
+.chat.open{transform:none}
+.chat-bg{position:absolute;inset:0;pointer-events:none;opacity:.07;background-image:radial-gradient(circle at 20% 30%,var(--gold) 1.2px,transparent 1.6px),radial-gradient(circle at 70% 80%,var(--gold) 1px,transparent 1.4px);background-size:46px 46px,62px 62px}
+.chead{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(29,15,44,.6);backdrop-filter:blur(8px);position:relative;z-index:2}
+.back{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px}
+.chead .thumb{width:40px;height:40px;border-radius:12px}
+.chead .thumb svg{width:22px;height:22px}
+.ctitle{flex:1;min-width:0}
+.ctitle b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctitle span{font-size:12px;color:var(--muted)}
+.helpbtn{border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px;display:flex;gap:6px;align-items:center}
+.helpbtn:hover{background:rgba(231,197,110,.1)}
+.msgs{flex:1;overflow-y:auto;padding:14px 12px 10px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:1;scroll-behavior:smooth}
+.day{align-self:center;font-size:12px;color:var(--muted);background:rgba(29,15,44,.7);padding:4px 10px;border-radius:999px;margin:6px 0}
+.m{max-width:82%;padding:9px 12px 7px;border-radius:16px;font-size:14.5px;line-height:1.4;position:relative;animation:pop .25s ease-out}
+@keyframes pop{from{transform:translateY(8px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.m .t{display:block;text-align:right;font-size:11px;color:var(--muted);margin-top:3px}
+.in{align-self:flex-start;background:var(--surface);border-bottom-left-radius:6px}
+.out{align-self:flex-end;background:linear-gradient(145deg,#5a2d6e,var(--plum));border-bottom-right-radius:6px}
+.who{display:flex;gap:8px;align-items:flex-end;align-self:flex-start;max-width:88%}
+.who .m{max-width:100%}
+.mira{width:30px;height:30px;flex:none;border-radius:50%;background:#f3dc9a;overflow:hidden}
+.photos{display:grid;grid-template-columns:repeat(3,64px);gap:4px;margin-bottom:4px}
+.ph{width:64px;height:64px;border-radius:10px;background:linear-gradient(160deg,#6b4a8a,#3a2152);display:grid;place-items:center;font-size:22px}
+.card{align-self:stretch;max-width:420px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;animation:pop .25s ease-out}
+.card h4{margin:0 0 8px;font:700 19px 'Cormorant Garamond',serif;color:var(--gold2)}
+.bar{height:8px;background:var(--deep);border-radius:99px;overflow:hidden;margin:6px 0 10px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .6s}
+.steps{list-style:none;padding:0;margin:0;font-size:13.5px;color:var(--muted)}
+.steps li{display:flex;gap:8px;align-items:center;padding:3px 0}
+.steps li.done{color:var(--text)}
+.steps li.now{color:var(--gold)}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);flex:none;display:grid;place-items:center;font-size:10px}
+li.done .dot{background:var(--ok);border-color:var(--ok);color:var(--deep)}
+li.now .dot{border-color:var(--gold);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(231,197,110,.25)}}
+.video{aspect-ratio:9/12;max-height:300px;border-radius:14px;background:radial-gradient(circle at 50% 35%,#7b2d5b,#1d0f2c 75%);display:grid;place-items:center;position:relative;overflow:hidden;margin-bottom:10px;width:100%}
+.video .play{width:62px;height:62px;border-radius:50%;background:rgba(243,220,154,.92);display:grid;place-items:center;color:var(--deep);font-size:24px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.video .cap{position:absolute;bottom:12px;left:0;right:0;text-align:center;font:700 22px 'Cormorant Garamond',serif;color:var(--gold2);text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border-radius:12px;padding:10px 14px;font-weight:800;font-size:14px;min-height:44px}
+.gold{background:linear-gradient(145deg,var(--gold2),var(--gold));color:var(--deep);position:relative;overflow:hidden}
+.gold::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 5s infinite}
+@keyframes shine{0%,80%{left:-60%}100%{left:130%}}
+.gold:active{transform:scale(.97)}
+.ghost{border:1px solid var(--line);color:var(--text);background:rgba(255,255,255,.03)}
+.ghost:hover{border-color:var(--gold)}
+.sys{align-self:center;font-size:12.5px;color:var(--muted);text-align:center;max-width:90%;background:rgba(29,15,44,.55);padding:6px 12px;border-radius:12px}
+.sys b{color:var(--gold)}
+/* ---------- composer ---------- */
+.comp{display:flex;align-items:flex-end;gap:6px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(29,15,44,.75);position:relative;z-index:2}
+.ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--muted);transition:color .15s,background .15s}
+.ib:hover{color:var(--gold)}
+.field{flex:1;background:var(--surface);border-radius:22px;padding:11px 14px;min-height:44px;max-height:120px;overflow-y:auto;outline:none;font-size:15px;line-height:1.35;border:1px solid transparent}
+.field:focus{border-color:var(--line)}
+.field:empty::before{content:attr(data-ph);color:#a993b8;pointer-events:none}
+.send{background:var(--gold);color:var(--deep)}
+.swap{animation:swap .18s ease-out}
+@keyframes swap{from{transform:scale(.4) rotate(-30deg);opacity:0}to{transform:none;opacity:1}}
+.rec{position:absolute;inset:0;display:none;align-items:center;gap:10px;padding:0 16px;background:var(--deep);font-size:14px}
+.rec.on{display:flex}
+.rdot{width:10px;height:10px;border-radius:50%;background:#ff5c7a;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+.rec .hint{flex:1;color:var(--muted);text-align:center}
+.lockbadge{position:absolute;right:14px;bottom:62px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px 10px;font-size:12px;color:var(--muted);display:none;text-align:center}
+.lockbadge.on{display:block}
+.micbig{transform:scale(1.35);background:var(--gold)!important;color:var(--deep)!important}
+.voice{display:flex;align-items:center;gap:8px}
+.wave{display:flex;gap:2px;align-items:center;height:22px}
+.wave i{width:3px;background:var(--gold2);border-radius:2px}
+/* ---------- sheets & modals ---------- */
+.shade{position:absolute;inset:0;background:rgba(10,4,18,.62);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.shade.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:88%;background:var(--surface);border-radius:22px 22px 0 0;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);z-index:21;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.45)}
+.sheet.on{transform:none}
+.grab{width:42px;height:5px;border-radius:9px;background:rgba(255,255,255,.25);margin:8px auto 4px}
+.sh-h{padding:6px 18px 10px;border-bottom:1px solid var(--line)}
+.sh-h h3{margin:0;font:700 22px 'Cormorant Garamond',serif;color:var(--gold2)}
+.sh-h p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.sh-b{padding:14px 18px 18px;overflow-y:auto;flex:1}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:12px;border-radius:14px;border:1px solid var(--line);margin-bottom:8px;background:rgba(0,0,0,.12)}
+.opt:hover{border-color:var(--gold)}
+.opt .ic{width:36px;height:36px;border-radius:10px;background:var(--deep);display:grid;place-items:center;font-size:18px;flex:none}
+.opt small{display:block;color:var(--muted);font-size:12.5px}
+.opt.sel{border-color:var(--gold);background:rgba(231,197,110,.08)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.qc{border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700}
+.qc:hover{background:rgba(231,197,110,.1)}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px}
+.tl{display:flex;align-items:center;gap:10px;margin:10px 0}
+.tl input{flex:1;accent-color:var(--gold)}
+.ta{width:100%;background:var(--deep);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:10px;font:inherit;font-size:14px;min-height:64px;resize:vertical}
+.verdict{border-radius:14px;padding:12px;margin-top:10px;font-size:14px;line-height:1.45}
+.verdict.ok{background:rgba(127,209,163,.12);border:1px solid rgba(127,209,163,.35)}
+.verdict.no{background:rgba(240,179,90,.10);border:1px solid rgba(240,179,90,.35)}
+.supp{display:flex;flex-direction:column;height:100%}
+.supp .msgs{background:var(--bg);border-radius:14px;padding:10px;min-height:200px}
+.ctx{display:flex;gap:10px;align-items:center;background:var(--deep);padding:8px 10px;border-radius:12px;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.ctx b{color:var(--text)}
+.modal{position:absolute;left:50%;top:50%;width:min(380px,92%);transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:all .22s;background:var(--surface);border-radius:22px;padding:20px;z-index:22;border:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.modal h3{margin:0 0 4px;font:700 24px 'Cormorant Garamond',serif;color:var(--gold2)}
+.sum{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.cards{display:flex;gap:8px;margin:14px 0}
+.cards div{flex:1;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12.5px;text-align:center;color:var(--muted)}
+.cards div.sel{border-color:var(--gold);color:var(--text)}
+/* heart flight */
+.heart{position:fixed;z-index:50;font-size:28px;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(255,92,122,.6))}
+.glow{animation:glow 1.4s ease-out}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(231,197,110,.9)}100%{box-shadow:0 0 0 18px rgba(231,197,110,0)}}
+.kiss{align-self:center;display:flex;flex-direction:column;align-items:center;gap:6px;animation:pop .3s}
+.kiss .big{width:92px;height:92px;border-radius:50%;background:#f3dc9a;overflow:hidden;box-shadow:0 10px 30px rgba(231,197,110,.35)}
+.toast{position:absolute;left:50%;top:14px;transform:translate(-50%,-200%);visibility:hidden;background:var(--deep);border:1px solid var(--gold);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13.5px;z-index:60;transition:transform .3s;max-width:90%;text-align:center}
+.toast.on{transform:translate(-50%,0);visibility:visible}
+.empty{flex:1;display:none;place-items:center;text-align:center;color:var(--muted);padding:30px}
+.proto{margin:2px 16px 0;align-self:flex-start;font-size:11px;color:var(--muted);background:rgba(29,15,44,.85);border:1px solid var(--line);padding:4px 8px;border-radius:8px}
+/* ---------- desktop ---------- */
+@media (min-width:860px){
+  body{padding:18px}
+  .app{height:calc(100vh - 36px);border-radius:20px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .list{width:360px;flex:none}
+  .chat{position:relative;transform:none;flex:1;transition:none}
+  .chat:not(.open){display:none}
+  .empty.show{display:grid}
+  .back{display:none}
+  .sheet{left:50%;right:auto;bottom:50%;width:440px;border-radius:22px;transform:translate(-50%,60%) scale(.97);opacity:0;pointer-events:none;transition:all .22s}
+  .sheet.on{transform:translate(-50%,50%);opacity:1;pointer-events:auto}
+  .grab{display:none}
+}
+.info{display:none}
+@media (min-width:1200px){
+  .app{max-width:1440px}
+  .info{display:flex;flex-direction:column;width:330px;flex:none;border-left:1px solid var(--line);background:linear-gradient(180deg,rgba(58,33,82,.55),var(--bg));overflow-y:auto;padding:18px}
+  .info.hide{display:none}
+  .scene{height:210px;border-radius:20px;display:grid;place-items:center;position:relative;overflow:hidden;box-shadow:inset 0 -30px 60px rgba(0,0,0,.25)}
+  .scene svg{width:84px;height:84px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.35))}
+  .scene::after{content:"";position:absolute;bottom:22px;width:120px;height:16px;border-radius:50%;background:rgba(0,0,0,.25);filter:blur(6px)}
+  .info h2{font:700 26px 'Cormorant Garamond',serif;margin:14px 0 2px;color:var(--gold2);line-height:1.1}
+  .info .num{font-size:12.5px;color:var(--muted)}
+  .info h5{margin:18px 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .tline{list-style:none;margin:0;padding:0 0 0 4px}
+  .tline li{position:relative;padding:0 0 14px 22px;font-size:13.5px;color:var(--muted)}
+  .tline li::before{content:"";position:absolute;left:0;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--muted)}
+  .tline li::after{content:"";position:absolute;left:6px;top:17px;bottom:0;width:2px;background:var(--line)}
+  .tline li:last-child::after{display:none}
+  .tline li.done{color:var(--text)}.tline li.done::before{background:var(--ok);border-color:var(--ok)}
+  .tline li.now{color:var(--gold)}.tline li.now::before{border-color:var(--gold);animation:pulse 1.2s infinite}
+  .files div{display:flex;justify-content:space-between;padding:8px 10px;background:var(--deep);border-radius:10px;margin-bottom:6px;font-size:13px}
+  .files span{color:var(--muted)}
+  .info .acts .btn{flex:1}
+  .minipromo{margin-top:auto;padding:12px;border-radius:14px;background:linear-gradient(120deg,rgba(231,197,110,.18),rgba(123,45,91,.45));border:1px solid rgba(231,197,110,.35);font-size:13px;color:var(--muted);cursor:pointer}
+  .minipromo b{color:var(--gold2)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="list" id="list">
+    <div class="top">
+      <div class="logo">T</div>
+      <h1>Мои подарки</h1>
+      <button class="newbtn" id="newBtn">+ Новый</button>
+    </div>
+    <div class="search">🔎 Поиск по подаркам</div>
+    <div class="proto">Прототип: имена и данные условные, [N] и [ЦЕНА] заполним реальными цифрами</div>
+    <button class="promo" id="promo"><span class="pi">🎁</span><span class="pt"><b>Добрая пятница · 27 ноября</b><small>Скидка на подарки, и часть каждого заказа — детям</small></span><span class="px" id="promoX" aria-label="Скрыть">✕</span></button>
+    <div class="items" id="items"></div>
+    <div class="fund" id="fundLine">💛 <span>Часть каждого заказа — в фонд <b>[название фонда]</b>. Покажем точную сумму, как только подключим фонд.</span></div>
+  </aside>
+
+  <div class="empty show" id="empty"><div><div style="font-size:42px">✨</div><p>Выберите подарок слева,<br>чтобы открыть его историю</p></div></div>
+
+  <section class="chat" id="chat">
+    <div class="chat-bg"></div>
+    <header class="chead">
+      <button class="back" id="back" aria-label="Назад">‹</button>
+      <div class="thumb" id="cThumb"></div>
+      <div class="ctitle"><b id="cName"></b><span id="cSub"></span></div>
+      <button class="helpbtn" id="helpBtn">💬 Помощь</button>
+    </header>
+    <div class="msgs" id="msgs"></div>
+    <div class="comp" id="comp">
+      <button class="ib" id="clip" aria-label="Прикрепить">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.9-8.9a3.7 3.7 0 015.2 5.2l-8.9 8.9a1.8 1.8 0 01-2.6-2.6l8.2-8.2"/></svg>
+      </button>
+      <input type="file" id="file" accept="image/*" multiple hidden>
+      <div class="field" id="field" contenteditable="true" role="textbox" data-ph="Сообщение"></div>
+      <button class="ib" id="act" aria-label="Голосовое"></button>
+      <div class="rec" id="rec"><span class="rdot"></span><b id="rtime">0:00</b><span class="hint" id="rhint">‹ влево — отмена</span><button class="btn gold" id="rstop" style="display:none;min-height:36px;padding:6px 12px">Отправить</button></div>
+      <div class="lockbadge" id="lockb">🔒<br>вверх —<br>без рук</div>
+    </div>
+  </section>
+
+  <aside class="info" id="info"></aside>
+
+  <div class="shade" id="shade"></div>
+  <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody" style="display:flex;flex-direction:column;min-height:0;flex:1"></div></div>
+  <div class="modal" id="pay"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const MIRA=`<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#f3dc9a"/><circle cx="32" cy="36" r="17" fill="#f6d2b8"/><path d="M14 34c0-14 8-22 18-22s18 8 18 22c-3-6-8-10-18-10S17 28 14 34z" fill="#5a3320"/><circle cx="25.5" cy="37" r="2.4" fill="#2a1640"/><circle cx="38.5" cy="37" r="2.4" fill="#2a1640"/><path d="M27 44q5 4 10 0" stroke="#b34a6a" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="21" cy="42" r="2.6" fill="#f2a3b3" opacity=".6"/><circle cx="43" cy="42" r="2.6" fill="#f2a3b3" opacity=".6"/><path d="M45 16l3-5 1 6z" fill="#e7c56e"/></svg>`;
+const ICON={
+ ded:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linecap="round"><path d="M5 11l7-7 7 7"/><path d="M6 11h12v2a6 6 0 01-12 0z" fill="#fff"/><circle cx="12" cy="3.5" r="1.3" fill="#fff"/></svg>`,
+ song:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linecap="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>`,
+ book:`<svg viewBox="0 0 24 24" fill="none" stroke="#1d0f2c" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5M9 7h6"/></svg>`
+};
+const BG={ded:'linear-gradient(145deg,#f7d9d9,#e7c56e)',song:'linear-gradient(145deg,#f3dc9a,#e7a96e)',book:'linear-gradient(145deg,#e6d6f5,#e7c56e)'};
+
+const orders=[
+ {id:'TM-24817',kind:'ded',name:'Дед Мороз для Миры',time:'04:12',status:'prog',pct:64,price:490,
+  last:'Монтируем видео — уже 64%'},
+ {id:'TM-24790',kind:'song',name:'Песня для Мирона',time:'вчера',status:'ready',price:490,
+  last:'Песня готова ✨ Послушайте!'},
+ {id:'TM-24855',kind:'book',name:'Книга «Мира и Лунный кит»',time:'03:58',status:'pay',price:'[ЦЕНА]',
+  last:'Пример готов. Осталось оплатить'},
+];
+let cur=null, redoLeft={'TM-24790':1,'TM-24817':1,'TM-24855':1};
+
+function chipFor(o){
+ if(o.status==='ready')return `<span class="chip ready">готово ✓</span>`;
+ if(o.status==='prog')return `<span class="chip prog">готовится ${o.pct}%</span>`;
+ if(o.status==='pay')return `<span class="chip pay">ждёт оплаты</span>`;
+ return `<span class="chip wait">нужны фото</span>`;
+}
+function ringFor(o){
+ if(o.status!=='prog')return '';
+ const c=2*Math.PI*29, off=c*(1-o.pct/100);
+ return `<svg class="ring" viewBox="0 0 62 62"><circle cx="31" cy="31" r="29" fill="none" stroke="rgba(231,197,110,.2)" stroke-width="3"/><circle cx="31" cy="31" r="29" fill="none" stroke="#e7c56e" stroke-width="3" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 31 31)" style="transition:stroke-dashoffset .6s"/></svg>`;
+}
+function renderList(){
+ setTimeout(renderInfo,0);
+ $('#items').innerHTML=orders.map(o=>`
+  <div class="item ${cur&&cur.id===o.id?'active':''}" data-id="${o.id}">
+   <div class="thumb" style="background:${BG[o.kind]}">${ICON[o.kind]}${ringFor(o)}</div>
+   <div class="meta"><div class="row1"><span class="name">${o.name}</span><span class="time">${o.time}</span></div>
+   <div class="row2"><span class="last">${o.last}</span>${chipFor(o)}</div></div>
+  </div>`).join('');
+ document.querySelectorAll('.item').forEach(el=>el.onclick=()=>openChat(el.dataset.id));
+}
+
+/* ---------- chat ---------- */
+function now(){const d=new Date();return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')}
+function add(html){const m=$('#msgs');m.insertAdjacentHTML('beforeend',html);requestAnimationFrame(()=>m.scrollTop=m.scrollHeight);return m.lastElementChild}
+function mira(text,t){return add(`<div class="who"><div class="mira">${MIRA}</div><div class="m in">${text}<span class="t">${t||now()}</span></div></div>`)}
+function me(text,t){return add(`<div class="m out">${text}<span class="t">${t||now()} ✓✓</span></div>`)}
+function sys(text){return add(`<div class="sys">${text}</div>`)}
+const PH=`<div class="photos"><div class="ph">🙂</div><div class="ph">😊</div><div class="ph">😄</div></div>`;
+
+function stepsCard(o){
+ const st=[['Проверили фото и анкету','done'],['Озвучили имя «Ми́ра»','done'],['Монтируем видео','now'],['Проверка качества','']];
+ return add(`<div class="card" id="progCard"><h4>Готовим подарок</h4>
+  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Готово <b id="pctTxt" style="color:var(--gold)">${o.pct}%</b></span><span>осталось ≈ [N] мин</span></div>
+  <div class="bar"><i id="pctBar" style="width:${o.pct}%"></i></div>
+  <ul class="steps">${st.map(s=>`<li class="${s[1]}"><span class="dot">${s[1]==='done'?'✓':''}</span>${s[0]}</li>`).join('')}</ul>
+  <p class="note">Пришлём сюда, на почту и в Telegram, как только будет готово. Можно закрыть страницу.</p></div>`);
+}
+function resultCard(o,cap){
+ return add(`<div class="card"><div class="video"><div class="play">▶</div><div class="cap">${cap}</div></div>
+  <div class="acts"><button class="btn gold" onclick="toast('Файл сохраняется… (в прототипе — без скачивания)')">Скачать</button>
+  <button class="btn ghost" onclick="toast('Ссылка-подарок скопирована (прототип)')">Поделиться</button>
+  <button class="btn ghost" onclick="openRedo()">Нужна правка</button></div>
+  <p class="note">Не понравилось или ошибка в имени — переделаем бесплатно.</p></div>`);
+}
+
+function openChat(id){
+ const o=orders.find(x=>x.id===id); cur=o;
+ $('#cThumb').style.background=BG[o.kind]; $('#cThumb').innerHTML=ICON[o.kind];
+ $('#cName').textContent=o.name; $('#cSub').textContent=`Заказ № ${o.id} · ${o.status==='ready'?'готово':o.status==='prog'?'готовится':'ждёт оплаты'}`;
+ $('#msgs').innerHTML='';
+ $('#empty').classList.remove('show'); $('#chat').classList.add('open'); renderList();
+ if(o.kind==='ded'){
+  add('<div class="day">Сегодня</div>');
+  mira('Привет! Я Мира 💫 Давайте подготовим поздравление от Дедушки Мороза. Пришлите 3–4 фото для его волшебного альбома.','04:02');
+  me(PH+'Вот фото','04:04');
+  mira('Отличные фото! Лицо хорошо видно ✓ Как зовут ребёнка и куда ставить ударение?','04:04');
+  me('Ми́ра, 5 лет','04:05');
+  sys('Оплачено <b>490 ₽</b> · 04:12 · чек отправлен на почту');
+  stepsCard(o); tick();
+  hint('Спросите что-нибудь — я рядом');
+ } else if(o.kind==='song'){
+  add('<div class="day">Вчера</div>');
+  mira('Расскажите про Мирона: что он любит, чем удивляет? Это попадёт в куплеты 🎵','18:20');
+  me('Любит динозавров и строить замки из кубиков','18:22');
+  mira('Чудесно! Жанр — весёлый поп, голос — женский. Верно?','18:22');
+  me('Да 👍','18:23');
+  sys('Оплачено <b>490 ₽</b> · 18:25');
+  mira('Песня готова ✨ Послушайте и поделитесь с бабушкой!','18:29');
+  resultCard(o,'Мирон — строитель замков');
+  hint('Напишите, если нужна помощь');
+ } else {
+  add('<div class="day">Сегодня</div>');
+  mira('Пример вашей книги готов! Обложка и первые страницы — ниже 📖','03:58');
+  add(`<div class="card"><div class="video" style="aspect-ratio:4/3"><div class="cap" style="position:static;font-size:26px">Мира и Лунный кит</div></div>
+   <p class="note" style="margin-top:0">Пример с водяным знаком. Полная книга — сразу после оплаты.</p>
+   <div class="acts"><button class="btn gold" id="payBtn">Купить электронную · [ЦЕНА]</button></div></div>`);
+  $('#payBtn').onclick=openPay;
+  hint('Вопрос по книге? Напишите');
+ }
+}
+function hint(t){$('#field').dataset.ph=t}
+let timer=null;
+function tick(){
+ clearInterval(timer);
+ timer=setInterval(()=>{
+  const o=orders[0]; if(o.status!=='prog'){clearInterval(timer);return}
+  o.pct=Math.min(100,o.pct+4); o.last=o.pct<100?`Монтируем видео — уже ${o.pct}%`:'Видео готово ✨';
+  if(cur&&cur.id===o.id&&$('#pctBar')){$('#pctBar').style.width=o.pct+'%';$('#pctTxt').textContent=o.pct+'%'}
+  if(o.pct>=100){o.status='ready';o.time=now();
+   if(cur&&cur.id===o.id){
+    document.querySelectorAll('#progCard .steps li').forEach(li=>{li.className='done';li.querySelector('.dot').textContent='✓'});
+    $('#cSub').textContent=`Заказ № ${o.id} · готово`;
+    mira('Готово! Дедушка Мороз записал поздравление для Миры 🎅✨');resultCard(o,'С Новым годом, Мира!');}
+   clearInterval(timer);}
+  renderList();
+ },1500);
+}
+$('#back').onclick=()=>{$('#chat').classList.remove('open');cur=null;renderList()};
+
+/* ---------- composer: Telegram-like ---------- */
+const MIC=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>`;
+const SEND=`<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.5-7.5a1 1 0 000-1.8L3.4 3.6a.9.9 0 00-1.3 1l2 6.4 9 1-9 1-2 6.4a.9.9 0 001.3 1z"/></svg>`;
+const act=$('#act'), field=$('#field');
+let mode='mic';
+function setMode(m){if(m===mode)return;mode=m;act.innerHTML=m==='mic'?MIC:SEND;act.classList.toggle('send',m==='send');act.setAttribute('aria-label',m==='mic'?'Голосовое':'Отправить');act.classList.remove('swap');void act.offsetWidth;act.classList.add('swap')}
+act.innerHTML=MIC;
+field.addEventListener('input',()=>{if(!field.textContent.trim())field.innerHTML='';setMode(field.textContent.trim()?'send':'mic')});
+field.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText()}});
+function sendText(){const t=field.textContent.trim();if(!t)return;field.innerHTML='';setMode('mic');me(esc(t));replyTo(t)}
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function replyTo(t){
+ const low=t.toLowerCase();
+ setTimeout(()=>{
+  if(/^.{0,2}$/.test(t)) mira('Не совсем поняла 🙈 Уточните, пожалуйста, — что нужно сделать?');
+  else if(/когда|сколько|долго|где/.test(low)) mira(cur.status==='ready'?'Подарок уже готов — он выше в этом чате ✨':`Сейчас готово ${cur.pct||0}%. Пришлю сюда сразу, как закончим.`);
+  else mira('Поняла! Если нужно что-то изменить в подарке — нажмите «Нужна правка» под результатом, а с любым вопросом — «Помощь» вверху.');
+ },700);
+}
+$('#clip').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{const n=e.target.files.length;if(!n)return;me(`<div class="photos">${'<div class="ph">🖼️</div>'.repeat(Math.min(n,6))}</div>${n} фото`);e.target.value='';setTimeout(()=>mira('Фото получила ✓ Лицо хорошо видно.'),700)};
+
+/* voice: hold → record, release → send, up → lock, left → cancel */
+let rec=null;
+act.addEventListener('pointerdown',e=>{
+ if(mode==='send'){return}
+ e.preventDefault(); act.setPointerCapture(e.pointerId);
+ rec={x:e.clientX,y:e.clientY,t0:Date.now(),locked:false,int:null};
+ $('#rec').classList.add('on');$('#lockb').classList.add('on');act.classList.add('micbig');$('#rstop').style.display='none';$('#rhint').textContent='‹ влево — отмена';
+ rec.int=setInterval(()=>{const s=Math.floor((Date.now()-rec.t0)/1000);$('#rtime').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},250);
+});
+act.addEventListener('pointermove',e=>{
+ if(!rec||rec.locked)return;
+ if(rec.x-e.clientX>90){stopRec(false);toast('Запись отменена')}
+ else if(rec.y-e.clientY>60){rec.locked=true;act.classList.remove('micbig');$('#lockb').classList.remove('on');$('#rhint').textContent='Запись без рук — нажмите, чтобы отправить';$('#rstop').style.display='inline-block'}
+});
+act.addEventListener('pointerup',e=>{if(mode==='send'){sendText();return}if(rec&&!rec.locked)stopRec(true)});
+act.addEventListener('pointercancel',()=>{if(rec&&!rec.locked)stopRec(false)});
+$('#rstop').onclick=()=>stopRec(true);
+function stopRec(send){
+ if(!rec)return;clearInterval(rec.int);const d=Math.max(1,Math.round((Date.now()-rec.t0)/1000));rec=null;
+ $('#rec').classList.remove('on');$('#lockb').classList.remove('on');act.classList.remove('micbig');$('#rtime').textContent='0:00';
+ if(!send)return;
+ if(d<1){toast('Удерживайте, чтобы записать голосовое');return}
+ const bars=Array.from({length:22},()=>`<i style="height:${4+Math.random()*18}px"></i>`).join('');
+ me(`<div class="voice">▶ <div class="wave">${bars}</div> 0:${String(d).padStart(2,'0')}</div>`);
+ setTimeout(()=>mira('Голосовое получила, расшифровала ✓ Отвечаю здесь же.'),800);
+}
+act.addEventListener('click',e=>{if(mode==='mic'&&!rec)toast('Зажмите микрофон, чтобы записать голосовое')});
+
+/* ---------- sheets ---------- */
+function openSheet(html){$('#sheetBody').innerHTML=html;$('#shade').classList.add('on');$('#sheet').classList.add('on')}
+function closeAll(){$('#shade').classList.remove('on');$('#sheet').classList.remove('on');$('#pay').classList.remove('on')}
+$('#shade').onclick=closeAll;
+window.closeAll=closeAll;
+
+/* support: chat inside chat */
+$('#helpBtn').onclick=()=>{
+ const o=cur;
+ openSheet(`<div class="sh-h"><h3>Помощь</h3><p>Отвечаем сразу. Видим ваш заказ — ничего объяснять заново не нужно.</p></div>
+ <div class="sh-b supp"><div class="ctx"><div class="thumb" style="width:34px;height:34px;border-radius:10px;background:${BG[o.kind]}">${ICON[o.kind]}</div><div><b>${o.name}</b><br>№ ${o.id} · ${o.status==='ready'?'готово':o.status==='prog'?'готовится':'ждёт оплаты'}</div></div>
+ <div class="chips">${['Где мой подарок?','Не пришло на почту','Изменить данные','Вернуть деньги'].map(q=>`<button class="qc" onclick="ask('${q}')">${q}</button>`).join('')}</div>
+ <div class="msgs" id="smsgs"><div class="who"><div class="mira">${MIRA}</div><div class="m in">Здравствуйте! Чем помочь с заказом № ${o.id}?<span class="t">${now()}</span></div></div></div>
+ <div style="display:flex;gap:6px;margin-top:8px"><input id="sin" class="ta" style="min-height:44px" placeholder="Ваш вопрос"><button class="btn gold" onclick="ask(document.getElementById('sin').value)">→</button></div>
+ <button class="btn ghost" style="margin-top:8px" onclick="human()">Позвать человека</button></div>`);
+};
+function sAdd(html){const m=$('#smsgs');m.insertAdjacentHTML('beforeend',html);m.scrollTop=m.scrollHeight}
+window.ask=q=>{if(!q||!q.trim())return;const o=cur;$('#sin')&&($('#sin').value='');
+ sAdd(`<div class="m out">${esc(q)}<span class="t">${now()} ✓✓</span></div>`);
+ let a;
+ if(/где/i.test(q))a=o.status==='ready'?'Подарок готов и лежит в этом чате, а ещё у вас на почте и в Telegram ✨':`Готово ${o.pct}%. Как только закончим — сразу пришлём сюда, на почту и в Telegram.`;
+ else if(/почт/i.test(q))a='Проверила: письмо отправлено. Загляните в «Спам» или «Промоакции». Отправить ещё раз?';
+ else if(/измен/i.test(q))a=o.status==='ready'?'Подарок уже готов. Изменить можно через «Нужна правка» под результатом — если ошибка наша, бесплатно.':'Пока подарок готовится, данные можно поменять. Что исправить: имя, ударение или фото?';
+ else if(/верн/i.test(q))a='Понимаю. Расскажите, что не так — часто быстрее и лучше переделать. Если всё же нужен возврат — передам оператору, ответим в течение [N] ч.';
+ else a='Поняла вопрос. Если ответ нужен от человека — нажмите «Позвать человека».';
+ setTimeout(()=>sAdd(`<div class="who"><div class="mira">${MIRA}</div><div class="m in">${a}<span class="t">${now()}</span></div></div>`),600);
+};
+window.human=()=>{sAdd(`<div class="sys">Передали оператору вместе с заказом № ${cur.id}. Ответим здесь в течение [N] ч.</div>`)};
+
+/* redo flow with abuse protection */
+/* варианты правки зависят от продукта: у Деда Мороза фото клиента идут в альбом как есть — «не похоже» и «заменить фото» не предлагаем */
+const REDO={
+ name:['name','✍️','Имя написано или звучит не так','мы проверим по вашей анкете'],
+ nameText:['name','✍️','Ошибка в имени','мы проверим по вашей анкете'],
+ stress:['stress','🔊','Неверное ударение','отметьте момент в видео'],
+ face:['face','🙂','Герой не похож на ребёнка','сравним с фото из заказа'],
+ tech:['tech','⚙️','Технический сбой','звук, картинка, обрыв']
+};
+const REDO_BY_KIND={ded:['name','stress','tech'],song:['name','stress','tech'],book:['nameText','face','tech']};
+function redoOptions(kind,left){return REDO_BY_KIND[kind].map(k=>{const r=REDO[k].slice();if(k==='stress'&&kind==='song')r[3]='отметьте момент в песне';if(k==='tech'&&kind==='book')r[3]='файл не открывается, страницы перепутаны';return r}).concat([['other','🎨','Хочу по-другому','бесплатных правок: '+left+' из 1']])}
+window.openRedo=()=>{
+ const o=cur, left=redoLeft[o.id];
+ openSheet(`<div class="sh-h"><h3>Что исправить?</h3><p>Ошибка наша — переделаем бесплатно и быстро.</p></div><div class="sh-b" id="rb">
+ ${redoOptions(o.kind,left).map(r=>`<button class="opt" onclick="redoStep('${r[0]}')"><span class="ic">${r[1]}</span><span><b>${r[2]}</b><small>${r[3]}</small></span></button>`).join('')}
+ </div>`);
+};
+window.redoStep=k=>{
+ const o=cur; const rb=$('#rb');
+ if(k==='other'){
+  const left=redoLeft[o.id];
+  rb.innerHTML=left>0?`<p>Опишите, что хотите изменить. Это ваша бесплатная правка (осталась <b>1 из 1</b>).</p><textarea class="ta" id="wish" placeholder="Например: сделайте музыку спокойнее"></textarea>
+   <div class="acts" style="margin-top:10px"><button class="btn gold" onclick="redoDone('free')">Отправить правку</button></div>
+   <p class="note">Следующие правки — по себестоимости: [ЦЕНА]. Честно: так нам хватит сил на всех.</p>`
+  :`<p>Бесплатная правка уже использована.</p><p class="note">Новая версия — по себестоимости: [ЦЕНА].</p><div class="acts"><button class="btn gold" onclick="redoDone('paid')">Сделать за [ЦЕНА]</button></div>`;
+  return;
+ }
+ rb.innerHTML=`<p><b>Покажите, где ошибка</b></p>
+  ${o.kind!=='book'?`<div class="tl">0:00<input type="range" min="0" max="60" value="12" id="tc" oninput="document.getElementById('tcv').textContent='0:'+String(this.value).padStart(2,'0')"><span id="tcv">0:12</span></div>`:''}
+  <textarea class="ta" id="cm" placeholder="Что не так? (необязательно)"></textarea>
+  <div class="acts" style="margin-top:10px"><button class="btn gold" onclick="check('${k}')">Проверить</button></div>
+  <p class="note">Проверка занимает пару секунд: сверяем с вашей анкетой.</p>`;
+};
+window.check=k=>{
+ const rb=$('#rb'); rb.insertAdjacentHTML('beforeend',`<div class="verdict" id="vd">⏳ Сверяем с анкетой…</div>`);
+ setTimeout(()=>{
+  const ourFault = k==='stress'||k==='tech'||k==='face';
+  $('#vd').className='verdict '+(ourFault?'ok':'no');
+  $('#vd').innerHTML= ourFault
+   ? `<b>Вы правы — это наша ошибка.</b> Переделаем бесплатно, срок ≈ [N] мин. Пришлём новую версию сюда.<div class="acts" style="margin-top:10px"><button class="btn gold" onclick="redoDone('ours')">Хорошо</button></div>`
+   : `<b>В подарке имя «${cur.kind==='song'?'Мирон':'Мира'}» — так же, как в вашей анкете.</b><br>Если в анкете опечатка — исправьте имя, и мы переделаем. Это засчитается как ваша бесплатная правка.<div class="acts" style="margin-top:10px"><button class="btn gold" onclick="redoStep('other')">Исправить анкету</button><button class="btn ghost" onclick="closeAll()">Всё верно</button></div>`;
+ },900);
+};
+window.redoDone=t=>{
+ if(t==='free')redoLeft[cur.id]=0;
+ closeAll();
+ me(t==='ours'?'Нашла ошибку — отметила в видео':t==='paid'?'Хочу новую версию (платно)':'Отправила правку');
+ setTimeout(()=>{mira(t==='ours'?'Спасибо, что заметили! Уже переделываем — бесплатно 💛':'Приняла! Уже делаем новую версию ✨');
+  cur.status='prog';cur.pct=10;cur.last='Переделываем — 10%';cur.time=now();$('#cSub').textContent=`Заказ № ${cur.id} · готовится`;renderList();
+ },600);
+};
+
+/* payment popup + Mira kiss */
+function openPay(){
+ $('#pay').innerHTML=`<h3>Оплата</h3><p class="note" style="margin-top:0">Книга «Мира и Лунный кит» · электронная</p>
+ <div class="sum"><span>К оплате</span><b>[ЦЕНА]</b></div>
+ <div class="cards"><div class="sel">💳 Карта</div><div>СБП</div><div>SberPay</div></div>
+ <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:12px"><input type="checkbox" id="agree" style="width:22px;height:22px;accent-color:#e7c56e;flex:none"> Принимаю условия оферты</label>
+ <div class="acts"><button class="btn gold" id="doPay" style="flex:1">Оплатить</button><button class="btn ghost" onclick="closeAll()">Отмена</button></div>
+ <p class="note" id="payErr"></p><p class="note">Прототип: деньги не списываются.</p>`;
+ $('#shade').classList.add('on');$('#pay').classList.add('on');
+ $('#doPay').onclick=()=>{
+  if(!$('#agree').checked){$('#payErr').textContent='Отметьте согласие с офертой — без него оплата невозможна.';$('#payErr').style.color='var(--warn)';return}
+  closeAll(); paid();
+ };
+}
+function paid(){
+ const o=cur; const pb=$('#payBtn'); if(pb){pb.textContent='Оплачено ✓';pb.disabled=true;pb.className='btn ghost';} o.status='prog'; o.pct=5; o.last='Создаём книгу — 5%'; o.time=now();
+ sys('Оплачено <b>[ЦЕНА]</b> · '+now()+' · чек на почте');
+ const k=add(`<div class="kiss"><div class="big">${MIRA}</div><div style="font-size:13px;color:var(--muted)">Мира посылает вам воздушный поцелуй 💋</div></div>`);
+ $('#cSub').textContent=`Заказ № ${o.id} · готовится`;
+ setTimeout(()=>{
+  const from=k.querySelector('.big').getBoundingClientRect();
+  const target=(window.innerWidth>=860?document.querySelector('.item[data-id="'+o.id+'"]'):null)||$('#back');
+  const to=target.getBoundingClientRect();
+  const h=document.createElement('div');h.className='heart';h.textContent='💖';document.body.appendChild(h);
+  const x0=from.left+from.width/2-14,y0=from.top+10,x1=to.left+to.width/2-14,y1=to.top+to.height/2-14;
+  h.animate([{transform:`translate(${x0}px,${y0}px) scale(.6)`,opacity:0},{transform:`translate(${(x0+x1)/2}px,${Math.min(y0,y1)-80}px) scale(1.3)`,opacity:1},{transform:`translate(${x1}px,${y1}px) scale(.5)`,opacity:.9}],{duration:1300,easing:'cubic-bezier(.3,.7,.3,1)'}).onfinish=()=>{h.remove();renderList();const t=document.querySelector('.item[data-id="'+o.id+'"]')||$('#back');t.classList.add('glow');setTimeout(()=>t.classList.remove('glow'),1400)};
+  mira('Спасибо! Книга уже создаётся 📖 Как будет готова — пришлю сюда, на почту и в Telegram.');
+  sys('💛 Часть этого заказа уйдёт в фонд <b>[название фонда]</b> — покажем точную сумму, когда фонд будет подключён');
+ },500);
+}
+
+
+/* ---------- desktop info panel ---------- */
+const STAGES={ded:['Фото и анкета','Голос с именем','Монтаж видео','Проверка качества','Готово'],song:['История и жанр','Текст песни','Запись','Проверка ударений','Готово'],book:['Пример книги','Оплата','Рисуем страницы','Проверка качества','Готово']};
+const FILES={ded:[['Видео-поздравление','MP4'],['Открытка с именем','PNG']],song:[['Песня','MP3'],['Текст песни','PDF']],book:[['Книга-сказка','PDF'],['Печать (по желанию)','СДЭК']]};
+function stageIdx(o){if(o.status==='ready')return 4;if(o.status==='pay')return 1;if(o.kind==='book')return 2;return o.pct<30?1:o.pct<85?2:3}
+function renderInfo(){
+ const el=$('#info'); if(!el)return; const o=cur;
+ if(!o){el.classList.add('hide');return} el.classList.remove('hide');
+ const si=stageIdx(o);
+ const st=o.status==='ready'?'<span class="chip ready">готово ✓</span>':o.status==='pay'?'<span class="chip pay">ждёт оплаты</span>':`<span class="chip prog">готовится ${o.pct}%</span>`;
+ const acts=o.status==='ready'?`<button class="btn gold" onclick="toast('Файл сохраняется… (прототип)')">Скачать</button><button class="btn ghost" onclick="openRedo()">Правка</button>`
+   :o.status==='pay'?`<button class="btn gold" onclick="openPay()">Оплатить · [ЦЕНА]</button>`
+   :`<button class="btn ghost" onclick="document.getElementById('helpBtn').click()">Спросить о заказе</button>`;
+ el.innerHTML=`<div class="scene" style="background:${BG[o.kind]}">${ICON[o.kind]}</div>
+  <h2>${o.name}</h2><div class="num">Заказ № ${o.id} · ${st}</div>
+  <h5>Как идёт</h5><ul class="tline">${STAGES[o.kind].map((t,i)=>`<li class="${i<si?'done':i===si?(o.status==='ready'?'done':'now'):''}">${t}</li>`).join('')}</ul>
+  <h5>Что вы получите</h5><div class="files">${FILES[o.kind].map(f=>`<div>${f[0]}<span>${f[1]}</span></div>`).join('')}</div>
+  <div class="acts" style="margin:12px 0 16px">${acts}</div>
+  <div class="minipromo" onclick="document.getElementById('promo').click()"><b>🎁 Добрая пятница · 27.11</b><br>Скидка [N]% на подарки, часть заказа — детям</div>`;
+}
+window.openPay=openPay;
+
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
+window.toast=toast;
+$('#promoX').onclick=e=>{e.stopPropagation();$('#promo').style.display='none';toast('Акцию можно снова открыть в «Профиле»')};
+$('#promo').onclick=()=>{
+ const st=new Date(2026,10,27), en=new Date(2026,10,27,23,59,59), started=new Date()>=st, ms=Math.max(0,(started?en:st)-new Date()), d=Math.floor(ms/864e5), h=Math.floor(ms/36e5)%24, m=Math.floor(ms/6e4)%60;
+ openSheet(`<div class="sh-h"><h3>Добрая пятница</h3><p>У всех чёрная — у нас добрая 💛 Только 27 ноября</p></div><div class="sh-b">
+ <p class="note" style="text-align:center;margin:0">${started?'до конца акции':'до старта акции'}</p><div class="count"><div><b>${d}</b><span>дн</span></div><div><b>${h}</b><span>ч</span></div><div><b>${m}</b><span>мин</span></div></div>
+ <p style="margin-top:0">Скидка <b>[N]%</b> на подарки ниже — и часть каждого заказа уходит в фонд <b>[название фонда]</b>, детям, которым нужна помощь.</p>
+ ${[['ded','Поздравление от Деда Мороза'],['song','Песня с именем'],['book','Книга-сказка']].map(p=>`<div class="prow"><div class="thumb" style="background:${BG[p[0]]}">${ICON[p[0]]}</div><span style="flex:1">${p[1]}</span><b style="color:var(--gold)">−[N]%</b></div>`).join('')}
+ <div class="acts" style="margin-top:12px"><button class="btn gold" style="flex:1" onclick="closeAll();toast('Откроется витрина со скидкой')">Выбрать подарок</button></div>
+ <p class="note">Для команды: складывается ли со скидкой комплекта — [решение]. Никаких выдуманных «старых цен»: показываем обычную цену и цену со скидкой.</p></div>`);
+};
+$('#newBtn').onclick=()=>toast('Здесь откроется витрина подарков');
+
+renderList();
+if(window.innerWidth>=860)openChat('TM-24817');
+</script>
+</body>
+</html>
